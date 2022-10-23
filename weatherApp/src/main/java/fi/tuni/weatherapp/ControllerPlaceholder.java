@@ -1,11 +1,13 @@
 package fi.tuni.weatherapp;
 
+import java.time.LocalDate;
+
 public class ControllerPlaceholder {
     
     private ViewPlaceholder view;
-    private ModelPlaceholder model;
+    private ModelMain model;
 
-    public ControllerPlaceholder(ViewPlaceholder view, ModelPlaceholder model) {
+    public ControllerPlaceholder(ViewPlaceholder view, ModelMain model) {
         this.view = view;
         this.model = model;
     }
@@ -16,8 +18,20 @@ public class ControllerPlaceholder {
     
     public void TestController(){        
         
-        String newMesssage = String.format("%s, Number: %d", model.getStr(), model.getNumber());
-        view.UpdateMessage(newMesssage);
+        String newMessage = "";
+        for (String dataSourceName: model.GetDataSourceNames() ) {
+            newMessage  += dataSourceName + ": \n";
+            for (Variable variable : model.GetVariables(dataSourceName)) {
+                newMessage += variable.getName() + ", " + variable.getUnit() + "\n";
+            }
+        }
+        for (DataPoint dataPoint : model.GetVariableData("TestDataSource", 
+                new Variable("a","b"), "coordinates", 
+                LocalDate.MAX, LocalDate.MAX)) {
+            newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
+        }
+        
+        view.UpdateMessage(newMessage);
     }
 
 }

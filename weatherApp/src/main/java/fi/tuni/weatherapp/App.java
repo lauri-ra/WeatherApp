@@ -10,14 +10,17 @@ import javafx.stage.Stage;
 public class App extends Application {
 
     private ViewPlaceholder view;
-    private ModelPlaceholder model;
+    private ModelMain model;
     private ControllerPlaceholder controller;
      
     
     @Override
     public void init() {
         view = new ViewPlaceholder();
-        model = new ModelPlaceholder();
+        model = new ModelMain();
+        
+        model.AddDataSource(new TestDataSource());
+        
         controller = new ControllerPlaceholder(view, model);
     }
     
