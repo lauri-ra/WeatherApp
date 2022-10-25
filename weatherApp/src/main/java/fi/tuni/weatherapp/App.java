@@ -19,7 +19,8 @@ public class App extends Application {
         view = new ViewPlaceholder();
         model = new ModelMain();
         
-        model.AddDataSource(new TestDataSource());
+        //model.AddDataSource(new TestDataSource());
+        model.AddDataSource(new DigiTrafficTest());
         
         controller = new ControllerPlaceholder(view, model);
     }
