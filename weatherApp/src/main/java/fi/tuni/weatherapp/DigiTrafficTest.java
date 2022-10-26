@@ -3,6 +3,7 @@ package fi.tuni.weatherapp;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.net.URI;
 import java.net.http.*;
@@ -22,9 +23,9 @@ public class DigiTrafficTest implements IDataSource {
         variables.add(new Variable("DigiTraffic2", "Unit 2"));
     }
 
-    public static ArrayList<String> GetTasks(String response) {
+    public static HashMap<String, Integer> GetTasks(String response) {
 
-        ArrayList<String> tasks = new ArrayList<>();
+        HashMap<String, Integer> tasks = new HashMap<>();
 
         JSONObject obj = new JSONObject(response);
         JSONArray features = obj.getJSONArray("features");
@@ -32,14 +33,18 @@ public class DigiTrafficTest implements IDataSource {
         for(int i = 0; i < features.length(); i++) {
             JSONObject feature = features.getJSONObject(i);
             JSONObject properties = feature.getJSONObject("properties");
-            JSONArray task = properties.getJSONArray("tasks");
+            JSONArray taskArray = properties.getJSONArray("tasks");
+            String task = taskArray.getString(0);
 
-            System.out.println(task.getString(0));
-            tasks.add(task.getString(0));
+            if(!tasks.containsKey(task)) {
+                tasks.put(task, 1);
+            }
+            else {
+                tasks.put(task, tasks.get(task) + 1);
+            }
         }
 
         return tasks;
-
     }
 
     public static void TrafficMessages(String response) {
@@ -77,8 +82,10 @@ public class DigiTrafficTest implements IDataSource {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            ArrayList<String> foo = new ArrayList<>();
-            foo = GetTasks(response.body());
+
+            HashMap<String, Integer> taskMap;
+            taskMap = GetTasks(response.body());
+            System.out.println(taskMap);
 
         }
         catch (IOException | InterruptedException e) {
