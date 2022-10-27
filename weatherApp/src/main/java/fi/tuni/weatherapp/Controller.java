@@ -2,18 +2,18 @@ package fi.tuni.weatherapp;
 
 import java.time.LocalDate;
 
-public class ControllerPlaceholder {
+public class Controller {
     
-    private ViewPlaceholder view;
+    private View view;
     private ModelMain model;
 
-    public ControllerPlaceholder(ViewPlaceholder view, ModelMain model) {
+    public Controller(View view, ModelMain model) {
         this.view = view;
         this.model = model;
     }
     
     public void Begin(){
-        view.OpenView();
+        view.render();
     }
     
     public void TestController(){
@@ -31,7 +31,7 @@ public class ControllerPlaceholder {
             newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
         }
         
-        view.UpdateMessage(newMessage);
+        //view.UpdateMessage(newMessage);
     }
 
 }

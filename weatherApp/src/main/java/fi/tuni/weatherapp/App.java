@@ -3,32 +3,31 @@ package fi.tuni.weatherapp;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-
 /**
  * JavaFX App
  */
 public class App extends Application {
 
-    private ViewPlaceholder view;
+    private View view;
     private ModelMain model;
-    private ControllerPlaceholder controller;
+    private Controller controller;
      
     
     @Override
     public void init() {
-        view = new ViewPlaceholder();
+        view = new View();
         model = new ModelMain();
         
         //model.AddDataSource(new TestDataSource());
         model.AddDataSource(new FMIDataSource());
         model.AddDataSource(new DigiTrafficTest());
         
-        controller = new ControllerPlaceholder(view, model);
+        controller = new Controller(view, model);
     }
     
     @Override
     public void start(Stage stage) {
-        view.SetStage(stage);
+        view.setStage(stage);
         controller.Begin();
         controller.TestController();
     }
