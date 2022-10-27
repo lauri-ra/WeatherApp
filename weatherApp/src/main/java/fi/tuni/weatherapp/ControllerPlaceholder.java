@@ -25,7 +25,7 @@ public class ControllerPlaceholder {
                 newMessage += variable.getName() + ", " + variable.getUnit() + "\n";
             }
         }
-        for (DataPoint dataPoint : model.GetVariableData("TestDataSource", 
+        for (DataPoint dataPoint : model.GetVariableData("FMI", 
                 new Variable("a","b"), "coordinates", 
                 LocalDate.MAX, LocalDate.MAX)) {
             newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
