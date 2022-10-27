@@ -16,10 +16,8 @@ public class View {
     
     /**
      * Constructor
-     * @param stage 
      */
-    public View(Stage stage) {
-        this.setStage(stage);
+    public View() {
         this.setContainer(new FlowPane());
         this.setElements(new ArrayList());
         this._buildTopMenu();
@@ -27,7 +25,6 @@ public class View {
         this._buildBottomMenu();
         this._buildContainer();
         this._setEvents();
-        this._render();
     }
     
     /**
@@ -176,7 +173,7 @@ public class View {
     /**
      * Renders the final view.
      */
-    private void _render() {
+    public void render() {
         Scene scene = new Scene(this.getContainer(), 1000, 820);
         
         this.getStage().setScene(scene);
