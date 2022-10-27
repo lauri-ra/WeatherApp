@@ -16,7 +16,7 @@ public class ControllerPlaceholder {
         view.OpenView();
     }
     
-    public void TestController(){        
+    public void TestController(){
         
         String newMessage = "";
         for (String dataSourceName: model.GetDataSourceNames() ) {
@@ -25,7 +25,7 @@ public class ControllerPlaceholder {
                 newMessage += variable.getName() + ", " + variable.getUnit() + "\n";
             }
         }
-        for (DataPoint dataPoint : model.GetVariableData("FMI", 
+        for (DataPoint dataPoint : model.GetVariableData("DigiTrafficTest",
                 new Variable("a","b"), "coordinates", 
                 LocalDate.MAX, LocalDate.MAX)) {
             newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
