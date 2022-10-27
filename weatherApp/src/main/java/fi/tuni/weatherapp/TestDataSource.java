@@ -1,6 +1,7 @@
 package fi.tuni.weatherapp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +35,7 @@ public class TestDataSource implements IDataSource {
         
         //Dummy data for interface testing
         ArrayList<DataPoint> data = new ArrayList<>();
-        data.add(new DataPoint(LocalDate.parse("2016-08-16"), 15));
-        data.add(new DataPoint(LocalDate.parse("2017-08-16"), 20));
+        data.add(new DataPoint(LocalDateTime.parse("2016-08-16"), 15));
         
         return data;
     }

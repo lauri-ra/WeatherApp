@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -128,10 +129,20 @@ public class FMIDataSource implements IDataSource {
         }
         
         for (Map.Entry<String, ArrayList<Double>> pair : queriedData.entrySet()) {
-            System.out.println(pair.getKey());
+            Double sum = 0.0;
             for (Double value : pair.getValue()) {
-                System.out.println(value);
+                sum += value;
             }
+            Double avgValue = sum / pair.getValue().size();
+            
+            String timeString = pair.getKey().substring(0, pair.getKey().length() - 1);
+            
+            data.add(new DataPoint(LocalDateTime.parse(timeString), avgValue));
+        }
+        
+        for (DataPoint point : data) {
+            System.out.println(point.getDate());
+            System.out.println(point.getValue());
             System.out.println();
         }
         
