@@ -14,7 +14,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -43,7 +47,7 @@ public class FMIDataSource implements IDataSource {
         variables.add(new Variable("TestVariable2", "TestUnit2"));
     }
     
-    private void QueryData() {
+    private Document QueryData() throws MalformedURLException, IOException, JDOMException {
         System.out.println("Stuff1");
         String baseUrl = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0";
         String queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
@@ -58,39 +62,80 @@ public class FMIDataSource implements IDataSource {
         String url =  baseUrl + queryType + parameters + coordinates + timestep + startTime + endTime;
         
 
-        try {
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            int responseCode = con.getResponseCode();
-            System.out.println("Response Code : " + responseCode);
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        int responseCode = con.getResponseCode();
+        System.out.println("Response Code : " + responseCode);
             
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(con.getInputStream()));
+        StringBuilder response;
+        try (BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()))) {
             String inputLine;
-            StringBuilder response = new StringBuilder();
+            response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
-            in.close();
-            
-            SAXBuilder builder = new SAXBuilder();
-            InputStream stream = new ByteArrayInputStream(
-                    response.toString().getBytes("UTF-8"));
-            
-            
-            Document doc = builder.build(stream);
-            XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-            xout.output(doc, System.out);
-            System.out.println(doc.toString());
-            Element rootNode = doc.getRootElement();
-            System.out.println(rootNode);
-            
-            
-        } catch (MalformedURLException ex) {
-        } catch (IOException | JDOMException ex) {
         }
+            
+        SAXBuilder builder = new SAXBuilder();
+        InputStream stream = new ByteArrayInputStream(
+                response.toString().getBytes("UTF-8"));
+            
+            
+        Document doc = builder.build(stream);
+        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        //xout.output(doc, System.out);
         
         System.out.println("Stuff2");
+        
+        return doc;
+    }
+    
+    private ArrayList ProcessXml(Document doc) throws IOException {
+        ArrayList<DataPoint> data = new ArrayList<>();
+        
+        HashMap<String, ArrayList<Double>> queriedData = new HashMap<>();
+        
+        Element rootNode = doc.getRootElement();
+        List<Element> records = rootNode.getChildren();
+        
+        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        for (Element record : records) {
+            record = record.getChildren().get(0);
+            //xout.output(record, System.out);
+            String time = "";
+            Double value = 0.0;
+            for (Element child : record.getChildren()) {
+                //System.out.println(child.getName());
+                if ("Time".equals(child.getName())) {
+                    //System.out.println(child.getValue());
+                    time = child.getValue();
+                } else if ("ParameterValue".equals(child.getName())) {
+                    //System.out.println(child.getValue());
+                    value = Double.valueOf(child.getValue());
+                }
+                
+            }
+            if (!queriedData.containsKey(time)) {
+                queriedData.put(time, new ArrayList<>());
+                
+            }
+            queriedData.get(time).add(value);
+            
+            //System.out.println();
+            //System.out.println("Number of children: " +record.getChildren().size());
+            //System.out.println();
+        }
+        
+        for (Map.Entry<String, ArrayList<Double>> pair : queriedData.entrySet()) {
+            System.out.println(pair.getKey());
+            for (Double value : pair.getValue()) {
+                System.out.println(value);
+            }
+            System.out.println();
+        }
+        
+        return data;
     }
     
     @Override
@@ -106,7 +151,15 @@ public class FMIDataSource implements IDataSource {
     @Override
     public List<DataPoint> GetData(Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
-        QueryData();
+        try {
+            Document doc = QueryData();
+             ArrayList<DataPoint> data = ProcessXml(doc);
+             return data;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JDOMException ex) {
+            ex.printStackTrace();
+        }
         return new ArrayList<>();
     }
     
