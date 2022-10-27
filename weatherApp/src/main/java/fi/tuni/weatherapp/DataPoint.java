@@ -1,12 +1,12 @@
 package fi.tuni.weatherapp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class DataPoint {
-    private final LocalDate date;
+    private final LocalDateTime date;
     private final double value;
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return date;
     }
 
@@ -14,7 +14,7 @@ public class DataPoint {
         return value;
     }
 
-    public DataPoint(LocalDate date, double value) {
+    public DataPoint(LocalDateTime date, double value) {
         this.date = date;
         this.value = value;
     }

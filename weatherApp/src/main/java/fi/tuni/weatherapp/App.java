@@ -20,6 +20,7 @@ public class App extends Application {
         model = new ModelMain();
         
         //model.AddDataSource(new TestDataSource());
+        model.AddDataSource(new FMIDataSource());
         model.AddDataSource(new DigiTrafficTest());
         
         controller = new ControllerPlaceholder(view, model);
