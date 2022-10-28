@@ -224,6 +224,17 @@ public final class BottomMenu extends Element {
                      + "-fx-background-color: #65BBCF; "
                      + "-fx-background-radius: 5px;");        
     }
+
+    /**
+     * Populates combo box with data.
+     * @param options
+     * @param comboBox 
+     */
+    public void populateComboBox(ArrayList<String> options, ComboBox comboBox) {
+        for (String option : options) {
+            comboBox.getItems().add(option);
+        }
+    }
     
     /**
      * Builds combo box.
@@ -231,7 +242,7 @@ public final class BottomMenu extends Element {
      * @param promptText
      * @return comboBox
      */
-    private ComboBox _buildComboBox(ArrayList<String> options) {
+    private ComboBox _buildComboBox() {
         ComboBox comboBox = new ComboBox();
         
         comboBox.setStyle(
@@ -240,10 +251,6 @@ public final class BottomMenu extends Element {
         );
         comboBox.setMinSize(200, 30);
         comboBox.setMaxSize(200, 30);
-        
-        for (String option : options) {
-            comboBox.getItems().add(option);
-        }
 
         return comboBox;
     }
@@ -340,12 +347,28 @@ public final class BottomMenu extends Element {
         charts.add("Scatter chart");
         // Code above is for demonstration purpose only.
         
-        this.setLeftOptionComboBox(this._buildComboBox(options));
-        this.setLeftChartTypeComboBox(this._buildComboBox(charts));
+        this.setLeftOptionComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(options, this.getLeftOptionComboBox());
+        // Code above is for demonstration purpose only.
+        
+        this.setLeftChartTypeComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(charts, this.getLeftChartTypeComboBox());
         this.getLeftChartTypeComboBox().getSelectionModel().selectFirst();
-        this.setRightOptionComboBox(this._buildComboBox(options));
-        this.setRightChartTypeComboBox(this._buildComboBox(charts));
+        // Code above is for demonstration purpose only.
+        
+        this.setRightOptionComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(options, this.getRightOptionComboBox());
+        // Code above is for demonstration purpose only.
+        
+        this.setRightChartTypeComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(charts, this.getRightChartTypeComboBox());
         this.getRightChartTypeComboBox().getSelectionModel().selectFirst();
+        // Code above is for demonstration purpose only.
+        
         this._buildSaveLoadContainer();
         
         // Column | row | column span | row span

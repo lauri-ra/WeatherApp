@@ -231,6 +231,17 @@ public final class TopMenu extends Element {
     }
     
     /**
+     * Populates combo box with data.
+     * @param options
+     * @param comboBox 
+     */
+    public void populateComboBox(ArrayList<String> options, ComboBox comboBox) {
+        for (String option : options) {
+            comboBox.getItems().add(option);
+        }
+    }
+    
+    /**
      * Builds text field.
      * @return textField
      */
@@ -272,7 +283,7 @@ public final class TopMenu extends Element {
      * @param promptText
      * @return comboBox
      */
-    private ComboBox _buildComboBox(ArrayList<String> options, String promptText) {
+    private ComboBox _buildComboBox(String promptText) {
         ComboBox comboBox = new ComboBox();
         
         comboBox.setStyle(
@@ -284,9 +295,6 @@ public final class TopMenu extends Element {
         comboBox.setMaxSize(130, 30);
         comboBox.setPromptText(promptText);
         
-        for (String option : options) {
-            comboBox.getItems().add(option);
-        }
         return comboBox;
     }
     
@@ -320,18 +328,21 @@ public final class TopMenu extends Element {
         var forecastLabel = new Label("FORECAST");
         forecastLabel.setFont(this.getFont());
         
-        // ArrayList created below is just for demonstration. This info would
-        // normally come from elsewhere (controller?).
+        // Code below is for demonstration purpose only.
         ArrayList<String> options = new ArrayList();
         options.add("2 hours");
         options.add("4 hours");
         options.add("6 hours");
         options.add("12 hours");
+        // Code above is for demonstration purpose only.
         
         this.setEndDateContainer(this._buildDatePickerContainer());
         this.setEndDatePicker(this._buildDatePicker());
         this.getEndDateContainer().getChildren().add(this.getEndDatePicker());
-        this.setForecastComboBox(this._buildComboBox(options, "Time"));
+        this.setForecastComboBox(this._buildComboBox("Time"));
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(options, this.getForecastComboBox());
+        // Code above is for demonstration purpose only.
         
         // Column | row | column span | row span
         container.add(endDateLabel,             0, 0, 1, 1);
