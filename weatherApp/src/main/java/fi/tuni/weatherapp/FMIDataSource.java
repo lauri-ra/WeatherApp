@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package fi.tuni.weatherapp;
 
 import java.io.BufferedReader;
@@ -13,10 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -137,12 +131,12 @@ public class FMIDataSource implements IDataSource {
             
             String timeString = pair.getKey().substring(0, pair.getKey().length() - 1);
             
-            data.add(new DataPoint(LocalDateTime.parse(timeString), avgValue));
+            data.add(new DataPoint(timeString, avgValue));
         }
         
         for (DataPoint point : data) {
-            System.out.println(point.getDate());
-            System.out.println(point.getValue());
+            System.out.println(point.getX());
+            System.out.println(point.getY());
             System.out.println();
         }
         

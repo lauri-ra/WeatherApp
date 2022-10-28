@@ -28,9 +28,9 @@ public class Controller {
         for (DataPoint dataPoint : model.GetVariableData("DigiTrafficTest",
                 new Variable("a","b"), "coordinates", 
                 LocalDate.MAX, LocalDate.MAX)) {
-            newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
+            newMessage += dataPoint.getX() + ", " + dataPoint.getY() + "\n";
         }
-        
+        System.out.println(newMessage);
         //view.UpdateMessage(newMessage);
     }
 
