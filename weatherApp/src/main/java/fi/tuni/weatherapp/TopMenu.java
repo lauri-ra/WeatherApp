@@ -211,38 +211,6 @@ public final class TopMenu extends Element {
     }
     
     /**
-     * Deactivates text field.
-     * @param textField 
-     */
-    public void deactivateTextField(TextField textField) {
-        textField.setEditable(false);
-    }
-    
-    /**
-     * Activates text field.
-     * @param textField 
-     */
-    public void activateTextField(TextField textField) {
-        textField.setEditable(true);
-    }
-    
-    /**
-     * Deactivates combo box.
-     * @param comboBox 
-     */
-    public void deactivateComboBox(ComboBox comboBox) {
-        comboBox.setEditable(false);
-    }
-    
-    /**
-     * Activates combo box.
-     * @param comboBox 
-     */
-    public void activateComboBox(ComboBox comboBox) {
-        comboBox.setEditable(true);
-    }
-    
-    /**
      * Changes color of button to default.
      * @param button
      */

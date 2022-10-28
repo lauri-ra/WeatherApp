@@ -84,16 +84,6 @@ public final class BottomMenu extends Element {
     }
     
     /**
-     * Populates left option combo box with data.
-     * @param options 
-     */
-    public void populateLeftOptionComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getLeftOptionComboBox().getItems().add(option);
-        }
-    }
-    
-    /**
      * Returns left chart type combo box.
      * @return _leftChartType;
      */
@@ -107,16 +97,6 @@ public final class BottomMenu extends Element {
      */
     public void setLeftChartTypeComboBox(ComboBox comboBox) {
         this._leftChartType = comboBox;
-    }
-    
-    /**
-     * Populates left chart type combo box with data.
-     * @param options 
-     */
-    public void populateLeftChartTypeComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getLeftChartTypeComboBox().getItems().add(option);
-        }
     }
     
     /**
@@ -134,16 +114,6 @@ public final class BottomMenu extends Element {
     public void setRightOptionComboBox(ComboBox comboBox) {
         this._rightOption = comboBox;
     }
-    
-    /**
-     * Populates right option combo box with data.
-     * @param options
-     */
-    public void populateRightOptionComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getRightOptionComboBox().getItems().add(option);
-        }
-    }
 
     /**
      * Returns right chart type combo box.
@@ -159,16 +129,6 @@ public final class BottomMenu extends Element {
      */
     public void setRightChartTypeComboBox(ComboBox comboBox) {
         this._rightChartType = comboBox;
-    }
-    
-    /**
-     * Populates right chart type combo box with data.
-     * @param options 
-     */
-    public void populateRightChartTypeComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getRightChartTypeComboBox().getItems().add(option);
-        }
     }
     
     /**
@@ -243,22 +203,6 @@ public final class BottomMenu extends Element {
         Font font = Font.font("Liberation Sans", FontWeight.BOLD, 
                 FontPosture.REGULAR, 16);
         return font;
-    }
-
-    /**
-     * Deactivates combo box.
-     * @param comboBox 
-     */
-    public void deactivateComboBox(ComboBox comboBox) {
-        comboBox.setEditable(false);
-    }
-    
-    /**
-     * Activates combo box.
-     * @param comboBox 
-     */
-    public void activateComboBox(ComboBox comboBox) {
-        comboBox.setEditable(true);
     }
     
     /**

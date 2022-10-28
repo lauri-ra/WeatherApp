@@ -31,13 +31,17 @@ public class Element {
     }
     
     /**
-     * Returns the element's nodes.
+     * Returns element nodes.
      * @return _nodes
      */
     public ArrayList<Node> getNodes() {
         return this._nodes;
     }
     
+    /**
+     * Sets nodes.
+     * @param nodes 
+     */
     public void setNodes(ArrayList<Node> nodes) {
         this._nodes = nodes;
     }
