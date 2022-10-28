@@ -9,6 +9,10 @@ public interface EventListener {
     void handleReset();
     void handleLeftChart();
     void handleRightChart();
+    void handleLeftOption();
+    void handleLeftChartType();
+    void handleRightOption();
+    void handleRightChartType();
     void handleSaveData();
     void handleLoadData();
     void handleSaveSettings();

@@ -63,7 +63,7 @@ public class Controller implements EventListener {
         var leftOption = view.getBottomMenu().getLeftOptionComboBox().getValue();
         var rightOption = view.getBottomMenu().getRightOptionComboBox().getValue();
         
-        // Testing different things...
+        // Testing different messages...
         if (forecast == null) {
             System.out.println("Forecast was not selected!");
         }
@@ -100,6 +100,26 @@ public class Controller implements EventListener {
     public void handleRightChart() {
         
     }
+    
+    @Override
+    public void handleLeftOption() {
+        
+    }
+
+    @Override
+    public void handleLeftChartType() {
+
+    }
+
+    @Override
+    public void handleRightOption() {
+
+    }
+
+    @Override
+    public void handleRightChartType() {
+
+    }   
 
     @Override
     public void handleSaveData() {

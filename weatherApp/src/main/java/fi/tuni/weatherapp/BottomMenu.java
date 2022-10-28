@@ -411,6 +411,43 @@ public final class BottomMenu extends Element {
     }
     
     /**
+     * Sets left option click event.
+     */
+    private void _setLeftOptionClickEvent() {
+        this.getLeftOptionComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleLeftOption();
+        });        
+    }
+    
+    /**
+     * Sets left chart type click event.
+     */
+    private void _setLeftChartTypeClickEvent() {
+        this.getLeftChartTypeComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleLeftChartType();
+        });        
+    }
+    
+    /**
+     * Sets right option click event.
+     */
+    private void _setRightOptionClickEvent() {
+        this.getRightOptionComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleRightOption();
+        });        
+    }
+        
+    
+    /**
+     * Sets right chart type click event.
+     */
+    private void _setRightChartTypeClickEvent() {
+        this.getRightChartTypeComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleRightChartType();
+        });        
+    }
+    
+    /**
      * Sets save data button click event.
      */
     private void _setSaveDataButtonClickEvent() {
