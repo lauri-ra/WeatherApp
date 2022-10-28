@@ -60,6 +60,8 @@ public class Controller implements EventListener {
         var startDate = view.getTopMenu().getStartDatePicker().getValue();
         var endDate = view.getTopMenu().getEndDatePicker().getValue();
         var forecast = view.getTopMenu().getForecastComboBox().getValue();
+        var leftOption = view.getBottomMenu().getLeftOptionComboBox().getValue();
+        var rightOption = view.getBottomMenu().getRightOptionComboBox().getValue();
         
         // Testing different things...
         if (forecast == null) {
@@ -73,8 +75,7 @@ public class Controller implements EventListener {
             System.out.println("Start date cannot be after end date!");
         }
         
-        if (view.getBottomMenu().getLeftOptionComboBox().getValue() == null
-                && view.getBottomMenu().getRightOptionComboBox().getValue() == null) {
+        if (leftOption == null && rightOption == null) {
             System.out.println("Choose at least one chart!");
         }
     }

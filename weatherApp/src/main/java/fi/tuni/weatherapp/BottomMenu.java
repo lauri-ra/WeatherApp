@@ -412,7 +412,6 @@ public final class BottomMenu extends Element {
     
     /**
      * Sets save data button click event.
-     * @param button 
      */
     private void _setSaveDataButtonClickEvent() {
         this.getSaveDataButton().setOnAction(event -> {
@@ -422,7 +421,6 @@ public final class BottomMenu extends Element {
     
     /**
      * Sets load data button click event.
-     * @param button 
      */
     private void _setLoadDataButtonClickEvent() {
         this.getLoadDataButton().setOnAction(event -> {
@@ -432,7 +430,6 @@ public final class BottomMenu extends Element {
     
     /**
      * Sets load data button click event.
-     * @param button 
      */
     private void _setSaveSettingsButtonClickEvent() {
         this.getSaveSettingsButton().setOnAction(event -> {
@@ -442,7 +439,6 @@ public final class BottomMenu extends Element {
     
     /**
      * Sets load data button click event.
-     * @param button 
      */
     private void _setLoadSettingsButtonClickEvent() {
         this.getLoadSettingsButton().setOnAction(event -> {

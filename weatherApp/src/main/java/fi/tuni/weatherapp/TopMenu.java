@@ -432,13 +432,19 @@ public final class TopMenu extends Element {
         });        
     }
     
+    /**
+     * Sets forecast click event.
+     */
     private void _setForecastClickEvent() {
         this.getForecastComboBox().setOnMouseClicked(event -> {
             this.getEndDatePicker().setDisable(true);
         });        
     }
     
-     private void _setEndDateClickEvent() {
+    /**
+     * Sets end date click event.
+     */
+    private void _setEndDateClickEvent() {
         this.getEndDatePicker().setOnMouseClicked(event -> {
             this.getForecastComboBox().setDisable(true);
         });   
@@ -449,7 +455,6 @@ public final class TopMenu extends Element {
  
     /**
      * Sets apply button click event.
-     * @param button 
      */
     private void _setApplyButtonClickEvent() {
         this.getApplyButton().setOnAction(event -> {
@@ -459,7 +464,6 @@ public final class TopMenu extends Element {
     
     /**
      * Sets reset button click event.
-     * @param button 
      */
     private void _setResetButtonClickEvent() {
         this.getResetButton().setOnAction(event -> {
