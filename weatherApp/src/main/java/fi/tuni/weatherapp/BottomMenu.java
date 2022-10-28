@@ -13,7 +13,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 public final class BottomMenu extends Element {
-    private EventListener _listener;
     private GridPane _innerContainer;
     private GridPane _saveLoadContainer;
     private ComboBox _leftOption;
@@ -34,22 +33,6 @@ public final class BottomMenu extends Element {
         this.setInnerContainer(new GridPane());
         this._buildInnerContainer();
         this._setButtonEvents();
-    }
-    
-    /**
-     * Returns event listener.
-     * @return _listener
-     */
-    public EventListener getListener() {
-        return this._listener;
-    }
-    
-    /**
-     * Sets event listener.
-     * @param listener 
-     */
-    public void setListener(EventListener listener) {
-        this._listener = listener;
     }
     
     /**

@@ -18,7 +18,6 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 public final class TopMenu extends Element {
-    private EventListener _listener;
     private GridPane _innerContainer;
     private GridPane _choiceContainer;
     private TextField _coordinates;
@@ -39,22 +38,6 @@ public final class TopMenu extends Element {
         this.setInnerContainer(new GridPane());
         this._buildInnerContainer();
         this._setButtonEvents();
-    }
-
-    /**
-     * Returns event listener.
-     * @return 
-     */
-    public EventListener getListener() {
-        return this._listener;
-    }
-    
-    /**
-     * Sets event listener.
-     * @param listener 
-     */
-    public void setListener(EventListener listener) {
-        this._listener = listener;
     }
     
     /**
