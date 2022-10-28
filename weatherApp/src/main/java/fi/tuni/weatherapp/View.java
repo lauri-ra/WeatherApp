@@ -6,7 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
-public class View {
+public final class View {
     private Stage _stage;
     private FlowPane _container;
     private ArrayList<Element> _elements;
@@ -24,7 +24,6 @@ public class View {
         this._buildGraph();
         this._buildBottomMenu();
         this._buildContainer();
-        this._setEvents();
     }
     
     /**
@@ -161,13 +160,6 @@ public class View {
                 getContainer().getChildren().add(node);
             }
         }       
-    }
-    
-    /**
-     * Sets events.
-     */
-    private void _setEvents() {
-        
     }
 
     /**

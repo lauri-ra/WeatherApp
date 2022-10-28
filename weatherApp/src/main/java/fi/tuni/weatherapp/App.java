@@ -27,7 +27,10 @@ public class App extends Application {
     
     @Override
     public void start(Stage stage) {
+        view.getTopMenu().setListener(controller);
+        view.getBottomMenu().setListener(controller);
         view.setStage(stage);
+
         controller.Begin();
         controller.TestController();
     }

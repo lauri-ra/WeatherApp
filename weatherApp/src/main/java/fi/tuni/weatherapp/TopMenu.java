@@ -11,18 +11,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.TilePane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-public class TopMenu extends Element {
+public final class TopMenu extends Element {
+    private EventListener _listener;
     private GridPane _innerContainer;
     private GridPane _choiceContainer;
     private TextField _coordinates;
-    private TilePane _startDate;
-    private TilePane _endDate;
+    private HBox _startDate;
+    private DatePicker _startDatePicker;
+    private HBox _endDate;
+    private DatePicker _endDatePicker;
     private ComboBox _forecast;
     private Button _apply;
     private Button _clear;
@@ -35,7 +38,23 @@ public class TopMenu extends Element {
     public TopMenu() {
         this.setInnerContainer(new GridPane());
         this._buildInnerContainer();
-        this._setButtonHoverEvents();
+        this._setButtonEvents();
+    }
+
+    /**
+     * Returns event listener.
+     * @return 
+     */
+    public EventListener getListener() {
+        return this._listener;
+    }
+    
+    /**
+     * Sets event listener.
+     * @param listener 
+     */
+    public void setListener(EventListener listener) {
+        this._listener = listener;
     }
     
     /**
@@ -90,32 +109,64 @@ public class TopMenu extends Element {
      * Returns start date tile pane.
      * @return _startDate
      */
-    public TilePane getStartDateTilePane() {
+    public HBox getStartDateContainer() {
         return this._startDate;
     }
     
     /**
      * Sets start date tile pane.
-     * @param tilePane
+     * @param container
      */
-    public void setStartDateTilePane(TilePane tilePane) {
-        this._startDate = tilePane;
+    public void setStartDateContainer(HBox container) {
+        this._startDate = container;
+    }
+    
+    /**
+     * Returns start date picker.
+     * @return _startDatePicker
+     */
+    public DatePicker getStartDatePicker() {
+        return this._startDatePicker;
+    }
+    
+    /**
+     * Sets start date picker.
+     * @param datePicker 
+     */
+    public void setStartDatePicker(DatePicker datePicker) {
+        this._startDatePicker = datePicker;
     }
     
     /**
      * Returns end date tile pane.
      * @return  _endDate
      */
-    public TilePane getEndDateTilePane() {
+    public HBox getEndDateContainer() {
         return this._endDate;
     }
     
     /**
      * Sets end date tile pane.
-     * @param tilePane
+     * @param container
      */
-    public void setEndDateTilePane(TilePane tilePane) {
-        this._endDate = tilePane;
+    public void setEndDateContainer(HBox container) {
+        this._endDate = container;
+    }
+    
+    /**
+     * Returns end date picker.
+     * @return _endDatePicker
+     */
+    public DatePicker getEndDatePicker() {
+        return this._endDatePicker;
+    }
+    
+    /**
+     * Sets end date picker.
+     * @param datePicker 
+     */
+    public void setEndDatePicker(DatePicker datePicker) {
+        this._endDatePicker = datePicker;
     }
     
     /**
@@ -241,18 +292,25 @@ public class TopMenu extends Element {
     
     /**
      * Builds date picker.
-     * @return 
+     * @return container
      */
-    private TilePane _buildDatePicker() {
-        TilePane tilePane = new TilePane();
-        tilePane.setMinSize(170, 30);
-        tilePane.setMaxSize(170, 30);
+    private HBox _buildDatePickerContainer() {
+        HBox container = new HBox();
+        container.setMinSize(170, 30);
+        container.setMaxSize(170, 30);
         
+        return container;
+    }
+    
+    /**
+     * Builds date picker.
+     * @return datePicker
+     */
+    private DatePicker _buildDatePicker() {
         LocalDate date = LocalDate.now();
         DatePicker datePicker = new DatePicker(date);
-        tilePane.getChildren().add(datePicker);
         
-        return tilePane;
+        return datePicker;
     }
     
     /**
@@ -317,13 +375,15 @@ public class TopMenu extends Element {
         options.add("6 hours");
         options.add("12 hours");
         
-        this.setEndDateTilePane(this._buildDatePicker());
+        this.setEndDateContainer(this._buildDatePickerContainer());
+        this.setEndDatePicker(this._buildDatePicker());
+        this.getEndDateContainer().getChildren().add(this.getEndDatePicker());
         this.setForecastComboBox(this._buildComboBox(options, "Time"));
         
         // Column | row | column span | row span
         container.add(endDateLabel,             0, 0, 1, 1);
         container.add(forecastLabel,            2, 0, 1, 1);
-        container.add(getEndDateTilePane(),     0, 1, 1, 1);
+        container.add(getEndDateContainer(),     0, 1, 1, 1);
         container.add(orLabel,                  1, 1, 1, 1);
         container.add(getForecastComboBox(),    2, 1, 1, 1);
         
@@ -360,7 +420,9 @@ public class TopMenu extends Element {
         startDateLabel.setFont(this.getFont());
         
         this.setCoordinatesTextField(this._buildTextField());
-        this.setStartDateTilePane(this._buildDatePicker());
+        this.setStartDateContainer(this._buildDatePickerContainer());
+        this.setStartDatePicker(this._buildDatePicker());
+        this.getStartDateContainer().getChildren().add(this.getStartDatePicker());
         this._buildChoiceContainer();
         this.setApplyButton(this._buildButton("APPLY"));
         this.setClearButton(this._buildButton("CLEAR"));
@@ -372,7 +434,7 @@ public class TopMenu extends Element {
         getInnerContainer().add(getChoiceContainer(),       2, 1, 1, 2);
         getInnerContainer().add(getApplyButton(),           3, 1, 1, 1);
         getInnerContainer().add(getCoordinatesTextField(),  0, 2, 1, 1);
-        getInnerContainer().add(getStartDateTilePane(),     1, 2, 1, 1);
+        getInnerContainer().add(getStartDateContainer(),     1, 2, 1, 1);
         getInnerContainer().add(getClearButton(),           3, 2, 1, 1);
         
         ColumnConstraints col1 = new ColumnConstraints();
@@ -393,19 +455,50 @@ public class TopMenu extends Element {
         this.getNodes().add(getInnerContainer());
     }
     
-    private void _setButtonHoverEvents() {
-        this.getApplyButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getApplyButton());
+    /**
+     * Sets button hover event.
+     * @param button 
+     */
+    private void _setButtonHoverEvent(Button button) {
+        button.setOnMouseEntered(event -> {               
+            this.setButtonHoverStyle(button);
         });
-        this.getApplyButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getApplyButton());
+        button.setOnMouseExited(event -> {
+            this.setButtonDefaultStyle(button);
+        });        
+    }
+    
+    /**
+     * Sets apply button click event.
+     * @param button 
+     */
+    private void _setApplyButtonClickEvent(Button button) {
+        button.setOnAction(event -> {
+            this.getListener().handleApply("handled!");
         });
-        this.getClearButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getClearButton());
+    }
+    
+    /**
+     * Sets clear button click event.
+     * @param button 
+     */
+    private void _setClearButtonClickEvent(Button button) {
+        button.setOnAction(event -> {
+            this.getCoordinatesTextField().clear();
+            this.getStartDatePicker().setValue(LocalDate.now());
+            this.getEndDatePicker().setValue(LocalDate.now());
+            this.getForecastComboBox().setValue(null);
         });
-        this.getClearButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getClearButton());
-        });
+    }
+    
+    /**
+     * Sets all button events.
+     */
+    private void _setButtonEvents() {
+        this._setButtonHoverEvent(this.getApplyButton());
+        this._setButtonHoverEvent(this.getClearButton());
         
+        this._setApplyButtonClickEvent(this.getApplyButton());
+        this._setClearButtonClickEvent(this.getClearButton());
     }
 }

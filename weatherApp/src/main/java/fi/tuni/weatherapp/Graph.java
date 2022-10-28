@@ -12,7 +12,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 import javafx.scene.layout.GridPane;
 
-public class Graph extends Element {
+public final class Graph extends Element {
     private GridPane _innerContainer;
     private XYChart _leftChart;
     private XYChart _rightChart;
@@ -26,13 +26,13 @@ public class Graph extends Element {
         this._buildInnerContainer();
     }
     
-    enum ChartType {
+    public enum ChartType {
         LINE,
         BAR,
         SCATTER
     }
     
-    enum Side {
+    public enum Side {
         LEFT,
         RIGHT
     }
@@ -95,13 +95,54 @@ public class Graph extends Element {
     }
     
     /**
+     * Builds chart.
+     * @param side
+     * @param type
+     * @param label
+     * @param lowerBound
+     * @param upperBound
+     * @param tickUnit
+     * @param data 
+     */
+    public void buildChart(Side side, ChartType type, String label, 
+            double lowerBound, double upperBound, double tickUnit, 
+            ObservableList<XYChart.Series<String, Double>> data) {
+        CategoryAxis x = new CategoryAxis();
+        NumberAxis y = new NumberAxis(lowerBound, upperBound, tickUnit);
+        x.setLabel("Date");
+
+        XYChart chart;
+        
+        switch (type) {
+            case BAR:
+                chart = this._buildBarChart(label, x, y);
+                break;
+            case SCATTER:
+                chart = this._buildScatterChart(label, x, y);
+                break;
+            default:
+                chart = this._buildLineChart(label, x, y);
+                break;
+        }
+        
+        chart.setData(data);
+        
+        if (side == Side.LEFT) {
+            this.setLeftChart(chart);
+        }
+        else {
+            this.setRightChart(chart);
+        }
+    }
+    
+    /**
      * Builds line chart.
      * @param label
      * @param x
      * @param y
      * @return chart
      */
-    public LineChart buildLineChart(String label, CategoryAxis x, NumberAxis y) {
+    private LineChart _buildLineChart(String label, CategoryAxis x, NumberAxis y) {
         LineChart<String, Number> chart = new LineChart<>(x, y);
         chart.setTitle(label);
         this.setChartStyle(chart);
@@ -116,7 +157,7 @@ public class Graph extends Element {
      * @param y
      * @return chart
      */
-    public BarChart buildBarChart(String label, CategoryAxis x, NumberAxis y) {
+    private BarChart _buildBarChart(String label, CategoryAxis x, NumberAxis y) {
         BarChart<String, Number> chart = new BarChart<>(x, y);
         chart.setTitle(label);
         this.setChartStyle(chart);
@@ -131,7 +172,7 @@ public class Graph extends Element {
      * @param y
      * @return chart
      */
-    public ScatterChart buildScatterChart(String label, CategoryAxis x, NumberAxis y) {
+    private ScatterChart _buildScatterChart(String label, CategoryAxis x, NumberAxis y) {
         ScatterChart<String, Number> chart = new ScatterChart<>(x, y);
         chart.setTitle(label);
         this.setChartStyle(chart);
@@ -140,66 +181,14 @@ public class Graph extends Element {
     }
     
     /**
-     * Builds chart.
-     * @param type
-     * @param label
-     * @param lowerBound
-     * @param upperBound
-     * @param tickUnit
-     * @param data 
-     */
-    private void _buildChart(Side side, ChartType type, String label, 
-            double lowerBound, double upperBound, double tickUnit, 
-            ObservableList<XYChart.Series<String, Integer>> data) {
-        CategoryAxis x = new CategoryAxis();
-        NumberAxis y = new NumberAxis(lowerBound, upperBound, tickUnit);
-        x.setLabel("Date");
-
-        
-        switch (type) {
-            case BAR:
-                BarChart barChart = this.buildBarChart(label, x, y);
-                barChart.setData(data);
-                
-                if (side == Side.LEFT) {
-                    this.setLeftChart(barChart);
-                }
-                else {
-                    this.setRightChart(barChart);
-                }
-                break;
-            case SCATTER:
-                ScatterChart scatterChart = this.buildScatterChart(label, x, y);
-                scatterChart.setData(data);
-                if (side == Side.LEFT) {
-                    this.setLeftChart(scatterChart);
-                }
-                else {
-                    this.setRightChart(scatterChart);
-                }
-                break;
-            default:
-                LineChart lineChart = this.buildLineChart(label, x, y);
-                lineChart.setData(data);
-                if (side == Side.LEFT) {
-                    this.setLeftChart(lineChart);
-                }
-                else {
-                    this.setRightChart(lineChart);
-                }
-                break;
-        }
-    }
-    
-    /**
      * Initializes charts for first time use.
      */
     private void _initCharts() {
         // Code below is for demonstration purpose only.
-        ObservableList<XYChart.Series<String, Integer>> data = 
+        ObservableList<XYChart.Series<String, Double>> data = 
                 FXCollections.observableArrayList();
         
-        Series<String, Integer> values1 = new Series<>();
+        Series<String, Double> values1 = new Series<>();
         values1.getData().add(new XYChart.Data("2022-10-25", 8));
         values1.getData().add(new XYChart.Data("2022-10-26", 4));
         values1.getData().add(new XYChart.Data("2022-10-27", 3));
@@ -209,13 +198,13 @@ public class Graph extends Element {
         data.add(values1);
         // Code above is for demonstration purpose only.
         
-        this._buildChart(Side.LEFT, ChartType.LINE, "Temperature", 
+        this.buildChart(Side.LEFT, ChartType.LINE, "Temperature", 
         -15, 15, 1, data);
         
         // Code below is for demonstration purpose only.
         data.clear();
         
-        Series<String, Integer> values2 = new Series<>();
+        Series<String, Double> values2 = new Series<>();
         values2.getData().add(new XYChart.Data("2022-10-25", 0));
         values2.getData().add(new XYChart.Data("2022-10-26", 1));
         values2.getData().add(new XYChart.Data("2022-10-27", 3));
@@ -225,7 +214,7 @@ public class Graph extends Element {
         data.add(values2);
         // Code above is for demonstration purpose only.
         
-        this._buildChart(Side.RIGHT, ChartType.BAR, "Precipitation", 
+        this.buildChart(Side.RIGHT, ChartType.BAR, "Precipitation", 
                 0, 15, 1, data);
     }
     

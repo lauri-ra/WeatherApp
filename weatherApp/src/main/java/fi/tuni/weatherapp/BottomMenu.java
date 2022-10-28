@@ -12,7 +12,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-public class BottomMenu extends Element {
+public final class BottomMenu extends Element {
+    private EventListener _listener;
     private GridPane _innerContainer;
     private GridPane _saveLoadContainer;
     private ComboBox _leftOption;
@@ -32,7 +33,23 @@ public class BottomMenu extends Element {
     public BottomMenu() {
         this.setInnerContainer(new GridPane());
         this._buildInnerContainer();
-        this._setButtonHoverEvents();
+        this._setButtonEvents();
+    }
+    
+    /**
+     * Returns event listener.
+     * @return _listener
+     */
+    public EventListener getListener() {
+        return this._listener;
+    }
+    
+    /**
+     * Sets event listener.
+     * @param listener 
+     */
+    public void setListener(EventListener listener) {
+        this._listener = listener;
     }
     
     /**
@@ -431,25 +448,71 @@ public class BottomMenu extends Element {
         this.getNodes().add(getInnerContainer());
     }
     
-    private void _setButtonHoverEvents() {
-        this.getSaveDataButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getSaveDataButton());
+    /**
+     * Sets button hover event.
+     * @param button 
+     */
+    private void _setButtonHoverEvent(Button button) {
+        button.setOnMouseEntered(event -> {               
+            this.setButtonHoverStyle(button);
         });
-        this.getSaveDataButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getSaveDataButton());
-        });
-        this.getLoadDataButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getLoadDataButton());
-        });
-        this.getLoadDataButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getLoadDataButton());
-        });
-        this.getSaveSettingsButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getSaveSettingsButton());
-        });
-        this.getSaveSettingsButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getSaveSettingsButton());
-        });
+        button.setOnMouseExited(event -> {
+            this.setButtonDefaultStyle(button);
+        });        
+    }
+    
+    /**
+     * Sets save data button click event.
+     * @param button 
+     */
+    private void _setSaveDataButtonClickEvent(Button button) {
+        button.setOnAction(event -> {
+            this.getListener().handleSaveData("handled!");
+        });        
+    }
+    
+    /**
+     * Sets load data button click event.
+     * @param button 
+     */
+    private void _setLoadDataButtonClickEvent(Button button) {
+        button.setOnAction(event -> {
+            this.getListener().handleLoadData("handled!");
+        });        
+    }
+    
+    /**
+     * Sets load data button click event.
+     * @param button 
+     */
+    private void _setSaveSettingsButtonClickEvent(Button button) {
+        button.setOnAction(event -> {
+            this.getListener().handleSaveSettings("handled!");
+        });        
+    }
+    
+    /**
+     * Sets load data button click event.
+     * @param button 
+     */
+    private void _setLoadSettingsButtonClickEvent(Button button) {
+        button.setOnAction(event -> {
+            this.getListener().handleLoadSettings("handled!");
+        });        
+    }
+    
+    /**
+     * Sets all button events.
+     */
+    private void _setButtonEvents() {
+        this._setButtonHoverEvent(this.getSaveDataButton());
+        this._setButtonHoverEvent(this.getLoadDataButton());
+        this._setButtonHoverEvent(this.getSaveSettingsButton());
+        this._setButtonHoverEvent(this.getLoadSettingsButton());
         
+        this._setSaveDataButtonClickEvent(this.getSaveDataButton());
+        this._setLoadDataButtonClickEvent(this.getLoadDataButton());
+        this._setSaveSettingsButtonClickEvent(this.getSaveSettingsButton());
+        this._setLoadSettingsButtonClickEvent(this.getLoadSettingsButton());
     }
 }
