@@ -351,23 +351,27 @@ public final class BottomMenu extends Element {
         // Code below is for demonstration purpose only.
         this.populateComboBox(options, this.getLeftOptionComboBox());
         // Code above is for demonstration purpose only.
+        this.getLeftOptionComboBox().setDisable(true);
         
         this.setLeftChartTypeComboBox(this._buildComboBox());
         // Code below is for demonstration purpose only.
         this.populateComboBox(charts, this.getLeftChartTypeComboBox());
         this.getLeftChartTypeComboBox().getSelectionModel().selectFirst();
         // Code above is for demonstration purpose only.
+        this.getLeftChartTypeComboBox().setDisable(true);
         
         this.setRightOptionComboBox(this._buildComboBox());
         // Code below is for demonstration purpose only.
         this.populateComboBox(options, this.getRightOptionComboBox());
         // Code above is for demonstration purpose only.
+        this.getRightOptionComboBox().setDisable(true);
         
         this.setRightChartTypeComboBox(this._buildComboBox());
         // Code below is for demonstration purpose only.
         this.populateComboBox(charts, this.getRightChartTypeComboBox());
         this.getRightChartTypeComboBox().getSelectionModel().selectFirst();
         // Code above is for demonstration purpose only.
+        this.getRightChartTypeComboBox().setDisable(true);
         
         this._buildSaveLoadContainer();
         
@@ -492,6 +496,10 @@ public final class BottomMenu extends Element {
         this._setButtonHoverEvent(this.getSaveSettingsButton());
         this._setButtonHoverEvent(this.getLoadSettingsButton());
         
+        this._setLeftOptionClickEvent();
+        this._setLeftChartTypeClickEvent();
+        this._setRightOptionClickEvent();
+        this._setRightChartTypeClickEvent();
         this._setSaveDataButtonClickEvent();
         this._setLoadDataButtonClickEvent();
         this._setSaveSettingsButtonClickEvent();

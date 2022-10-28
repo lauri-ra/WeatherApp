@@ -78,6 +78,12 @@ public class Controller implements EventListener {
         if (leftOption == null && rightOption == null) {
             System.out.println("Choose at least one chart!");
         }
+        
+        // If all the chosen options are OK...
+        view.getBottomMenu().getLeftOptionComboBox().setDisable(false);
+        view.getBottomMenu().getLeftChartTypeComboBox().setDisable(false);
+        view.getBottomMenu().getRightOptionComboBox().setDisable(false);
+        view.getBottomMenu().getRightChartTypeComboBox().setDisable(false);
     }
 
     @Override
@@ -88,7 +94,15 @@ public class Controller implements EventListener {
         view.getTopMenu().getForecastComboBox().setValue(null);
         view.getTopMenu().getForecastComboBox().setDisable(false);
         view.getTopMenu().getEndDateContainer().setDisable(false);
-        view.getTopMenu().getEndDatePicker().setDisable(false);        
+        view.getTopMenu().getEndDatePicker().setDisable(false);
+        view.getBottomMenu().getLeftOptionComboBox().setValue(null);
+        view.getBottomMenu().getLeftOptionComboBox().setDisable(true);
+        view.getBottomMenu().getLeftChartTypeComboBox().getSelectionModel().selectFirst();
+        view.getBottomMenu().getLeftChartTypeComboBox().setDisable(true);
+        view.getBottomMenu().getRightOptionComboBox().setValue(null);
+        view.getBottomMenu().getRightOptionComboBox().setDisable(true);
+        view.getBottomMenu().getRightChartTypeComboBox().getSelectionModel().selectFirst();
+        view.getBottomMenu().getRightChartTypeComboBox().setDisable(true);
     }    
 
     @Override
