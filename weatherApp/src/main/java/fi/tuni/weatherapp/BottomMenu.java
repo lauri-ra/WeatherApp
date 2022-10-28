@@ -414,8 +414,8 @@ public final class BottomMenu extends Element {
      * Sets save data button click event.
      * @param button 
      */
-    private void _setSaveDataButtonClickEvent(Button button) {
-        button.setOnAction(event -> {
+    private void _setSaveDataButtonClickEvent() {
+        this.getSaveDataButton().setOnAction(event -> {
             this.getListener().handleSaveData();
         });        
     }
@@ -424,8 +424,8 @@ public final class BottomMenu extends Element {
      * Sets load data button click event.
      * @param button 
      */
-    private void _setLoadDataButtonClickEvent(Button button) {
-        button.setOnAction(event -> {
+    private void _setLoadDataButtonClickEvent() {
+        this.getLoadDataButton().setOnAction(event -> {
             this.getListener().handleLoadData();
         });        
     }
@@ -434,8 +434,8 @@ public final class BottomMenu extends Element {
      * Sets load data button click event.
      * @param button 
      */
-    private void _setSaveSettingsButtonClickEvent(Button button) {
-        button.setOnAction(event -> {
+    private void _setSaveSettingsButtonClickEvent() {
+        this.getSaveSettingsButton().setOnAction(event -> {
             this.getListener().handleSaveSettings();
         });        
     }
@@ -444,8 +444,8 @@ public final class BottomMenu extends Element {
      * Sets load data button click event.
      * @param button 
      */
-    private void _setLoadSettingsButtonClickEvent(Button button) {
-        button.setOnAction(event -> {
+    private void _setLoadSettingsButtonClickEvent() {
+        this.getLoadSettingsButton().setOnAction(event -> {
             this.getListener().handleLoadSettings();
         });        
     }
@@ -459,9 +459,9 @@ public final class BottomMenu extends Element {
         this._setButtonHoverEvent(this.getSaveSettingsButton());
         this._setButtonHoverEvent(this.getLoadSettingsButton());
         
-        this._setSaveDataButtonClickEvent(this.getSaveDataButton());
-        this._setLoadDataButtonClickEvent(this.getLoadDataButton());
-        this._setSaveSettingsButtonClickEvent(this.getSaveSettingsButton());
-        this._setLoadSettingsButtonClickEvent(this.getLoadSettingsButton());
+        this._setSaveDataButtonClickEvent();
+        this._setLoadDataButtonClickEvent();
+        this._setSaveSettingsButtonClickEvent();
+        this._setLoadSettingsButtonClickEvent();
     }
 }

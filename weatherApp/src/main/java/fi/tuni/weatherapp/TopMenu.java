@@ -432,17 +432,17 @@ public final class TopMenu extends Element {
         });        
     }
     
-    private void _setForecastClickEvent(ComboBox comboBox) {
-        comboBox.setOnMouseClicked(event -> {
+    private void _setForecastClickEvent() {
+        this.getForecastComboBox().setOnMouseClicked(event -> {
             this.getEndDatePicker().setDisable(true);
         });        
     }
     
-     private void _setEndDateClickEvent(DatePicker datePicker) {
-        datePicker.setOnMouseClicked(event -> {
+     private void _setEndDateClickEvent() {
+        this.getEndDatePicker().setOnMouseClicked(event -> {
             this.getForecastComboBox().setDisable(true);
         });   
-         datePicker.getEditor().setOnMouseClicked(event -> {
+        this.getEndDatePicker().getEditor().setOnMouseClicked(event -> {
             this.getForecastComboBox().setDisable(true);
         });
     }   
@@ -451,8 +451,8 @@ public final class TopMenu extends Element {
      * Sets apply button click event.
      * @param button 
      */
-    private void _setApplyButtonClickEvent(Button button) {
-        button.setOnAction(event -> {
+    private void _setApplyButtonClickEvent() {
+        this.getApplyButton().setOnAction(event -> {
             this.getListener().handleApply();
         });
     }
@@ -461,8 +461,8 @@ public final class TopMenu extends Element {
      * Sets reset button click event.
      * @param button 
      */
-    private void _setResetButtonClickEvent(Button button) {
-        button.setOnAction(event -> {
+    private void _setResetButtonClickEvent() {
+        this.getResetButton().setOnAction(event -> {
             this.getListener().handleReset();
         });
     }
@@ -474,9 +474,9 @@ public final class TopMenu extends Element {
         this._setButtonHoverEvent(this.getApplyButton());
         this._setButtonHoverEvent(this.getResetButton());
         
-        this._setApplyButtonClickEvent(this.getApplyButton());
-        this._setResetButtonClickEvent(this.getResetButton());
-        this._setForecastClickEvent(this.getForecastComboBox());
-        this._setEndDateClickEvent(this.getEndDatePicker());
+        this._setApplyButtonClickEvent();
+        this._setResetButtonClickEvent();
+        this._setForecastClickEvent();
+        this._setEndDateClickEvent();
     }
 }
