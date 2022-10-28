@@ -416,7 +416,7 @@ public final class BottomMenu extends Element {
      */
     private void _setSaveDataButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getListener().handleSaveData("handled!");
+            this.getListener().handleSaveData();
         });        
     }
     
@@ -426,7 +426,7 @@ public final class BottomMenu extends Element {
      */
     private void _setLoadDataButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getListener().handleLoadData("handled!");
+            this.getListener().handleLoadData();
         });        
     }
     
@@ -436,7 +436,7 @@ public final class BottomMenu extends Element {
      */
     private void _setSaveSettingsButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getListener().handleSaveSettings("handled!");
+            this.getListener().handleSaveSettings();
         });        
     }
     
@@ -446,7 +446,7 @@ public final class BottomMenu extends Element {
      */
     private void _setLoadSettingsButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getListener().handleLoadSettings("handled!");
+            this.getListener().handleLoadSettings();
         });        
     }
     

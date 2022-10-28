@@ -31,32 +31,36 @@ public class Controller implements EventListener {
             newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
         }
         
-        //view.UpdateMessage(newMessage);
+        // view.UpdateMessage(newMessage);
     }
 
     @Override
-    public void handleCoordinates(Object... args) {
+    public void handleCoordinates() {
         
     }
 
     @Override
-    public void handleStartDate(Object... args) {
+    public void handleStartDate() {
         
     }
 
     @Override
-    public void handleEndDate(Object... args) {        
+    public void handleEndDate() {        
         
     }
 
     @Override
-    public void handleForecast(Object... args) {
+    public void handleForecast() {
         
     }
     
     @Override
-    public void handleApply(String coordinates, LocalDate startDate, 
-            LocalDate endDate, Object forecast) {
+    public void handleApply() {
+        var coordinates = view.getTopMenu().getCoordinatesTextField().getText();
+        var startDate = view.getTopMenu().getStartDatePicker().getValue();
+        var endDate = view.getTopMenu().getEndDatePicker().getValue();
+        var forecast = view.getTopMenu().getForecastComboBox().getValue();
+        
         // Testing different things...
         if (forecast == null) {
             System.out.println("Forecast was not selected!");
@@ -76,37 +80,43 @@ public class Controller implements EventListener {
     }
 
     @Override
-    public void handleClear(Object... args) {
-        
+    public void handleReset() {
+        view.getTopMenu().getCoordinatesTextField().clear();
+        view.getTopMenu().getStartDatePicker().setValue(LocalDate.now());
+        view.getTopMenu().getEndDatePicker().setValue(LocalDate.now());
+        view.getTopMenu().getForecastComboBox().setValue(null);
+        view.getTopMenu().getForecastComboBox().setDisable(false);
+        view.getTopMenu().getEndDateContainer().setDisable(false);
+        view.getTopMenu().getEndDatePicker().setDisable(false);        
     }    
 
     @Override
-    public void handleLeftChart(Object... args) {
+    public void handleLeftChart() {
         
     }
 
     @Override
-    public void handleRightChart(Object... args) {
+    public void handleRightChart() {
         
     }
 
     @Override
-    public void handleSaveData(Object... args) {
-        System.out.println("Save data..." + args[0]);
+    public void handleSaveData() {
+        System.out.println("Save data handled!");
     }
 
     @Override
-    public void handleLoadData(Object... args) {
-        System.out.println("Load data..." + args[0]);
+    public void handleLoadData() {
+        System.out.println("Load data handled!");
     }
 
     @Override
-    public void handleSaveSettings(Object... args) {
-        System.out.println("Save settings..." + args[0]);
+    public void handleSaveSettings() {
+        System.out.println("Save settings handled!");
     }
 
     @Override
-    public void handleLoadSettings(Object... args) {
-        System.out.println("Load settings..." + args[0]);
+    public void handleLoadSettings() {
+        System.out.println("Load settings handled!");
     }
 }

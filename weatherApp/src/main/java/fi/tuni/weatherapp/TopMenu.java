@@ -453,11 +453,7 @@ public final class TopMenu extends Element {
      */
     private void _setApplyButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getListener().handleApply(
-                    this.getCoordinatesTextField().getText(),
-                    this.getStartDatePicker().getValue(),
-                    this.getEndDatePicker().getValue(),
-                    this.getForecastComboBox().getValue());
+            this.getListener().handleApply();
         });
     }
     
@@ -467,13 +463,7 @@ public final class TopMenu extends Element {
      */
     private void _setResetButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getCoordinatesTextField().clear();
-            this.getStartDatePicker().setValue(LocalDate.now());
-            this.getEndDatePicker().setValue(LocalDate.now());
-            this.getForecastComboBox().setValue(null);
-            this.getForecastComboBox().setDisable(false);
-            this.getEndDateContainer().setDisable(false);
-            this.getEndDatePicker().setDisable(false);
+            this.getListener().handleReset();
         });
     }
     
