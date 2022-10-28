@@ -1,11 +1,14 @@
 package fi.tuni.weatherapp;
 
+import java.time.LocalDate;
+
 public interface EventListener {
     void handleCoordinates(Object... args);
     void handleStartDate(Object... args);
     void handleEndDate(Object... args);
     void handleForecast(Object... args);
-    void handleApply(Object... args);
+    void handleApply(String coordinates, LocalDate startDate, 
+            LocalDate endDate, Object forecast);
     void handleClear(Object... args);
     void handleLeftChart(Object... args);
     void handleRightChart(Object... args);

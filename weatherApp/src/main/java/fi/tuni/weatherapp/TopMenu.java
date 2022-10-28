@@ -27,7 +27,7 @@ public final class TopMenu extends Element {
     private DatePicker _endDatePicker;
     private ComboBox _forecast;
     private Button _apply;
-    private Button _clear;
+    private Button _reset;
     
     private ArrayList<String> errorMessages;
     
@@ -185,19 +185,19 @@ public final class TopMenu extends Element {
     }
     
     /**
-     * Returns clear button.
-     * @return  _clear
+     * Returns reset button.
+     * @return  _reset
      */
-    public Button getClearButton() {
-        return this._clear;
+    public Button getResetButton() {
+        return this._reset;
     }
     
     /**
-     * Sets clear button.
+     * Sets reset button.
      * @param button 
      */
-    public void setClearButton(Button button) {
-        this._clear = button;
+    public void setResetButton(Button button) {
+        this._reset = button;
     }
     
     /**
@@ -292,6 +292,8 @@ public final class TopMenu extends Element {
     private DatePicker _buildDatePicker() {
         LocalDate date = LocalDate.now();
         DatePicker datePicker = new DatePicker(date);
+        datePicker.setMinSize(170, 30);
+        datePicker.setMaxSize(170, 30);
         
         return datePicker;
     }
@@ -366,7 +368,7 @@ public final class TopMenu extends Element {
         // Column | row | column span | row span
         container.add(endDateLabel,             0, 0, 1, 1);
         container.add(forecastLabel,            2, 0, 1, 1);
-        container.add(getEndDateContainer(),     0, 1, 1, 1);
+        container.add(getEndDateContainer(),    0, 1, 1, 1);
         container.add(orLabel,                  1, 1, 1, 1);
         container.add(getForecastComboBox(),    2, 1, 1, 1);
         
@@ -408,7 +410,7 @@ public final class TopMenu extends Element {
         this.getStartDateContainer().getChildren().add(this.getStartDatePicker());
         this._buildChoiceContainer();
         this.setApplyButton(this._buildButton("APPLY"));
-        this.setClearButton(this._buildButton("CLEAR"));
+        this.setResetButton(this._buildButton("RESET"));
         
         // Column | row | column span | row span
         getInnerContainer().add(titleLabel,                 0, 0, 4, 1);
@@ -418,7 +420,7 @@ public final class TopMenu extends Element {
         getInnerContainer().add(getApplyButton(),           3, 1, 1, 1);
         getInnerContainer().add(getCoordinatesTextField(),  0, 2, 1, 1);
         getInnerContainer().add(getStartDateContainer(),     1, 2, 1, 1);
-        getInnerContainer().add(getClearButton(),           3, 2, 1, 1);
+        getInnerContainer().add(getResetButton(),           3, 2, 1, 1);
         
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
@@ -428,7 +430,7 @@ public final class TopMenu extends Element {
         getInnerContainer().getColumnConstraints().addAll(col1, col2, col3, col4);
         
         getInnerContainer().setHalignment(getApplyButton(), HPos.RIGHT);
-        getInnerContainer().setHalignment(getClearButton(), HPos.RIGHT);
+        getInnerContainer().setHalignment(getResetButton(), HPos.RIGHT);
         
         getInnerContainer().setMinWidth(1000);
         getInnerContainer().setMaxWidth(1000);
@@ -451,26 +453,48 @@ public final class TopMenu extends Element {
         });        
     }
     
+    private void _setForecastClickEvent(ComboBox comboBox) {
+        comboBox.setOnMouseClicked(event -> {
+            this.getEndDatePicker().setDisable(true);
+        });        
+    }
+    
+     private void _setEndDateClickEvent(DatePicker datePicker) {
+        datePicker.setOnMouseClicked(event -> {
+            this.getForecastComboBox().setDisable(true);
+        });   
+         datePicker.getEditor().setOnMouseClicked(event -> {
+            this.getForecastComboBox().setDisable(true);
+        });
+    }   
+ 
     /**
      * Sets apply button click event.
      * @param button 
      */
     private void _setApplyButtonClickEvent(Button button) {
         button.setOnAction(event -> {
-            this.getListener().handleApply("handled!");
+            this.getListener().handleApply(
+                    this.getCoordinatesTextField().getText(),
+                    this.getStartDatePicker().getValue(),
+                    this.getEndDatePicker().getValue(),
+                    this.getForecastComboBox().getValue());
         });
     }
     
     /**
-     * Sets clear button click event.
+     * Sets reset button click event.
      * @param button 
      */
-    private void _setClearButtonClickEvent(Button button) {
+    private void _setResetButtonClickEvent(Button button) {
         button.setOnAction(event -> {
             this.getCoordinatesTextField().clear();
             this.getStartDatePicker().setValue(LocalDate.now());
             this.getEndDatePicker().setValue(LocalDate.now());
             this.getForecastComboBox().setValue(null);
+            this.getForecastComboBox().setDisable(false);
+            this.getEndDateContainer().setDisable(false);
+            this.getEndDatePicker().setDisable(false);
         });
     }
     
@@ -479,9 +503,11 @@ public final class TopMenu extends Element {
      */
     private void _setButtonEvents() {
         this._setButtonHoverEvent(this.getApplyButton());
-        this._setButtonHoverEvent(this.getClearButton());
+        this._setButtonHoverEvent(this.getResetButton());
         
         this._setApplyButtonClickEvent(this.getApplyButton());
-        this._setClearButtonClickEvent(this.getClearButton());
+        this._setResetButtonClickEvent(this.getResetButton());
+        this._setForecastClickEvent(this.getForecastComboBox());
+        this._setEndDateClickEvent(this.getEndDatePicker());
     }
 }

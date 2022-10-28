@@ -55,8 +55,24 @@ public class Controller implements EventListener {
     }
     
     @Override
-    public void handleApply(Object... args) {
-        System.out.println("Apply..." + args[0]);        
+    public void handleApply(String coordinates, LocalDate startDate, 
+            LocalDate endDate, Object forecast) {
+        // Testing different things...
+        if (forecast == null) {
+            System.out.println("Forecast was not selected!");
+        }
+        else {
+            System.out.println("Forecast was selected!");
+        }
+        
+        if (startDate.isAfter(endDate)) {
+            System.out.println("Start date cannot be after end date!");
+        }
+        
+        if (view.getBottomMenu().getLeftOptionComboBox().getValue() == null
+                && view.getBottomMenu().getRightOptionComboBox().getValue() == null) {
+            System.out.println("Choose at least one chart!");
+        }
     }
 
     @Override

@@ -287,7 +287,7 @@ public final class BottomMenu extends Element {
      * @param promptText
      * @return comboBox
      */
-    private ComboBox _buildComboBox(ArrayList<String> options, String... promptText) {
+    private ComboBox _buildComboBox(ArrayList<String> options) {
         ComboBox comboBox = new ComboBox();
         
         comboBox.setStyle(
@@ -297,13 +297,10 @@ public final class BottomMenu extends Element {
         comboBox.setMinSize(200, 30);
         comboBox.setMaxSize(200, 30);
         
-        if (promptText.length > 0) {
-            comboBox.setPromptText(promptText[0]);   
-        }
-        
         for (String option : options) {
             comboBox.getItems().add(option);
         }
+
         return comboBox;
     }
     
@@ -400,9 +397,11 @@ public final class BottomMenu extends Element {
         // Code above is for demonstration purpose only.
         
         this.setLeftOptionComboBox(this._buildComboBox(options));
-        this.setLeftChartTypeComboBox(this._buildComboBox(charts, "Line chart"));
+        this.setLeftChartTypeComboBox(this._buildComboBox(charts));
+        this.getLeftChartTypeComboBox().getSelectionModel().selectFirst();
         this.setRightOptionComboBox(this._buildComboBox(options));
-        this.setRightChartTypeComboBox(this._buildComboBox(charts, "Line chart"));
+        this.setRightChartTypeComboBox(this._buildComboBox(charts));
+        this.getRightChartTypeComboBox().getSelectionModel().selectFirst();
         this._buildSaveLoadContainer();
         
         // Column | row | column span | row span
