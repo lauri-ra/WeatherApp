@@ -8,6 +8,7 @@ import java.util.List;
 import java.net.URI;
 import java.net.http.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DigiTrafficTest implements IDataSource {
@@ -75,16 +76,26 @@ public class DigiTrafficTest implements IDataSource {
             ArrayList<String> results = new ArrayList<>();
 
             JSONObject forecast = roadConditions.getJSONObject(i);
+            JSONObject forecastCondition = forecast.getJSONObject("forecastConditionReason");
             String hour = forecast.getString("forecastName");
 
-            JSONObject forecastCondition = forecast.getJSONObject("forecastConditionReason");
-            String precipitation = forecastCondition.getString("precipitationCondition");
-            String road = forecastCondition.getString("roadCondition");
+            // Check and add precipitation
+            if(forecastCondition.has("precipitationCondition")) {
+                results.add(forecastCondition.getString("precipitationCondition"));
+            }
 
-            results.add(precipitation);
-            results.add(road);
+            // Check and add overall road condition
+            if(forecastCondition.has("roadCondition")) {
+                results.add(forecastCondition.getString("roadCondition"));
+            }
+
+            // Check and add road slipperiness
+            if(forecastCondition.has("winterSlipperiness")) {
+                results.add(forecastCondition.getString("winterSlipperiness"));
+            }
 
             data.put(hour, results);
+
         }
 
         return data;
