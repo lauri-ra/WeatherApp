@@ -12,7 +12,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
-public class BottomMenu extends Element {
+public final class BottomMenu extends Element {
     private GridPane _innerContainer;
     private GridPane _saveLoadContainer;
     private ComboBox _leftOption;
@@ -32,7 +32,7 @@ public class BottomMenu extends Element {
     public BottomMenu() {
         this.setInnerContainer(new GridPane());
         this._buildInnerContainer();
-        this._setButtonHoverEvents();
+        this._setButtonEvents();
     }
     
     /**
@@ -84,16 +84,6 @@ public class BottomMenu extends Element {
     }
     
     /**
-     * Populates left option combo box with data.
-     * @param options 
-     */
-    public void populateLeftOptionComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getLeftOptionComboBox().getItems().add(option);
-        }
-    }
-    
-    /**
      * Returns left chart type combo box.
      * @return _leftChartType;
      */
@@ -107,16 +97,6 @@ public class BottomMenu extends Element {
      */
     public void setLeftChartTypeComboBox(ComboBox comboBox) {
         this._leftChartType = comboBox;
-    }
-    
-    /**
-     * Populates left chart type combo box with data.
-     * @param options 
-     */
-    public void populateLeftChartTypeComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getLeftChartTypeComboBox().getItems().add(option);
-        }
     }
     
     /**
@@ -134,16 +114,6 @@ public class BottomMenu extends Element {
     public void setRightOptionComboBox(ComboBox comboBox) {
         this._rightOption = comboBox;
     }
-    
-    /**
-     * Populates right option combo box with data.
-     * @param options
-     */
-    public void populateRightOptionComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getRightOptionComboBox().getItems().add(option);
-        }
-    }
 
     /**
      * Returns right chart type combo box.
@@ -159,16 +129,6 @@ public class BottomMenu extends Element {
      */
     public void setRightChartTypeComboBox(ComboBox comboBox) {
         this._rightChartType = comboBox;
-    }
-    
-    /**
-     * Populates right chart type combo box with data.
-     * @param options 
-     */
-    public void populateRightChartTypeComboBox(ArrayList<String> options) {
-        for (var option : options) {
-            this.getRightChartTypeComboBox().getItems().add(option);
-        }
     }
     
     /**
@@ -244,22 +204,6 @@ public class BottomMenu extends Element {
                 FontPosture.REGULAR, 16);
         return font;
     }
-
-    /**
-     * Deactivates combo box.
-     * @param comboBox 
-     */
-    public void deactivateComboBox(ComboBox comboBox) {
-        comboBox.setEditable(false);
-    }
-    
-    /**
-     * Activates combo box.
-     * @param comboBox 
-     */
-    public void activateComboBox(ComboBox comboBox) {
-        comboBox.setEditable(true);
-    }
     
     /**
      * Changes color of button to default.
@@ -280,6 +224,17 @@ public class BottomMenu extends Element {
                      + "-fx-background-color: #65BBCF; "
                      + "-fx-background-radius: 5px;");        
     }
+
+    /**
+     * Populates combo box with data.
+     * @param options
+     * @param comboBox 
+     */
+    public void populateComboBox(ArrayList<String> options, ComboBox comboBox) {
+        for (String option : options) {
+            comboBox.getItems().add(option);
+        }
+    }
     
     /**
      * Builds combo box.
@@ -287,7 +242,7 @@ public class BottomMenu extends Element {
      * @param promptText
      * @return comboBox
      */
-    private ComboBox _buildComboBox(ArrayList<String> options, String... promptText) {
+    private ComboBox _buildComboBox() {
         ComboBox comboBox = new ComboBox();
         
         comboBox.setStyle(
@@ -296,14 +251,7 @@ public class BottomMenu extends Element {
         );
         comboBox.setMinSize(200, 30);
         comboBox.setMaxSize(200, 30);
-        
-        if (promptText.length > 0) {
-            comboBox.setPromptText(promptText[0]);   
-        }
-        
-        for (String option : options) {
-            comboBox.getItems().add(option);
-        }
+
         return comboBox;
     }
     
@@ -399,10 +347,32 @@ public class BottomMenu extends Element {
         charts.add("Scatter chart");
         // Code above is for demonstration purpose only.
         
-        this.setLeftOptionComboBox(this._buildComboBox(options));
-        this.setLeftChartTypeComboBox(this._buildComboBox(charts, "Line chart"));
-        this.setRightOptionComboBox(this._buildComboBox(options));
-        this.setRightChartTypeComboBox(this._buildComboBox(charts, "Line chart"));
+        this.setLeftOptionComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(options, this.getLeftOptionComboBox());
+        // Code above is for demonstration purpose only.
+        this.getLeftOptionComboBox().setDisable(true);
+        
+        this.setLeftChartTypeComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(charts, this.getLeftChartTypeComboBox());
+        this.getLeftChartTypeComboBox().getSelectionModel().selectFirst();
+        // Code above is for demonstration purpose only.
+        this.getLeftChartTypeComboBox().setDisable(true);
+        
+        this.setRightOptionComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(options, this.getRightOptionComboBox());
+        // Code above is for demonstration purpose only.
+        this.getRightOptionComboBox().setDisable(true);
+        
+        this.setRightChartTypeComboBox(this._buildComboBox());
+        // Code below is for demonstration purpose only.
+        this.populateComboBox(charts, this.getRightChartTypeComboBox());
+        this.getRightChartTypeComboBox().getSelectionModel().selectFirst();
+        // Code above is for demonstration purpose only.
+        this.getRightChartTypeComboBox().setDisable(true);
+        
         this._buildSaveLoadContainer();
         
         // Column | row | column span | row span
@@ -431,25 +401,108 @@ public class BottomMenu extends Element {
         this.getNodes().add(getInnerContainer());
     }
     
-    private void _setButtonHoverEvents() {
-        this.getSaveDataButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getSaveDataButton());
+    /**
+     * Sets button hover event.
+     * @param button 
+     */
+    private void _setButtonHoverEvent(Button button) {
+        button.setOnMouseEntered(event -> {               
+            this.setButtonHoverStyle(button);
         });
-        this.getSaveDataButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getSaveDataButton());
-        });
-        this.getLoadDataButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getLoadDataButton());
-        });
-        this.getLoadDataButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getLoadDataButton());
-        });
-        this.getSaveSettingsButton().setOnMouseEntered(event -> {               
-            this.setButtonHoverStyle(this.getSaveSettingsButton());
-        });
-        this.getSaveSettingsButton().setOnMouseExited(event -> {
-            this.setButtonDefaultStyle(this.getSaveSettingsButton());
-        });
+        button.setOnMouseExited(event -> {
+            this.setButtonDefaultStyle(button);
+        });        
+    }
+    
+    /**
+     * Sets left option click event.
+     */
+    private void _setLeftOptionClickEvent() {
+        this.getLeftOptionComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleLeftOption();
+        });        
+    }
+    
+    /**
+     * Sets left chart type click event.
+     */
+    private void _setLeftChartTypeClickEvent() {
+        this.getLeftChartTypeComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleLeftChartType();
+        });        
+    }
+    
+    /**
+     * Sets right option click event.
+     */
+    private void _setRightOptionClickEvent() {
+        this.getRightOptionComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleRightOption();
+        });        
+    }
         
+    
+    /**
+     * Sets right chart type click event.
+     */
+    private void _setRightChartTypeClickEvent() {
+        this.getRightChartTypeComboBox().setOnMouseClicked(event -> {
+            this.getListener().handleRightChartType();
+        });        
+    }
+    
+    /**
+     * Sets save data button click event.
+     */
+    private void _setSaveDataButtonClickEvent() {
+        this.getSaveDataButton().setOnAction(event -> {
+            this.getListener().handleSaveData();
+        });        
+    }
+    
+    /**
+     * Sets load data button click event.
+     */
+    private void _setLoadDataButtonClickEvent() {
+        this.getLoadDataButton().setOnAction(event -> {
+            this.getListener().handleLoadData();
+        });        
+    }
+    
+    /**
+     * Sets load data button click event.
+     */
+    private void _setSaveSettingsButtonClickEvent() {
+        this.getSaveSettingsButton().setOnAction(event -> {
+            this.getListener().handleSaveSettings();
+        });        
+    }
+    
+    /**
+     * Sets load data button click event.
+     */
+    private void _setLoadSettingsButtonClickEvent() {
+        this.getLoadSettingsButton().setOnAction(event -> {
+            this.getListener().handleLoadSettings();
+        });        
+    }
+    
+    /**
+     * Sets all button events.
+     */
+    private void _setButtonEvents() {
+        this._setButtonHoverEvent(this.getSaveDataButton());
+        this._setButtonHoverEvent(this.getLoadDataButton());
+        this._setButtonHoverEvent(this.getSaveSettingsButton());
+        this._setButtonHoverEvent(this.getLoadSettingsButton());
+        
+        this._setLeftOptionClickEvent();
+        this._setLeftChartTypeClickEvent();
+        this._setRightOptionClickEvent();
+        this._setRightChartTypeClickEvent();
+        this._setSaveDataButtonClickEvent();
+        this._setLoadDataButtonClickEvent();
+        this._setSaveSettingsButtonClickEvent();
+        this._setLoadSettingsButtonClickEvent();
     }
 }

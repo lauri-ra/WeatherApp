@@ -27,7 +27,11 @@ public class App extends Application {
     
     @Override
     public void start(Stage stage) {
+        for (var element : view.getElements()) {
+            element.setListener(controller);
+        }
         view.setStage(stage);
+
         controller.Begin();
         controller.TestController();
     }

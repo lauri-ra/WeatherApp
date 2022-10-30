@@ -1,1 +1,3 @@
-This is a template readme file to enforce main default branch. Edit this file as you see fit.
+# Instructions for running the program
+
+The program can be run simply by cloning the repository, opening one of the files in NetBeans and hitting "Run Project".
