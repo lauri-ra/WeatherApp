@@ -28,10 +28,10 @@ public class Controller implements EventListener {
         for (DataPoint dataPoint : model.GetVariableData("DigiTrafficTest",
                 new Variable("a","b"), "coordinates", 
                 LocalDate.MAX, LocalDate.MAX)) {
-            newMessage += dataPoint.getDate() + ", " + dataPoint.getValue() + "\n";
+            newMessage += dataPoint.getX() + ", " + dataPoint.getY() + "\n";
         }
-        
-        // view.UpdateMessage(newMessage);
+        System.out.println(newMessage);
+        //view.UpdateMessage(newMessage);
     }
 
     @Override
