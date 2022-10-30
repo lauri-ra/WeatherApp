@@ -15,7 +15,7 @@ public class DigiTrafficTest implements IDataSource {
     private String name = "DigiTrafficTest";
     private ArrayList<Variable> variables;
 
-    private static final String URL = "https://tie.digitraffic.fi/api/maintenance/v1/tracking/routes?endFrom=2022-01-19T09%3A00%3A00Z&endBefore=2022-01-19T14%3A00%3A00Z&xMin=21&yMin=61&xMax=22&yMax=62&taskId=&domain=state-roads";
+    private static final String baseURL = "https://tie.digitraffic.fi/api";
 
     public DigiTrafficTest() {
         variables = new ArrayList<>();
@@ -23,11 +23,13 @@ public class DigiTrafficTest implements IDataSource {
         variables.add(new Variable("DigiTraffic2", "Unit 2"));
     }
 
-    public static HashMap<String, Integer> GetTasks(String response) {
-
+    private HashMap<String, Integer> GetTasks() {
         HashMap<String, Integer> tasks = new HashMap<>();
 
-        JSONObject obj = new JSONObject(response);
+        String url = baseURL + "/maintenance/v1/tracking/routes?endFrom=2022-01-19T09%3A00%3A00Z&endBefore=2022-01-19T14%3A00%3A00Z&xMin=21&yMin=61&xMax=22&yMax=62&taskId=&domain=state-roads";
+        HttpResponse<String> response = GetRequest(url);
+
+        JSONObject obj = new JSONObject(response.body());
         JSONArray features = obj.getJSONArray("features");
 
         for(int i = 0; i < features.length(); i++) {
@@ -47,12 +49,65 @@ public class DigiTrafficTest implements IDataSource {
         return tasks;
     }
 
-    public static void TrafficMessages(String response) {
-        // todo
+    private int GetTrafficMessages() {
+        String url = baseURL + "/traffic-message/v1/messages?inactiveHours=0&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT";
+        HttpResponse<String> response = GetRequest(url);
+
+        JSONObject obj = new JSONObject(response.body());
+        JSONArray features = obj.getJSONArray("features");
+
+        return features.length();
     }
 
-    public static void GetRoadCondition(String response) {
-        // todo
+    private HashMap<String, ArrayList<String>> GetRoadCondition() {
+        String url = baseURL + "/v3/data/road-conditions/21/61/22/62";
+        HttpResponse<String> response = GetRequest(url);
+
+        JSONObject obj = new JSONObject(response.body());
+        JSONArray weatherData = obj.getJSONArray("weatherData");
+        JSONObject latestData = weatherData.getJSONObject(0);
+        JSONArray roadConditions = latestData.getJSONArray("roadConditions");
+
+        HashMap<String, ArrayList<String>> data = new HashMap<>();
+
+        // todo get winter slipperiness
+        for(int i = 1; i < roadConditions.length(); i++) {
+            ArrayList<String> results = new ArrayList<>();
+
+            JSONObject forecast = roadConditions.getJSONObject(i);
+            String hour = forecast.getString("forecastName");
+
+            JSONObject forecastCondition = forecast.getJSONObject("forecastConditionReason");
+            String precipitation = forecastCondition.getString("precipitationCondition");
+            String road = forecastCondition.getString("roadCondition");
+
+            results.add(precipitation);
+            results.add(road);
+
+            data.put(hour, results);
+        }
+
+        return data;
+    }
+
+    private HttpResponse<String> GetRequest(String URL) {
+        URI url = URI.create(URL);
+        HttpClient client = HttpClient.newHttpClient();
+
+        HttpRequest request =  HttpRequest
+                .newBuilder()
+                .GET()
+                .header("Accept-Encoding", "gzip header")
+                .uri(url)
+                .build();
+
+        try {
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
+        }
+        catch (IOException | InterruptedException e) {
+            System.out.println("GET request error");
+            return null;
+        }
     }
 
     @Override
@@ -67,31 +122,17 @@ public class DigiTrafficTest implements IDataSource {
 
     @Override
     public List<DataPoint> GetData(Variable variable, String coordinates, LocalDate startDate, LocalDate endDate) {
+
+        HashMap<String, Integer> taskMap = GetTasks();
+        System.out.println(taskMap);
+
+        int messages = GetTrafficMessages();
+        System.out.println(messages);
+
+        HashMap<String, ArrayList<String>> condition = GetRoadCondition();
+        System.out.println(condition);
+
         ArrayList<DataPoint> data = new ArrayList<>();
-
-        // GET Request
-        URI url = URI.create(URL);
-        HttpClient client = HttpClient.newHttpClient();
-
-        HttpRequest request =  HttpRequest
-                .newBuilder()
-                .GET()
-                .header("Accept-Encoding", "gzip header")
-                .uri(url)
-                .build();
-
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            HashMap<String, Integer> taskMap;
-            taskMap = GetTasks(response.body());
-            System.out.println(taskMap);
-
-        }
-        catch (IOException | InterruptedException e) {
-            System.out.println("GET request error");
-        }
-
         return data;
     }
 }
