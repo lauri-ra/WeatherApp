@@ -1,26 +1,39 @@
 package fi.tuni.weatherapp;
 
 import java.util.ArrayList;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public final class BottomMenu extends Element {
     private GridPane _innerContainer;
-    private GridPane _saveLoadContainer;
+    private GridPane _settingsContainer;
+    private ScrollPane _trafficMsgsContainer;
     private ComboBox _leftOption;
     private ComboBox _rightOption;
     private ComboBox _leftChartType;
     private ComboBox _rightChartType;
-    private Button _saveData;
-    private Button _loadData;
+    private GridPane _leftChartButtonsContainer;
+    private Button _leftChartApply;
+    private Button _leftChartSave;
+    private Button _leftChartLoad;
+    private GridPane _rightChartButtonsContainer;
+    private Button _rightChartApply;
+    private Button _rightChartSave;
+    private Button _rightChartLoad;
+    private Label _trafficMsgCount;
+    private Text _trafficMsgs;
     private Button _saveSettings;
     private Button _loadSettings;
     
@@ -44,27 +57,43 @@ public final class BottomMenu extends Element {
     }
     
     /**
-     * Sets innerContainer.
+     * Sets inner container.
      * @param container 
      */
     public void setInnerContainer(GridPane container) {
         this._innerContainer = container;
-    }
+    }  
     
     /**
      * Returns container containing data and settings.
-     * @return 
+     * @return _settingsContainer
      */
-    public GridPane getSaveLoadContainer() {
-        return this._saveLoadContainer;
+    public GridPane getSettingsContainer() {
+        return this._settingsContainer;
     }
     
     /**
      * Sets container containing data and settings.
      * @param container
      */
-    public void setSaveLoadContainer(GridPane container) {
-        this._saveLoadContainer = container;
+    public void setSettingsContainer(GridPane container) {
+        this._settingsContainer = container;
+    }
+    
+    /**
+     * Returns scollable container containing traffic messages.
+     * @return _trafficMsgsContainer
+     */
+    public ScrollPane getTrafficMsgsContainer() {
+        return this._trafficMsgsContainer;
+    }
+    
+    /**
+     * Sets scrollable container containing traffic messages.
+     * @param container
+     */
+    public void setTrafficMsgsContainer(ScrollPane container) {
+        this._trafficMsgsContainer = container;
     }
     
     /**
@@ -132,35 +161,162 @@ public final class BottomMenu extends Element {
     }
     
     /**
-     * Returns save data button.
-     * @return _saveData
+     * Returns left chart buttons container.
+     * @return _leftChartButtonsContainer
      */
-    public Button getSaveDataButton() {
-        return this._saveData;
+    public GridPane getLeftChartButtonsContainer() {
+        return this._leftChartButtonsContainer;
     }
     
     /**
-     * Sets save data button.
+     * Sets left chart buttons container.
+     * @param container 
+     */
+    public void setLeftChartButtonsContainer(GridPane container) {
+        this._leftChartButtonsContainer = container;
+    }
+    /**
+     * Returns left chart apply button.
+     * @return _leftChartApply
+     */
+    public Button getLeftChartApplyButton() {
+        return this._leftChartApply;
+    }
+    
+    /**
+     * Sets left chart apply button.
      * @param button 
      */
-    public void setSaveDataButton(Button button) {
-        this._saveData = button;
-    }
+    public void setLeftChartApplyButton(Button button) {
+        this._leftChartApply = button;
+    }   
     
     /**
-     * Returns load data button.
-     * @return  _loadData
+     * Returns left chart save button.
+     * @return _leftChartSave
      */
-    public Button getLoadDataButton() {
-        return this._loadData;
+    public Button getLeftChartSaveButton() {
+        return this._leftChartSave;
     }
     
     /**
-     * Sets load data button.
+     * Sets left chart save button.
      * @param button 
      */
-    public void setLoadDataButton(Button button) {
-        this._loadData = button;
+    public void setLeftChartSaveButton(Button button) {
+        this._leftChartSave = button;
+    }
+    
+    /**
+     * Returns left chart load button.
+     * @return  _leftChartLoad
+     */
+    public Button getLeftChartLoadButton() {
+        return this._leftChartLoad;
+    }
+    
+    /**
+     * Sets left chart load button.
+     * @param button 
+     */
+    public void setLeftChartLoadButton(Button button) {
+        this._leftChartLoad = button;
+    }
+    
+    /**
+     * Returns right chart buttons container.
+     * @return _rightChartButtonsContainer
+     */
+    public GridPane getRightChartButtonsContainer() {
+        return this._rightChartButtonsContainer;
+    }
+    
+    /**
+     * Sets right chart buttons container.
+     * @param container 
+     */
+    public void setRightChartButtonsContainer(GridPane container) {
+        this._rightChartButtonsContainer = container;
+    }
+
+    /**
+     * Returns right chart apply button.
+     * @return _rightChartApply
+     */
+    public Button getRightChartApplyButton() {
+        return this._rightChartApply;
+    }
+    
+    /**
+     * Sets right chart apply button.
+     * @param button 
+     */
+    public void setRightChartApplyButton(Button button) {
+        this._rightChartApply = button;
+    }   
+    
+    /**
+     * Returns right chart save button.
+     * @return _rightChartSave
+     */
+    public Button getRightChartSaveButton() {
+        return this._rightChartSave;
+    }
+    
+    /**
+     * Sets right chart save button.
+     * @param button 
+     */
+    public void setRightChartSaveButton(Button button) {
+        this._rightChartSave = button;
+    }
+    
+    /**
+     * Returns right chart load button.
+     * @return  _rightChartLoad
+     */
+    public Button getRightChartLoadButton() {
+        return this._rightChartLoad;
+    }
+    
+    /**
+     * Sets right chart load button.
+     * @param button 
+     */
+    public void setRightChartLoadButton(Button button) {
+        this._rightChartLoad = button;
+    }
+    
+    /**
+     * Returns traffic message count.
+     * @return _trafficMsgCount;
+     */
+    public Label getTrafficMsgCount() {
+        return this._trafficMsgCount;
+    }
+    
+    /**
+     * Sets traffic message count.
+     * @param count
+     */
+    public void setTrafficMsgCount(Label count) {
+        this._trafficMsgCount = count;
+    }   
+    
+    /**
+     * Returns traffic messages.
+     * @return _trafficMsgs
+     */
+    public Text getTrafficMsgs() {
+        return this._trafficMsgs;
+    }
+    
+    /**
+     * Sets traffic messages.
+     * @param text 
+     */
+    public void setTrafficMsgs(Text text) {
+        this._trafficMsgs = text;
     }
     
     /**
@@ -237,6 +393,22 @@ public final class BottomMenu extends Element {
     }
     
     /**
+     * Updates traffic messages.
+     * @param messages 
+     */
+    public void updateTrafficMsgs(ArrayList<String> messages) {
+        var text = "";
+        var count = 0;
+        
+        for (var message : messages) {
+            text += (message + System.lineSeparator());
+            count += 1;
+        }
+        this.getTrafficMsgCount().setText(Integer.toString(count));
+        this.getTrafficMsgs().setText(text);
+    }
+    
+    /**
      * Builds combo box.
      * @param options
      * @param promptText
@@ -249,8 +421,8 @@ public final class BottomMenu extends Element {
             "-fx-background-color: #fff; -fx-border-radius: 5px; "
             + "-fx-border-color: #bfbfbf"
         );
-        comboBox.setMinSize(200, 30);
-        comboBox.setMaxSize(200, 30);
+        comboBox.setMinSize(260, 30);
+        comboBox.setMaxSize(260, 30);
 
         return comboBox;
     }
@@ -269,49 +441,91 @@ public final class BottomMenu extends Element {
         return button;
     }
     
+    private GridPane _buildButtonsContainer(Button button1, Button button2, 
+            Button button3) {
+        var container = new GridPane();
+        
+        container.add(button1,  0, 0, 1, 1);
+        container.add(button2,  1, 0, 1, 1);
+        container.add(button3,  2, 0, 1, 1);
+        
+        container.setHgap(10);
+        container.setAlignment(Pos.CENTER);
+        
+        return container;
+    }
+    
+    private ScrollPane _buildTrafficMsgsContainer() {
+        var container = new ScrollPane();
+        
+        container.setMaxHeight(50);
+        container.setMinHeight(50);
+        container.setMaxWidth(700);
+        container.setStyle("-fx-background: transparent; -"
+                         + "fx-background-color: transparent;");
+        container.setVbarPolicy(ScrollBarPolicy.NEVER);
+        
+        return container;
+    }
+    
     /**
      * Builds saveLoadContainer containing data and settings buttons.
      */
-    private void _buildSaveLoadContainer() {
-        var container = new GridPane();
+    private void _buildSettingsContainer() {
+        var container = new GridPane();      
         
-        var dataLabel = new Label("DATA");
-        dataLabel.setFont(this.getFont());
+        this.setTrafficMsgsContainer(this._buildTrafficMsgsContainer());
+        this.setTrafficMsgCount(new Label("0"));
+        this.setTrafficMsgs(new Text(""));
+        this.getTrafficMsgs().setWrappingWidth(650);
+        
+        var trafficMsgsLabel = new Label("TRAFFIC MESSAGES " + "(" 
+                + this.getTrafficMsgCount().getText() + ")");
+        trafficMsgsLabel.setFont(this.getFont());
+        
+        // Code below is for demonstration purpose only.
+        var trafficMsgs = new ArrayList<String>();
+        trafficMsgs.add("Traffic message 1: Random text here and there...");
+        trafficMsgs.add("Traffic message 2: Pew pew!");
+        trafficMsgs.add("Traffic message 3: Testing out traffic messages.");
+        trafficMsgs.add("Traffic message 4: Pow-wow!");
+        trafficMsgs.add("Traffic message 5: Testing testing...");
+        trafficMsgs.add("Traffic message 6: Dum da dum dum dum.");
+        this.updateTrafficMsgs(trafficMsgs);
+        // Code above is for demonstration purpose only.
+        
+        this.getTrafficMsgsContainer().setContent(this.getTrafficMsgs());
         
         var settingsLabel = new Label("SETTINGS");
         settingsLabel.setFont(this.getFont());
         
-        this.setSaveDataButton(this._buildButton("SAVE"));
-        this.setLoadDataButton(this._buildButton("LOAD"));
         this.setSaveSettingsButton(this._buildButton("SAVE"));
         this.setLoadSettingsButton(this._buildButton("LOAD"));
         
         // Column | row | column span | row span
-        container.add(dataLabel,                  0, 0, 2, 1);
-        container.add(settingsLabel,              2, 0, 2, 1);
-        container.add(getSaveDataButton(),        0, 1, 1, 1);
-        container.add(getLoadDataButton(),        1, 1, 1, 1);
-        container.add(getSaveSettingsButton(),    2, 1, 1, 1);
-        container.add(getLoadSettingsButton(),    3, 1, 1, 1);
-        
+        container.add(trafficMsgsLabel,                 0, 0, 2, 1);
+        container.add(this.getTrafficMsgsContainer(),   0, 1, 2, 1);
+        container.add(settingsLabel,                    1, 0, 2, 1);
+        container.add(getSaveSettingsButton(),          1, 1, 1, 1);
+        container.add(getLoadSettingsButton(),          2, 1, 1, 1);
+
         ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(25);
+        col1.setPercentWidth(80);
         ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(25);
-        ColumnConstraints col3 = new ColumnConstraints();
-        col3.setPercentWidth(25);
-        ColumnConstraints col4 = new ColumnConstraints();
-        col4.setPercentWidth(25);
-        container.getColumnConstraints().addAll(col1, col2, col3, col4);
-        
+        col2.setPercentWidth(10);
+        col2.setHalignment(HPos.CENTER);
+        ColumnConstraints col3= new ColumnConstraints();
+        col3.setPercentWidth(10);
+        col3.setHalignment(HPos.CENTER);
+        container.getColumnConstraints().addAll(col1, col2, col3);
+
         container.setVgap(10);
-        container.setHgap(20);
         container.setPadding(new Insets(10, 20, 10, 20));
         
         container.setStyle("-fx-background-color: #9ED4E0;"
                          + "-fx-background-radius: 5px;");
         
-        this.setSaveLoadContainer(container); 
+        this.setSettingsContainer(container); 
     }
     
     /**
@@ -340,12 +554,12 @@ public final class BottomMenu extends Element {
         options.add("Precipitation");
         options.add("Winter slipperiness");
         options.add("Overall condition");
+        // Code above is for demonstration purpose only.
         
         ArrayList<String> charts = new ArrayList();
         charts.add("Line chart");
         charts.add("Bar chart");
         charts.add("Scatter chart");
-        // Code above is for demonstration purpose only.
         
         this.setLeftOptionComboBox(this._buildComboBox());
         // Code below is for demonstration purpose only.
@@ -354,10 +568,8 @@ public final class BottomMenu extends Element {
         this.getLeftOptionComboBox().setDisable(true);
         
         this.setLeftChartTypeComboBox(this._buildComboBox());
-        // Code below is for demonstration purpose only.
         this.populateComboBox(charts, this.getLeftChartTypeComboBox());
         this.getLeftChartTypeComboBox().getSelectionModel().selectFirst();
-        // Code above is for demonstration purpose only.
         this.getLeftChartTypeComboBox().setDisable(true);
         
         this.setRightOptionComboBox(this._buildComboBox());
@@ -367,36 +579,57 @@ public final class BottomMenu extends Element {
         this.getRightOptionComboBox().setDisable(true);
         
         this.setRightChartTypeComboBox(this._buildComboBox());
-        // Code below is for demonstration purpose only.
         this.populateComboBox(charts, this.getRightChartTypeComboBox());
         this.getRightChartTypeComboBox().getSelectionModel().selectFirst();
-        // Code above is for demonstration purpose only.
         this.getRightChartTypeComboBox().setDisable(true);
         
-        this._buildSaveLoadContainer();
+        this.setLeftChartApplyButton(this._buildButton("APPLY"));
+        this.setLeftChartSaveButton(this._buildButton("SAVE"));
+        this.setLeftChartLoadButton(this._buildButton("LOAD"));
+        this.setLeftChartButtonsContainer(this._buildButtonsContainer(
+                this.getLeftChartApplyButton(), 
+                this.getLeftChartSaveButton(), 
+                this.getLeftChartLoadButton()));
+        this.getLeftChartApplyButton().setDisable(true);
+        this.getLeftChartSaveButton().setDisable(true);
+        this.getLeftChartLoadButton().setDisable(true);
+        this.setRightChartApplyButton(this._buildButton("APPLY"));
+        this.setRightChartSaveButton(this._buildButton("SAVE"));
+        this.setRightChartLoadButton(this._buildButton("LOAD"));
+        this.setRightChartButtonsContainer(this._buildButtonsContainer(
+                this.getRightChartApplyButton(), 
+                this.getRightChartSaveButton(), 
+                this.getRightChartLoadButton()));
+        this.getRightChartApplyButton().setDisable(true);
+        this.getRightChartSaveButton().setDisable(true);
+        this.getRightChartLoadButton().setDisable(true);
+        this._buildSettingsContainer();
         
-        // Column | row | column span | row span
-        getInnerContainer().add(chart1Label,                    0, 0, 1, 1);
-        getInnerContainer().add(getLeftOptionComboBox(),        0, 1, 1, 1);
-        getInnerContainer().add(chart1TypeLabel,                0, 2, 1, 1);
-        getInnerContainer().add(getLeftChartTypeComboBox(),     0, 3, 1, 1);
-        getInnerContainer().add(chart2Label,                    1, 0, 1, 1);
-        getInnerContainer().add(getRightOptionComboBox(),       1, 1, 1, 1);
-        getInnerContainer().add(chart2TypeLabel,                1, 2, 1, 1);
-        getInnerContainer().add(getRightChartTypeComboBox(),    1, 3, 1, 1);
-        getInnerContainer().add(getSaveLoadContainer(),         2, 0, 1, 4);
+        // Column | row | column span | row span    
+        getInnerContainer().add(chart1Label,                            0, 0, 1, 1);
+        getInnerContainer().add(getLeftOptionComboBox(),                0, 1, 1, 1);
+        getInnerContainer().add(chart1TypeLabel,                        0, 2, 1, 1);
+        getInnerContainer().add(getLeftChartTypeComboBox(),             0, 3, 1, 1);
+        getInnerContainer().add(this.getLeftChartButtonsContainer(),    0, 4, 1, 1);        
+        getInnerContainer().add(chart2Label,                            1, 0, 1, 1);
+        getInnerContainer().add(getRightOptionComboBox(),               1, 1, 1, 1);
+        getInnerContainer().add(chart2TypeLabel,                        1, 2, 1, 1);
+        getInnerContainer().add(getRightChartTypeComboBox(),            1, 3, 1, 1);
+        getInnerContainer().add(this.getRightChartButtonsContainer(),   1, 4, 1, 1);
+        getInnerContainer().add(this.getSettingsContainer(),            0, 5, 2, 1);
         
         ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth(50);
+        col1.setHalignment(HPos.CENTER);
         ColumnConstraints col2 = new ColumnConstraints();
-        ColumnConstraints col3 = new ColumnConstraints();
-        col2.setHgrow(Priority.ALWAYS);
-        getInnerContainer().getColumnConstraints().addAll(col1,col2,col3);
+        col2.setPercentWidth(50);
+        col2.setHalignment(HPos.CENTER);
+        getInnerContainer().getColumnConstraints().addAll(col1, col2);
         
-        getInnerContainer().setMinWidth(1000);
-        getInnerContainer().setMaxWidth(1000);
-        getInnerContainer().setHgap(20);
+        getInnerContainer().setMinWidth(1050);
+        getInnerContainer().setMaxWidth(1050);
         getInnerContainer().setVgap(10);
-        getInnerContainer().setPadding(new Insets(10, 50, 50, 50));
+        getInnerContainer().setPadding(new Insets(0, 30, 50, 30));
         
         this.getNodes().add(getInnerContainer());
     }
@@ -415,57 +648,56 @@ public final class BottomMenu extends Element {
     }
     
     /**
-     * Sets left option click event.
+     * Sets left chart apply button click event.
      */
-    private void _setLeftOptionClickEvent() {
-        this.getLeftOptionComboBox().setOnMouseClicked(event -> {
-            this.getListener().handleLeftOption();
+    private void _setLeftChartApplyButtonClickEvent() {
+        this.getLeftChartApplyButton().setOnAction(event -> {
+            this.getListener().handleLeftChartApply();
         });        
     }
     
     /**
-     * Sets left chart type click event.
+     * Sets left chart save button click event.
      */
-    private void _setLeftChartTypeClickEvent() {
-        this.getLeftChartTypeComboBox().setOnMouseClicked(event -> {
-            this.getListener().handleLeftChartType();
+    private void _setLeftChartSaveButtonClickEvent() {
+        this.getLeftChartSaveButton().setOnAction(event -> {
+            this.getListener().handleLeftChartSave();
+        });        
+    }
+
+    /**
+     * Sets left chart load button click event.
+     */
+    private void _setLeftChartLoadButtonClickEvent() {
+        this.getLeftChartLoadButton().setOnAction(event -> {
+            this.getListener().handleLeftChartLoad();
         });        
     }
     
     /**
-     * Sets right option click event.
+     * Sets right chart apply button click event.
      */
-    private void _setRightOptionClickEvent() {
-        this.getRightOptionComboBox().setOnMouseClicked(event -> {
-            this.getListener().handleRightOption();
-        });        
-    }
-        
-    
-    /**
-     * Sets right chart type click event.
-     */
-    private void _setRightChartTypeClickEvent() {
-        this.getRightChartTypeComboBox().setOnMouseClicked(event -> {
-            this.getListener().handleRightChartType();
+    private void _setRightChartApplyButtonClickEvent() {
+        this.getRightChartApplyButton().setOnAction(event -> {
+            this.getListener().handleRightChartApply();
         });        
     }
     
     /**
-     * Sets save data button click event.
+     * Sets right chart save button click event.
      */
-    private void _setSaveDataButtonClickEvent() {
-        this.getSaveDataButton().setOnAction(event -> {
-            this.getListener().handleSaveData();
+    private void _setRightChartSaveButtonClickEvent() {
+        this.getRightChartSaveButton().setOnAction(event -> {
+            this.getListener().handleRightChartSave();
         });        
     }
-    
+
     /**
-     * Sets load data button click event.
+     * Sets right chart load button click event.
      */
-    private void _setLoadDataButtonClickEvent() {
-        this.getLoadDataButton().setOnAction(event -> {
-            this.getListener().handleLoadData();
+    private void _setRightChartLoadButtonClickEvent() {
+        this.getRightChartLoadButton().setOnAction(event -> {
+            this.getListener().handleRightChartLoad();
         });        
     }
     
@@ -491,17 +723,22 @@ public final class BottomMenu extends Element {
      * Sets all button events.
      */
     private void _setButtonEvents() {
-        this._setButtonHoverEvent(this.getSaveDataButton());
-        this._setButtonHoverEvent(this.getLoadDataButton());
+        this._setButtonHoverEvent(this.getLeftChartApplyButton());
+        this._setButtonHoverEvent(this.getLeftChartSaveButton());
+        this._setButtonHoverEvent(this.getLeftChartLoadButton());
+        this._setButtonHoverEvent(this.getRightChartApplyButton());
+        this._setButtonHoverEvent(this.getRightChartSaveButton());
+        this._setButtonHoverEvent(this.getRightChartLoadButton());
+                                
         this._setButtonHoverEvent(this.getSaveSettingsButton());
         this._setButtonHoverEvent(this.getLoadSettingsButton());
         
-        this._setLeftOptionClickEvent();
-        this._setLeftChartTypeClickEvent();
-        this._setRightOptionClickEvent();
-        this._setRightChartTypeClickEvent();
-        this._setSaveDataButtonClickEvent();
-        this._setLoadDataButtonClickEvent();
+        this._setLeftChartApplyButtonClickEvent();
+        this._setLeftChartSaveButtonClickEvent();
+        this._setLeftChartLoadButtonClickEvent();
+        this._setRightChartApplyButtonClickEvent();
+        this._setRightChartSaveButtonClickEvent();
+        this._setRightChartLoadButtonClickEvent();
         this._setSaveSettingsButtonClickEvent();
         this._setLoadSettingsButtonClickEvent();
     }

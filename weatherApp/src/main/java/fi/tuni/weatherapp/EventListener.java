@@ -1,20 +1,14 @@
 package fi.tuni.weatherapp;
 
 public interface EventListener {
-    void handleCoordinates();
-    void handleStartDate();
-    void handleEndDate();
-    void handleForecast();
-    void handleApply();
+    void handleTopApply();
     void handleReset();
-    void handleLeftChart();
-    void handleRightChart();
-    void handleLeftOption();
-    void handleLeftChartType();
-    void handleRightOption();
-    void handleRightChartType();
-    void handleSaveData();
-    void handleLoadData();
+    void handleLeftChartApply();
+    void handleLeftChartSave();
+    void handleLeftChartLoad();
+    void handleRightChartApply();
+    void handleRightChartSave();
+    void handleRightChartLoad();    
     void handleSaveSettings();
     void handleLoadSettings();
 }
