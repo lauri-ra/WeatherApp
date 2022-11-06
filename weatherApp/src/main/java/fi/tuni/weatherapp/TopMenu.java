@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -16,6 +17,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
 public final class TopMenu extends Element {
     private GridPane _innerContainer;
@@ -28,8 +30,9 @@ public final class TopMenu extends Element {
     private ComboBox _forecast;
     private Button _apply;
     private Button _reset;
-    
-    private ArrayList<String> errorMessages;
+    private RadioButton _average;
+    private RadioButton _minmax;
+    private Text _errorMsg;
     
     /**
      * Constructor
@@ -201,6 +204,61 @@ public final class TopMenu extends Element {
     }
     
     /**
+     * Returns average radio button.
+     * @return  _average
+     */
+    public RadioButton getAverageRadioButton() {
+        return this._average;
+    }
+    
+    /**
+     * Sets average radio button.
+     * @param button 
+     */
+    public void setAverageRadioButton(RadioButton button) {
+        this._average = button;
+    }
+    
+    /**
+     * Returns min/max radio button.
+     * @return  _minmax
+     */
+    public RadioButton getMinMaxRadioButton() {
+        return this._minmax;
+    }
+    
+    /**
+     * Sets min/max radio button.
+     * @param button 
+     */
+    public void setMinMaxRadioButton(RadioButton button) {
+        this._minmax = button;
+    }
+    
+    /**
+     * Returns error message text.
+     * @return  _errorMsg
+     */
+    public Text getErrorMsg() {
+        return this._errorMsg;
+    }
+    
+    /**
+     * Sets error message.
+     * @param text
+     */
+    public void setErrorMsg(Text text) {
+        this._errorMsg = text;
+    }
+    
+    /**
+     * Updates error message.
+     * @param text 
+     */
+    public void updateErrorMsg(String text) {
+        this.getErrorMsg().setText(text);
+    }
+    /**
      * Returns predefined font.
      * @return font
      */
@@ -246,7 +304,7 @@ public final class TopMenu extends Element {
      * @return textField
      */
     private TextField _buildTextField() {
-        TextField textField = new TextField();
+        var textField = new TextField();
         textField.setMinSize(170, 30);
         textField.setMaxSize(170, 30);
         return textField;
@@ -257,7 +315,7 @@ public final class TopMenu extends Element {
      * @return container
      */
     private HBox _buildDatePickerContainer() {
-        HBox container = new HBox();
+        var container = new HBox();
         container.setMinSize(170, 30);
         container.setMaxSize(170, 30);
         
@@ -269,10 +327,11 @@ public final class TopMenu extends Element {
      * @return datePicker
      */
     private DatePicker _buildDatePicker() {
-        LocalDate date = LocalDate.now();
-        DatePicker datePicker = new DatePicker(date);
+        var datePicker = new DatePicker();
         datePicker.setMinSize(170, 30);
         datePicker.setMaxSize(170, 30);
+        datePicker.getEditor().setDisable(true);
+        datePicker.getEditor().setOpacity(1);
         
         return datePicker;
     }
@@ -284,7 +343,7 @@ public final class TopMenu extends Element {
      * @return comboBox
      */
     private ComboBox _buildComboBox(String promptText) {
-        ComboBox comboBox = new ComboBox();
+        var comboBox = new ComboBox();
         
         comboBox.setStyle(
             "-fx-background-color: #fff; "
@@ -304,11 +363,21 @@ public final class TopMenu extends Element {
      * @return button
      */
     private Button _buildButton(String text) {
-        Button button = new Button(text);
+        var button = new Button(text);
         button.setFont(this.getFont());
         setButtonDefaultStyle(button);
         button.setMinSize(80, 35);
         button.setMaxSize(80, 35);
+        return button;
+    }
+    
+    /**
+     * Builds radio button.
+     * @param text
+     * @return button
+     */
+    private RadioButton _buildRadioButton(String text) {
+        var button = new RadioButton(text);
         return button;
     }
     
@@ -328,21 +397,17 @@ public final class TopMenu extends Element {
         var forecastLabel = new Label("FORECAST");
         forecastLabel.setFont(this.getFont());
         
-        // Code below is for demonstration purpose only.
         ArrayList<String> options = new ArrayList();
         options.add("2 hours");
         options.add("4 hours");
         options.add("6 hours");
         options.add("12 hours");
-        // Code above is for demonstration purpose only.
         
         this.setEndDateContainer(this._buildDatePickerContainer());
         this.setEndDatePicker(this._buildDatePicker());
         this.getEndDateContainer().getChildren().add(this.getEndDatePicker());
         this.setForecastComboBox(this._buildComboBox("Time"));
-        // Code below is for demonstration purpose only.
         this.populateComboBox(options, this.getForecastComboBox());
-        // Code above is for demonstration purpose only.
         
         // Column | row | column span | row span
         container.add(endDateLabel,             0, 0, 1, 1);
@@ -386,20 +451,27 @@ public final class TopMenu extends Element {
         this.setCoordinatesTextField(this._buildTextField());
         this.setStartDateContainer(this._buildDatePickerContainer());
         this.setStartDatePicker(this._buildDatePicker());
+        this.getStartDatePicker().setValue(LocalDate.now());
         this.getStartDateContainer().getChildren().add(this.getStartDatePicker());
         this._buildChoiceContainer();
         this.setApplyButton(this._buildButton("APPLY"));
         this.setResetButton(this._buildButton("RESET"));
+        this.setAverageRadioButton(this._buildRadioButton("AVERAGE"));
+        this.setMinMaxRadioButton(this._buildRadioButton("MIN/MAX"));
+        this.setErrorMsg(new Text(""));
         
         // Column | row | column span | row span
-        getInnerContainer().add(titleLabel,                 0, 0, 4, 1);
-        getInnerContainer().add(coordinatesLabel,           0, 1, 1, 1);
-        getInnerContainer().add(startDateLabel,             1, 1, 1, 1);
-        getInnerContainer().add(getChoiceContainer(),       2, 1, 1, 2);
-        getInnerContainer().add(getApplyButton(),           3, 1, 1, 1);
-        getInnerContainer().add(getCoordinatesTextField(),  0, 2, 1, 1);
-        getInnerContainer().add(getStartDateContainer(),     1, 2, 1, 1);
-        getInnerContainer().add(getResetButton(),           3, 2, 1, 1);
+        getInnerContainer().add(titleLabel,                     0, 0, 4, 1);
+        getInnerContainer().add(coordinatesLabel,               0, 1, 1, 1);
+        getInnerContainer().add(startDateLabel,                 1, 1, 1, 1);
+        getInnerContainer().add(this.getChoiceContainer(),      2, 1, 1, 2);
+        getInnerContainer().add(this.getApplyButton(),          3, 1, 1, 1);
+        getInnerContainer().add(this.getCoordinatesTextField(), 0, 2, 1, 1);
+        getInnerContainer().add(this.getStartDateContainer(),   1, 2, 1, 1);
+        getInnerContainer().add(this.getResetButton(),          3, 2, 1, 1);
+        getInnerContainer().add(this.getAverageRadioButton(),   1, 3, 1, 1);
+        getInnerContainer().add(this.getMinMaxRadioButton(),    1, 4, 1, 1);
+        getInnerContainer().add(this.getErrorMsg(),             2, 3, 2, 1);
         
         ColumnConstraints col1 = new ColumnConstraints();
         ColumnConstraints col2 = new ColumnConstraints();
@@ -411,10 +483,10 @@ public final class TopMenu extends Element {
         getInnerContainer().setHalignment(getApplyButton(), HPos.RIGHT);
         getInnerContainer().setHalignment(getResetButton(), HPos.RIGHT);
         
-        getInnerContainer().setMinWidth(1000);
-        getInnerContainer().setMaxWidth(1000);
+        getInnerContainer().setMinWidth(1050);
+        getInnerContainer().setMaxWidth(1050);
         getInnerContainer().setHgap(20);
-        getInnerContainer().setPadding(new Insets(50, 50, 10, 50));
+        getInnerContainer().setPadding(new Insets(50, 30, 10, 50));
         
         this.getNodes().add(getInnerContainer());
     }
@@ -433,32 +505,11 @@ public final class TopMenu extends Element {
     }
     
     /**
-     * Sets forecast click event.
-     */
-    private void _setForecastClickEvent() {
-        this.getForecastComboBox().setOnMouseClicked(event -> {
-            this.getEndDatePicker().setDisable(true);
-        });        
-    }
-    
-    /**
-     * Sets end date click event.
-     */
-    private void _setEndDateClickEvent() {
-        this.getEndDatePicker().setOnMouseClicked(event -> {
-            this.getForecastComboBox().setDisable(true);
-        });   
-        this.getEndDatePicker().getEditor().setOnMouseClicked(event -> {
-            this.getForecastComboBox().setDisable(true);
-        });
-    }   
- 
-    /**
      * Sets apply button click event.
      */
     private void _setApplyButtonClickEvent() {
         this.getApplyButton().setOnAction(event -> {
-            this.getListener().handleApply();
+            this.getListener().handleTopApply();
         });
     }
     
@@ -472,6 +523,61 @@ public final class TopMenu extends Element {
     }
     
     /**
+     * Sets forecast click event.
+     */
+    private void _setForecastClickEvent() {
+        this.getForecastComboBox().setOnMouseClicked(event -> {
+            this.getStartDatePicker().setValue(LocalDate.now());
+            this.getStartDatePicker().setDisable(true);
+            this.getEndDatePicker().setDisable(true);
+            this.getAverageRadioButton().setDisable(true);
+            this.getMinMaxRadioButton().setDisable(true);
+        });        
+    }
+    
+    /**
+     * Sets end date click event.
+     */
+    private void _setEndDateClickEvent() {
+        this.getEndDatePicker().setOnMouseClicked(event -> {
+            this.getForecastComboBox().setDisable(true);
+            this.getAverageRadioButton().setDisable(true);
+            this.getMinMaxRadioButton().setDisable(true);
+        });   
+        this.getEndDatePicker().getEditor().setOnMouseClicked(event -> {
+            this.getForecastComboBox().setDisable(true);
+            this.getAverageRadioButton().setDisable(true);
+            this.getMinMaxRadioButton().setDisable(true);
+        });
+    }   
+    
+    /**
+     * Sets average radio button click event.
+     */
+    private void _setAverageRadioButtonClickEvent() {
+        this.getAverageRadioButton().setOnAction(event -> {
+            this.getEndDatePicker().setValue(null);
+            this.getEndDatePicker().setDisable(true);
+            this.getForecastComboBox().setValue(null);
+            this.getForecastComboBox().setDisable(true);
+            this.getMinMaxRadioButton().setDisable(true);
+        });
+    }
+
+    /**
+     * Sets min/max radio button click event.
+     */
+    private void _setMinMaxRadioButtonClickEvent() {
+        this.getMinMaxRadioButton().setOnAction(event -> {
+            this.getEndDatePicker().setValue(null);
+            this.getEndDatePicker().setDisable(true);
+            this.getForecastComboBox().setValue(null);
+            this.getForecastComboBox().setDisable(true);
+            this.getAverageRadioButton().setDisable(true);
+        });
+    }     
+    
+    /**
      * Sets all button events.
      */
     private void _setButtonEvents() {
@@ -482,5 +588,7 @@ public final class TopMenu extends Element {
         this._setResetButtonClickEvent();
         this._setForecastClickEvent();
         this._setEndDateClickEvent();
+        this._setAverageRadioButtonClickEvent();
+        this._setMinMaxRadioButtonClickEvent();
     }
 }

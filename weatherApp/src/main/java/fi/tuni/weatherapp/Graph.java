@@ -99,17 +99,21 @@ public final class Graph extends Element {
      * @param side
      * @param type
      * @param label
+     * @param xLegend
+     * @param yLegend
      * @param lowerBound
      * @param upperBound
      * @param tickUnit
      * @param data 
      */
-    public void buildChart(Side side, ChartType type, String label, 
-            double lowerBound, double upperBound, double tickUnit, 
+    public void updateChart(Side side, ChartType type, String label, 
+            String xLegend, String yLegend, double lowerBound, 
+            double upperBound, double tickUnit, 
             ObservableList<XYChart.Series<String, Double>> data) {
         CategoryAxis x = new CategoryAxis();
         NumberAxis y = new NumberAxis(lowerBound, upperBound, tickUnit);
-        x.setLabel("Date");
+        x.setLabel(xLegend);
+        y.setLabel(yLegend);
 
         XYChart chart;
         
@@ -198,7 +202,7 @@ public final class Graph extends Element {
         data.add(values1);
         // Code above is for demonstration purpose only.
         
-        this.buildChart(Side.LEFT, ChartType.LINE, "Temperature", 
+        this.updateChart(Side.LEFT, ChartType.LINE, "Temperature", "Date", "°C", 
         -15, 15, 1, data);
         
         // Code below is for demonstration purpose only.
@@ -214,7 +218,7 @@ public final class Graph extends Element {
         data.add(values2);
         // Code above is for demonstration purpose only.
         
-        this.buildChart(Side.RIGHT, ChartType.BAR, "Precipitation", 
+        this.updateChart(Side.RIGHT, ChartType.BAR, "Precipitation", "Date", "mm", 
                 0, 15, 1, data);
     }
     
@@ -226,10 +230,10 @@ public final class Graph extends Element {
         getInnerContainer().add(getLeftChart(),     0, 0, 1, 1);
         getInnerContainer().add(getRightChart(),    1, 0, 1, 1);
         
-        getInnerContainer().setMinWidth(1000);
-        getInnerContainer().setMaxWidth(1000);
+        getInnerContainer().setMinWidth(1050);
+        getInnerContainer().setMaxWidth(1050);
         getInnerContainer().setVgap(15);
-        getInnerContainer().setPadding(new Insets(20, 50, 20, 50));
+        getInnerContainer().setPadding(new Insets(0, 20, 20, 20));
         
         this.getNodes().add(getInnerContainer());        
     }

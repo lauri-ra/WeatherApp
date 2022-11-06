@@ -11,7 +11,6 @@ public class App extends Application {
     private View view;
     private ModelMain model;
     private Controller controller;
-     
     
     @Override
     public void init() {
@@ -21,6 +20,16 @@ public class App extends Application {
         //model.AddDataSource(new TestDataSource());
         model.AddDataSource(new FMIDataSource());
         model.AddDataSource(new DigiTrafficTest());
+        
+        /* Create an ArrayList<String> of the combo box choices and add the 
+        data to the combo boxes. When this has been implemented, delete the extra 
+        code from BottomMenu that populated the combo boxes for demonstration.
+        
+        view.getBottomMenu().populateComboBox(ArrayList<String>, view.getBottomMenu()
+                .getLeftOptionComboBox());
+        view.getBottomMenu().populateComboBox(ArrayList<String>, view.getBottomMenu()
+                .getRightOptionComboBox());
+        */
         
         controller = new Controller(view, model);
     }

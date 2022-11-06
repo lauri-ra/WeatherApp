@@ -166,11 +166,11 @@ public final class View {
      * Renders the final view.
      */
     public void render() {
-        Scene scene = new Scene(this.getContainer(), 1000, 820);
+        Scene scene = new Scene(this.getContainer(), 1050, 950);
         
         this.getStage().setScene(scene);
-        this.getStage().setMinWidth(1000);
-        this.getStage().setMinHeight(820);
+        this.getStage().setMinWidth(1050);
+        this.getStage().setMinHeight(980);
         
         getStage().show();
     }
