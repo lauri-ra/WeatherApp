@@ -3,6 +3,7 @@ package fi.tuni.weatherapp;
 import java.util.ArrayList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -31,6 +32,7 @@ public final class BottomMenu extends Element {
     private Button _rightChartApply;
     private Button _rightChartSave;
     private Button _rightChartLoad;
+    private Label _trafficMsgCount;
     private Text _trafficMsgs;
     private Button _saveSettings;
     private Button _loadSettings;
@@ -286,6 +288,22 @@ public final class BottomMenu extends Element {
     }
     
     /**
+     * Returns traffic message count.
+     * @return _trafficMsgCount;
+     */
+    public Label getTrafficMsgCount() {
+        return this._trafficMsgCount;
+    }
+    
+    /**
+     * Sets traffic message count.
+     * @param count
+     */
+    public void setTrafficMsgCount(Label count) {
+        this._trafficMsgCount = count;
+    }   
+    
+    /**
      * Returns traffic messages.
      * @return _trafficMsgs
      */
@@ -380,11 +398,13 @@ public final class BottomMenu extends Element {
      */
     public void updateTrafficMsgs(ArrayList<String> messages) {
         var text = "";
+        var count = 0;
         
         for (var message : messages) {
-            message += System.lineSeparator();
-            text += message;
+            text += (message + System.lineSeparator());
+            count += 1;
         }
+        this.getTrafficMsgCount().setText(Integer.toString(count));
         this.getTrafficMsgs().setText(text);
     }
     
@@ -429,15 +449,8 @@ public final class BottomMenu extends Element {
         container.add(button2,  1, 0, 1, 1);
         container.add(button3,  2, 0, 1, 1);
         
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setHalignment(HPos.CENTER);
-        ColumnConstraints col2 = new ColumnConstraints();
-        col2.setHalignment(HPos.CENTER);
-        ColumnConstraints col3= new ColumnConstraints();
-        col3.setHalignment(HPos.CENTER);
-        container.getColumnConstraints().addAll(col1, col2, col3);
-        
         container.setHgap(10);
+        container.setAlignment(Pos.CENTER);
         
         return container;
     }
@@ -448,7 +461,8 @@ public final class BottomMenu extends Element {
         container.setMaxHeight(50);
         container.setMinHeight(50);
         container.setMaxWidth(700);
-        container.setStyle("-fx-background-color: transparent");
+        container.setStyle("-fx-background: transparent; -"
+                         + "fx-background-color: transparent;");
         container.setVbarPolicy(ScrollBarPolicy.NEVER);
         
         return container;
@@ -458,23 +472,25 @@ public final class BottomMenu extends Element {
      * Builds saveLoadContainer containing data and settings buttons.
      */
     private void _buildSettingsContainer() {
-        var container = new GridPane();
-        
-        var trafficMsgsLabel = new Label("TRAFFIC MESSAGES");
-        trafficMsgsLabel.setFont(this.getFont());
+        var container = new GridPane();      
         
         this.setTrafficMsgsContainer(this._buildTrafficMsgsContainer());
-
+        this.setTrafficMsgCount(new Label("0"));
         this.setTrafficMsgs(new Text(""));
         this.getTrafficMsgs().setWrappingWidth(650);
+        
+        var trafficMsgsLabel = new Label("TRAFFIC MESSAGES " + "(" 
+                + this.getTrafficMsgCount().getText() + ")");
+        trafficMsgsLabel.setFont(this.getFont());
+        
         // Code below is for demonstration purpose only.
         var trafficMsgs = new ArrayList<String>();
         trafficMsgs.add("Traffic message 1: Random text here and there...");
         trafficMsgs.add("Traffic message 2: Pew pew!");
         trafficMsgs.add("Traffic message 3: Testing out traffic messages.");
         trafficMsgs.add("Traffic message 4: Pow-wow!");
-        trafficMsgs.add("Traffic message 5");
-        trafficMsgs.add("Traffic message 6");
+        trafficMsgs.add("Traffic message 5: Testing testing...");
+        trafficMsgs.add("Traffic message 6: Dum da dum dum dum.");
         this.updateTrafficMsgs(trafficMsgs);
         // Code above is for demonstration purpose only.
         
@@ -574,6 +590,9 @@ public final class BottomMenu extends Element {
                 this.getLeftChartApplyButton(), 
                 this.getLeftChartSaveButton(), 
                 this.getLeftChartLoadButton()));
+        this.getLeftChartApplyButton().setDisable(true);
+        this.getLeftChartSaveButton().setDisable(true);
+        this.getLeftChartLoadButton().setDisable(true);
         this.setRightChartApplyButton(this._buildButton("APPLY"));
         this.setRightChartSaveButton(this._buildButton("SAVE"));
         this.setRightChartLoadButton(this._buildButton("LOAD"));
@@ -581,6 +600,9 @@ public final class BottomMenu extends Element {
                 this.getRightChartApplyButton(), 
                 this.getRightChartSaveButton(), 
                 this.getRightChartLoadButton()));
+        this.getRightChartApplyButton().setDisable(true);
+        this.getRightChartSaveButton().setDisable(true);
+        this.getRightChartLoadButton().setDisable(true);
         this._buildSettingsContainer();
         
         // Column | row | column span | row span    

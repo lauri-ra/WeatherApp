@@ -86,8 +86,14 @@ public class Controller implements EventListener {
         */
         bottomMenu.getLeftOptionComboBox().setDisable(false);
         bottomMenu.getLeftChartTypeComboBox().setDisable(false);
+        bottomMenu.getLeftChartApplyButton().setDisable(false);
+        bottomMenu.getLeftChartSaveButton().setDisable(false);
+        bottomMenu.getLeftChartLoadButton().setDisable(false);
         bottomMenu.getRightOptionComboBox().setDisable(false);
         bottomMenu.getRightChartTypeComboBox().setDisable(false);
+        bottomMenu.getRightChartApplyButton().setDisable(false);
+        bottomMenu.getRightChartSaveButton().setDisable(false);
+        bottomMenu.getRightChartLoadButton().setDisable(false);
     }
 
     @Override
@@ -108,8 +114,14 @@ public class Controller implements EventListener {
         topMenu.updateErrorMsg("");
         bottomMenu.getLeftOptionComboBox().setDisable(true);
         bottomMenu.getLeftChartTypeComboBox().setDisable(true);
+        bottomMenu.getLeftChartApplyButton().setDisable(true);
+        bottomMenu.getLeftChartSaveButton().setDisable(true);
+        bottomMenu.getLeftChartLoadButton().setDisable(true);        
         bottomMenu.getRightOptionComboBox().setDisable(true);
         bottomMenu.getRightChartTypeComboBox().setDisable(true);
+        bottomMenu.getRightChartApplyButton().setDisable(true);
+        bottomMenu.getRightChartSaveButton().setDisable(true);
+        bottomMenu.getRightChartLoadButton().setDisable(true);
     }    
 
      @Override
