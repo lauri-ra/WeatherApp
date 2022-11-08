@@ -42,8 +42,7 @@ public class App extends Application {
         view.setStage(stage);
 
         controller.Begin();
-        //controller.TestController();
-        controller.DigiTrafficController();
+        controller.TestController();
     }
 
     public static void main(String[] args) {
