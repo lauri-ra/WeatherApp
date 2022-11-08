@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.net.URI;
 import java.net.http.*;
+import java.util.stream.Collectors;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,12 +22,25 @@ public class DigiTrafficTest implements IDataSource {
 
     public DigiTrafficTest() {
         variables = new ArrayList<>();
-        variables.add(new Variable("DigiTraffic1", "Unit1"));
-        variables.add(new Variable("DigiTraffic2", "Unit 2"));
+        variables.add(new Variable("TrafficMessages", "int"));
+        variables.add(new Variable("Tasks", "Unit"));
+        variables.add(new Variable("RoadCondition", "Unit"));
+
     }
 
-    private HashMap<String, Integer> GetTasks() {
-        HashMap<String, Integer> tasks = new HashMap<>();
+    private ArrayList<DataPoint> ToList(HashMap<String, Double> tasks) {
+        ArrayList<DataPoint> data = new ArrayList<>();
+
+        tasks.forEach((key, value) -> {
+            data.add(new DataPoint(key, value));
+        });
+
+        return data;
+    }
+
+
+    private ArrayList<DataPoint> GetTasks() {
+        HashMap<String, Double> tasks = new HashMap<>();
 
         String url = baseURL + "/maintenance/v1/tracking/routes?endFrom=2022-01-19T09%3A00%3A00Z&endBefore=2022-01-19T14%3A00%3A00Z&xMin=21&yMin=61&xMax=22&yMax=62&taskId=&domain=state-roads";
         HttpResponse<String> response = GetRequest(url);
@@ -40,17 +55,17 @@ public class DigiTrafficTest implements IDataSource {
             String task = taskArray.getString(0);
 
             if(!tasks.containsKey(task)) {
-                tasks.put(task, 1);
+                tasks.put(task, 1.00);
             }
             else {
-                tasks.put(task, tasks.get(task) + 1);
+                tasks.put(task, tasks.get(task) + 1.00);
             }
         }
 
-        return tasks;
+        return ToList(tasks);
     }
 
-    private int GetTrafficMessages() {
+    private double GetTrafficMessages() {
         String url = baseURL + "/traffic-message/v1/messages?inactiveHours=0&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT";
         HttpResponse<String> response = GetRequest(url);
 
@@ -133,17 +148,22 @@ public class DigiTrafficTest implements IDataSource {
 
     @Override
     public List<DataPoint> GetData(Variable variable, String coordinates, LocalDate startDate, LocalDate endDate) {
-
-        HashMap<String, Integer> taskMap = GetTasks();
-        System.out.println(taskMap);
-
-        int messages = GetTrafficMessages();
-        System.out.println(messages);
-
-        HashMap<String, ArrayList<String>> condition = GetRoadCondition();
-        System.out.println(condition);
-
         ArrayList<DataPoint> data = new ArrayList<>();
+
+        if(variable.getName() == "TrafficMessages") {
+            double messages = GetTrafficMessages();
+            data.add(new DataPoint("amount", messages));
+        }
+
+        if (variable.getName() == "Tasks") {
+            data = GetTasks();
+        }
+
+        if(variable.getName() == "RoadConditions") {
+            HashMap<String, ArrayList<String>> condition = GetRoadCondition();
+            System.out.println(condition);
+        }
+
         return data;
     }
 }
