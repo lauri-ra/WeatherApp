@@ -2,6 +2,10 @@ package fi.tuni.weatherapp;
 
 import java.time.LocalDate;
 import java.time.Period;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 
 public class Controller implements EventListener {
     
@@ -131,8 +135,8 @@ public class Controller implements EventListener {
         var endDate = topMenu.getEndDatePicker().getValue();
         var average = topMenu.getAverageRadioButton().isSelected();
         var minmax = topMenu.getMinMaxRadioButton().isSelected();
-        var value = bottomMenu.getLeftOptionComboBox().getValue();
-        var chartType = bottomMenu.getLeftChartTypeComboBox().getValue();
+        var value = bottomMenu.getLeftOptionComboBox().getValue().toString();
+        var chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
         
         /* 
         Update the chart and traffic messages according to the selections using 
@@ -167,7 +171,6 @@ public class Controller implements EventListener {
             }
         }
         */
-        
         System.out.println("Left chart apply handled!");        
     }
 

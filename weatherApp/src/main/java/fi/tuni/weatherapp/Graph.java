@@ -9,13 +9,15 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
-import javafx.scene.chart.XYChart.Series;
 import javafx.scene.layout.GridPane;
 
 public final class Graph extends Element {
     private GridPane _innerContainer;
     private XYChart _leftChart;
     private XYChart _rightChart;
+    public static final String LINE = "Line chart";
+    public static final String BAR = "Bar chart";
+    public static final String SCATTER = "Scatter chart";
     
     /**
      * Constructor
@@ -24,12 +26,6 @@ public final class Graph extends Element {
         this.setInnerContainer(new GridPane());
         this._initCharts();
         this._buildInnerContainer();
-    }
-    
-    public enum ChartType {
-        LINE,
-        BAR,
-        SCATTER
     }
     
     public enum Side {
@@ -62,7 +58,7 @@ public final class Graph extends Element {
     }
     
     /**
-     * Sets left chart (line chart).
+     * Sets left chart.
      * @param chart 
      */
     public void setLeftChart(XYChart chart) {
@@ -78,7 +74,7 @@ public final class Graph extends Element {
     }
     
     /**
-     * Sets right chart (bar chart).
+     * Sets right chart.
      * @param chart 
      */
     public void setRightChart(XYChart chart) {
@@ -106,7 +102,7 @@ public final class Graph extends Element {
      * @param tickUnit
      * @param data 
      */
-    public void updateChart(Side side, ChartType type, String label, 
+    public void updateChart(Side side, String type, String label, 
             String xLegend, String yLegend, double lowerBound, 
             double upperBound, double tickUnit, 
             ObservableList<XYChart.Series<String, Double>> data) {
@@ -132,10 +128,18 @@ public final class Graph extends Element {
         chart.setData(data);
         
         if (side == Side.LEFT) {
+            if (this.getLeftChart() != null) {
+                getInnerContainer().getChildren().remove(this.getLeftChart());
+            }
             this.setLeftChart(chart);
+            getInnerContainer().add(chart,  0, 0, 1, 1);
         }
         else {
+            if (this.getRightChart() != null) {
+                getInnerContainer().getChildren().remove(this.getRightChart());
+            }
             this.setRightChart(chart);
+            getInnerContainer().add(chart,  1, 0, 1, 1);
         }
     }
     
@@ -192,34 +196,11 @@ public final class Graph extends Element {
         ObservableList<XYChart.Series<String, Double>> data = 
                 FXCollections.observableArrayList();
         
-        Series<String, Double> values1 = new Series<>();
-        values1.getData().add(new XYChart.Data("2022-10-25", 8));
-        values1.getData().add(new XYChart.Data("2022-10-26", 4));
-        values1.getData().add(new XYChart.Data("2022-10-27", 3));
-        values1.getData().add(new XYChart.Data("2022-10-28", 0));
-        values1.getData().add(new XYChart.Data("2022-10-29", -2));
-        
-        data.add(values1);
-        // Code above is for demonstration purpose only.
-        
-        this.updateChart(Side.LEFT, ChartType.LINE, "Temperature", "Date", "°C", 
-        -15, 15, 1, data);
-        
-        // Code below is for demonstration purpose only.
-        data.clear();
-        
-        Series<String, Double> values2 = new Series<>();
-        values2.getData().add(new XYChart.Data("2022-10-25", 0));
-        values2.getData().add(new XYChart.Data("2022-10-26", 1));
-        values2.getData().add(new XYChart.Data("2022-10-27", 3));
-        values2.getData().add(new XYChart.Data("2022-10-28", 2));
-        values2.getData().add(new XYChart.Data("2022-10-29", 0));
-        
-        data.add(values2);
-        // Code above is for demonstration purpose only.
-        
-        this.updateChart(Side.RIGHT, ChartType.BAR, "Precipitation", "Date", "mm", 
-                0, 15, 1, data);
+        this.updateChart(Side.LEFT, LINE, "Chart 1", "x-values", "y-values", 
+        -5, 5, 1, data);
+
+        this.updateChart(Side.RIGHT, BAR, "Chart 2", "x-values", "y-values", 
+                0, 5, 1, data);
     }
     
     /**
@@ -227,9 +208,6 @@ public final class Graph extends Element {
      */
     private void _buildInnerContainer() {
         // Column | row | column span | row span
-        getInnerContainer().add(getLeftChart(),     0, 0, 1, 1);
-        getInnerContainer().add(getRightChart(),    1, 0, 1, 1);
-        
         getInnerContainer().setMinWidth(1050);
         getInnerContainer().setMaxWidth(1050);
         getInnerContainer().setVgap(15);
