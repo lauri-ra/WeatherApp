@@ -554,6 +554,7 @@ public final class BottomMenu extends Element {
         options.add("Precipitation");
         options.add("Winter slipperiness");
         options.add("Overall condition");
+        options.add("Maintenance tasks");
         // Code above is for demonstration purpose only.
         
         ArrayList<String> charts = new ArrayList();

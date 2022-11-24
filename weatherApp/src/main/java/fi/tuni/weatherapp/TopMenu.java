@@ -541,13 +541,13 @@ public final class TopMenu extends Element {
     private void _setEndDateClickEvent() {
         this.getEndDatePicker().setOnMouseClicked(event -> {
             this.getForecastComboBox().setDisable(true);
-            this.getAverageRadioButton().setDisable(true);
-            this.getMinMaxRadioButton().setDisable(true);
+            //this.getAverageRadioButton().setDisable(true);
+            //this.getMinMaxRadioButton().setDisable(true);
         });   
         this.getEndDatePicker().getEditor().setOnMouseClicked(event -> {
             this.getForecastComboBox().setDisable(true);
-            this.getAverageRadioButton().setDisable(true);
-            this.getMinMaxRadioButton().setDisable(true);
+            //this.getAverageRadioButton().setDisable(true);
+            //this.getMinMaxRadioButton().setDisable(true);
         });
     }   
     
@@ -557,7 +557,7 @@ public final class TopMenu extends Element {
     private void _setAverageRadioButtonClickEvent() {
         this.getAverageRadioButton().setOnAction(event -> {
             this.getEndDatePicker().setValue(null);
-            this.getEndDatePicker().setDisable(true);
+            //this.getEndDatePicker().setDisable(true);
             this.getForecastComboBox().setValue(null);
             this.getForecastComboBox().setDisable(true);
             this.getMinMaxRadioButton().setDisable(true);
