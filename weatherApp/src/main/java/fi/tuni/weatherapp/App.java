@@ -43,6 +43,7 @@ public class App extends Application {
 
         controller.Begin();
         controller.TestController();
+        controller.TrafficMessageController();
     }
 
     public static void main(String[] args) {

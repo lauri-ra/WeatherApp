@@ -2,8 +2,11 @@ package fi.tuni.weatherapp;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
 
@@ -44,9 +47,92 @@ public class Controller implements EventListener {
         System.out.println(newMessage);
         //view.UpdateMessage(newMessage);
     }
+
+    public void ForecastController(String forecast, String coordinates) {
+        String hour = forecast.replace(" hours", "");
+        System.out.println("forecast for hour " + hour);
+
+        List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
+                new Variable("forecast", hour),
+                coordinates,
+                null, null);
+
+        for (DataPoint point : data) {
+            System.out.println(point.getX());
+            System.out.println(point.getY());
+        }
+    }
+
+    public void ConditionController(String chartType, String value, String coordinates, LocalDate startDate, LocalDate endDate) {
+        List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
+                new Variable(value, "b"),
+                coordinates,
+                startDate, endDate);
+
+        ObservableList<XYChart.Series<String, Double>> stuff =
+                FXCollections.observableArrayList();
+
+        Series<String, Double> values = new Series<>();
+
+        for (DataPoint point : data) {
+            System.out.print(point.getX());
+            System.out.print(" = ");
+            System.out.print(point.getY());
+            System.out.println("");
+
+            values.getData().add(new XYChart.Data(point.getX(), point.getY()));
+        }
+
+        stuff.add(values);
+
+        view.getGraph().updateChart(Graph.Side.LEFT, chartType, "test", "Type", "Hours",
+                0, 14, 2, stuff);
+    }
+
+    public void TrafficMessageController() {
+        DigiTrafficTest digi = new DigiTrafficTest();
+        ArrayList<String> data = digi.GetTrafficMessages();
+
+        view.getBottomMenu().updateTrafficMsgs(data);
+    }
+
+    public void TaskController(String charType, String value, String coordinates, LocalDate startDate, LocalDate endDate) {
+        List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
+                new Variable(value, "b"),
+                coordinates,
+                startDate, endDate);
+
+        System.out.println("TASKS:");
+
+        ObservableList<XYChart.Series<String, Double>> stuff =
+                FXCollections.observableArrayList();
+
+        Series<String, Double> values = new Series<>();
+
+        double upper = 0;
+
+        for (DataPoint point : data) {
+            System.out.print(point.getX());
+            System.out.print(" = ");
+            System.out.print(point.getY());
+            System.out.println("");
+
+            if(point.getY() > upper) {
+                upper = point.getY();
+            }
+
+            values.getData().add(new XYChart.Data(point.getX(), point.getY()));
+        }
+
+        stuff.add(values);
+
+        view.getGraph().updateChart(Graph.Side.LEFT, charType, "Tasks", "Task type", "Amount",
+                0, upper + 200, 100, stuff);
+    }
     
     @Override
     public void handleTopApply() {
+
         /*
         This function should check that all the choices are valid and if not,
         give the user appropriate error message using updateErrorMsg function in 
@@ -59,7 +145,7 @@ public class Controller implements EventListener {
         var coordinates = topMenu.getCoordinatesTextField().getText();
         var startDate = topMenu.getStartDatePicker().getValue();
         var endDate = topMenu.getEndDatePicker().getValue();
-        
+
         if (coordinates.isEmpty()) {
             topMenu.updateErrorMsg("Coordinates can not be empty!");
         }
@@ -83,7 +169,16 @@ public class Controller implements EventListener {
                         + "cannot be more than 7 days!");
             }
         }
-        
+
+        if(topMenu.getAverageRadioButton().isSelected()) {
+            TaskController(Graph.BAR, "Task averages", coordinates, startDate, endDate);
+        }
+
+        if(endDate == null && !topMenu.getAverageRadioButton().isSelected()) {
+            var forecast = topMenu.getForecastComboBox().getValue().toString();
+            ForecastController(forecast, coordinates);
+        }
+
         /*
         If all the choices are valid, allow the user to use the
         combo boxes in the bottom menu.
@@ -137,8 +232,22 @@ public class Controller implements EventListener {
         var minmax = topMenu.getMinMaxRadioButton().isSelected();
         var value = bottomMenu.getLeftOptionComboBox().getValue().toString();
         var chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
+
+         if(value.equals("Precipitation") || value.equals("Winter slipperiness") || value.equals("Overall condition")) {
+             ConditionController(chartType, value, coordinates, startDate, endDate);
+         }
+
+         if (value.equals("Maintenance tasks")) {
+             if(!average) {
+                 TaskController(chartType, "Task types", coordinates, startDate, endDate);
+             }
+             else {
+                 // todo Call task controller for averages here
+             }
+
+         }
         
-        /* 
+        /*
         Update the chart and traffic messages according to the selections using 
         updateChart function in Graph class. -> view.getGraph().updateChart(...). 
         Data should be given to the function in the form of 
