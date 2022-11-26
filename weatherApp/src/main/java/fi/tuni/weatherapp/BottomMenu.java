@@ -544,18 +544,6 @@ public final class BottomMenu extends Element {
         var chart2TypeLabel = new Label("CHART 2 TYPE");
         chart2TypeLabel.setFont(this.getFont());
         
-        // Code below is for demonstration purpose only.
-        ArrayList<String> options = new ArrayList();
-        options.add("Temperature");
-        options.add("Predicted temperature");
-        options.add("Wind");
-        options.add("Predicted wind");
-        options.add("Cloudiness");
-        options.add("Precipitation");
-        options.add("Winter slipperiness");
-        options.add("Overall condition");
-        options.add("Maintenance tasks");
-        // Code above is for demonstration purpose only.
         
         ArrayList<String> charts = new ArrayList();
         charts.add("Line chart");
@@ -563,9 +551,6 @@ public final class BottomMenu extends Element {
         charts.add("Scatter chart");
         
         this.setLeftOptionComboBox(this._buildComboBox());
-        // Code below is for demonstration purpose only.
-        this.populateComboBox(options, this.getLeftOptionComboBox());
-        // Code above is for demonstration purpose only.
         this.getLeftOptionComboBox().setDisable(true);
         
         this.setLeftChartTypeComboBox(this._buildComboBox());
@@ -574,9 +559,6 @@ public final class BottomMenu extends Element {
         this.getLeftChartTypeComboBox().setDisable(true);
         
         this.setRightOptionComboBox(this._buildComboBox());
-        // Code below is for demonstration purpose only.
-        this.populateComboBox(options, this.getRightOptionComboBox());
-        // Code above is for demonstration purpose only.
         this.getRightOptionComboBox().setDisable(true);
         
         this.setRightChartTypeComboBox(this._buildComboBox());
