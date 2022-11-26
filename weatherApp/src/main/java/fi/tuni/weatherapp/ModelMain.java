@@ -13,6 +13,10 @@ public class ModelMain {
         dataSources.put(dataSource.GetName(), dataSource);
     }
     
+    public ArrayList<String> GetMessages(String dataSourceName) {
+        return dataSources.get(dataSourceName).GetTrafficMessages();
+    }
+    
     public List<String> GetDataSourceNames(){
         ArrayList<String> dataSourceNames = new ArrayList<>();
         

@@ -43,7 +43,7 @@ public class App extends Application {
                 .getRightOptionComboBox());
         
         
-        controller = new Controller(view, model);
+        controller = new Controller(view, model, "DigiTrafficTest");
     }
     
     @Override

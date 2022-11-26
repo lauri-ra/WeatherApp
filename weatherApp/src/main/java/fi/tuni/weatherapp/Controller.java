@@ -17,13 +17,15 @@ public class Controller implements EventListener {
     private Graph graph;
     private BottomMenu bottomMenu;
     private ModelMain model;
+    private String messageSourceName = "";
 
-    public Controller(View view, ModelMain model) {
+    public Controller(View view, ModelMain model, String messageSourceName) {
         this.view = view;
         this.topMenu = view.getTopMenu();
         this.graph = view.getGraph();
         this.bottomMenu = view.getBottomMenu();
         this.model = model;
+        this.messageSourceName = messageSourceName;
     }
     
     public void Begin(){
@@ -90,8 +92,9 @@ public class Controller implements EventListener {
     }
 
     public void TrafficMessageController() {
-        DigiTrafficTest digi = new DigiTrafficTest();
-        ArrayList<String> data = digi.GetTrafficMessages();
+        //DigiTrafficTest digi = new DigiTrafficTest();
+        //ArrayList<String> data = digi.GetTrafficMessages();
+        ArrayList<String> data = this.model.GetMessages(messageSourceName);
 
         view.getBottomMenu().updateTrafficMsgs(data);
     }
@@ -143,6 +146,7 @@ public class Controller implements EventListener {
         topMenu.updateErrorMsg("");
         
         var coordinates = topMenu.getCoordinatesTextField().getText();
+        System.out.println(coordinates);
         var startDate = topMenu.getStartDatePicker().getValue();
         var endDate = topMenu.getEndDatePicker().getValue();
 
@@ -169,11 +173,11 @@ public class Controller implements EventListener {
                         + "cannot be more than 7 days!");
             }
         }
-
+        /*
         if(topMenu.getAverageRadioButton().isSelected()) {
             TaskController(Graph.BAR, "Task averages", coordinates, startDate, endDate);
         }
-
+        */
         if(endDate == null && !topMenu.getAverageRadioButton().isSelected()) {
             var forecast = topMenu.getForecastComboBox().getValue().toString();
             ForecastController(forecast, coordinates);

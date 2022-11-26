@@ -90,7 +90,8 @@ public class DigiTrafficTest implements IDataSource {
         return data;
 
     }
-
+    
+    @Override
     public ArrayList<String> GetTrafficMessages() {
         ArrayList<String> data = new ArrayList<>();
 

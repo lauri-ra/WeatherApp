@@ -147,6 +147,11 @@ public class FMIDataSource implements IDataSource {
     public String GetName() {
         return name;
     }
+    
+    @Override
+    public ArrayList<String> GetTrafficMessages() {
+        return new ArrayList<>();
+    }
 
     @Override
     public List<Variable> GetVariables() {
