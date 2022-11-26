@@ -24,20 +24,6 @@ public class Controller implements EventListener {
         this.graph = view.getGraph();
         this.bottomMenu = view.getBottomMenu();
         this.model = model;
-        
-        
-        // Update available variables to dropdowns
-        for (String dataSourceName: this.model.GetDataSourceNames()) {
-            ArrayList<String> options = new ArrayList<>();
-            List<Variable> dataSourceVariables = this.model.GetVariables(dataSourceName);
-            
-            for (Variable variable : dataSourceVariables) {
-                System.out.println(dataSourceName + ": " + variable.getName());
-                options.add(dataSourceName + ": " + variable.getName());
-                this.bottomMenu.populateComboBox(options, this.bottomMenu.getLeftOptionComboBox());
-                this.bottomMenu.populateComboBox(options, this.bottomMenu.getRightOptionComboBox());
-            }
-        }
     }
     
     public void Begin(){
