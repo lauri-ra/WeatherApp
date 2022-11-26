@@ -19,7 +19,6 @@ public class App extends Application {
         view = new View();
         model = new ModelMain();
         
-        //model.AddDataSource(new TestDataSource());
         model.AddDataSource(new FMIDataSource());
         model.AddDataSource(new DigiTrafficTest());
         
@@ -54,8 +53,6 @@ public class App extends Application {
         view.setStage(stage);
 
         controller.Begin();
-        controller.TestController();
-        controller.TrafficMessageController();
     }
 
     public static void main(String[] args) {

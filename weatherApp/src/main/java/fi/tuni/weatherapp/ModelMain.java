@@ -33,6 +33,10 @@ public class ModelMain {
         return variables;
     }
     
+    public Variable GetVariable(String dataSourceName, String variableName) {
+        return dataSources.get(dataSourceName).GetVariable(variableName);
+    }
+    
     public List<DataPoint> GetVariableData(String dataSourceName, 
             Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {

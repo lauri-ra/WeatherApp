@@ -3,6 +3,8 @@ package fi.tuni.weatherapp;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,26 +33,9 @@ public class Controller implements EventListener {
     public void Begin(){
         view.render();
     }
-    
-    public void TestController(){
-        
-        String newMessage = "";
-        for (String dataSourceName: model.GetDataSourceNames() ) {
-            newMessage  += dataSourceName + ": \n";
-            for (Variable variable : model.GetVariables(dataSourceName)) {
-                newMessage += variable.getName() + ", " + variable.getUnit() + "\n";
-            }
-        }
-        for (DataPoint dataPoint : model.GetVariableData("DigiTrafficTest",
-                new Variable("a","b"), "coordinates", 
-                LocalDate.MAX, LocalDate.MAX)) {
-            newMessage += dataPoint.getX() + ", " + dataPoint.getY() + "\n";
-        }
-        System.out.println(newMessage);
-        //view.UpdateMessage(newMessage);
-    }
 
     public void ForecastController(String forecast, String coordinates) {
+        /*
         String hour = forecast.replace(" hours", "");
         System.out.println("forecast for hour " + hour);
 
@@ -63,9 +48,11 @@ public class Controller implements EventListener {
             System.out.println(point.getX());
             System.out.println(point.getY());
         }
+        */
     }
 
     public void ConditionController(String chartType, String value, String coordinates, LocalDate startDate, LocalDate endDate) {
+        /*
         List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
                 new Variable(value, "b"),
                 coordinates,
@@ -89,17 +76,16 @@ public class Controller implements EventListener {
 
         view.getGraph().updateChart(Graph.Side.LEFT, chartType, "test", "Type", "Hours",
                 0, 14, 2, stuff);
+        */
     }
 
-    public void TrafficMessageController() {
-        //DigiTrafficTest digi = new DigiTrafficTest();
-        //ArrayList<String> data = digi.GetTrafficMessages();
+    public void UpdateTrafficMessages() {
         ArrayList<String> data = this.model.GetMessages(messageSourceName);
-
         view.getBottomMenu().updateTrafficMsgs(data);
     }
 
     public void TaskController(String charType, String value, String coordinates, LocalDate startDate, LocalDate endDate) {
+        /*
         List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
                 new Variable(value, "b"),
                 coordinates,
@@ -131,6 +117,7 @@ public class Controller implements EventListener {
 
         view.getGraph().updateChart(Graph.Side.LEFT, charType, "Tasks", "Task type", "Amount",
                 0, upper + 200, 100, stuff);
+        */
     }
     
     @Override
@@ -146,12 +133,12 @@ public class Controller implements EventListener {
         topMenu.updateErrorMsg("");
         
         var coordinates = topMenu.getCoordinatesTextField().getText();
-        System.out.println(coordinates);
         var startDate = topMenu.getStartDatePicker().getValue();
         var endDate = topMenu.getEndDatePicker().getValue();
 
         if (coordinates.isEmpty()) {
             topMenu.updateErrorMsg("Coordinates can not be empty!");
+            return;
         }
         /*
         Check here if the coordinates are valid. If not, give the user an
@@ -161,6 +148,7 @@ public class Controller implements EventListener {
         if (endDate != null) {
             if (startDate.isAfter(endDate)) {
                 topMenu.updateErrorMsg("Start date cannot be after end date!");
+                return;
             }
             
             Period period = Period.between(startDate, endDate);
@@ -171,17 +159,23 @@ public class Controller implements EventListener {
             if (period.getDays() > 7) {
                 topMenu.updateErrorMsg("The time between start date and end date "
                         + "cannot be more than 7 days!");
+                return;
             }
+        }
+        if (endDate == null && topMenu.getForecastComboBox().getValue() == null) {
+            topMenu.updateErrorMsg("Need to select endDate or forecast length.");
+            return;
         }
         /*
         if(topMenu.getAverageRadioButton().isSelected()) {
             TaskController(Graph.BAR, "Task averages", coordinates, startDate, endDate);
         }
-        */
+        
         if(endDate == null && !topMenu.getAverageRadioButton().isSelected()) {
             var forecast = topMenu.getForecastComboBox().getValue().toString();
             ForecastController(forecast, coordinates);
         }
+        */
 
         /*
         If all the choices are valid, allow the user to use the
@@ -197,6 +191,10 @@ public class Controller implements EventListener {
         bottomMenu.getRightChartApplyButton().setDisable(false);
         bottomMenu.getRightChartSaveButton().setDisable(false);
         bottomMenu.getRightChartLoadButton().setDisable(false);
+        
+        UpdateTrafficMessages();
+        
+        
     }
 
     @Override
@@ -226,31 +224,95 @@ public class Controller implements EventListener {
         bottomMenu.getRightChartSaveButton().setDisable(true);
         bottomMenu.getRightChartLoadButton().setDisable(true);
     }    
-
-     @Override
-    public void handleLeftChartApply() {
-        var coordinates = topMenu.getCoordinatesTextField().getText();
+    
+    private void UpdateChart(String side) {
+        String coordinates = topMenu.getCoordinatesTextField().getText();
         var startDate = topMenu.getStartDatePicker().getValue();
         var endDate = topMenu.getEndDatePicker().getValue();
-        var average = topMenu.getAverageRadioButton().isSelected();
-        var minmax = topMenu.getMinMaxRadioButton().isSelected();
-        var value = bottomMenu.getLeftOptionComboBox().getValue().toString();
-        var chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
-
-         if(value.equals("Precipitation") || value.equals("Winter slipperiness") || value.equals("Overall condition")) {
-             ConditionController(chartType, value, coordinates, startDate, endDate);
-         }
-
-         if (value.equals("Maintenance tasks")) {
-             if(!average) {
-                 TaskController(chartType, "Task types", coordinates, startDate, endDate);
-             }
-             else {
-                 // todo Call task controller for averages here
-             }
-
-         }
+        boolean average = topMenu.getAverageRadioButton().isSelected();
+        boolean minmax = topMenu.getMinMaxRadioButton().isSelected();
+        String value;
+        String chartType;
+        if ("left".equals(side)) {
+            value = bottomMenu.getLeftOptionComboBox().getValue().toString();
+            chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
+        }
+        else {
+            value = bottomMenu.getRightOptionComboBox().getValue().toString();
+            chartType = bottomMenu.getRightChartTypeComboBox().getValue().toString();
+        }
+        String[] parts = value.split(":");
+        String dataSourceName = parts[0];
+        String variableName = parts[1].substring(1);
         
+        Variable variable = this.model.GetVariable(dataSourceName, variableName);
+        
+        List<DataPoint> rawData = model.GetVariableData(dataSourceName,
+                variable,
+                coordinates,
+                startDate, endDate);
+        
+        //System.out.println(data);
+        
+        ObservableList<XYChart.Series<String, Double>> data = FXCollections.observableArrayList();
+                
+        Series<String, Double> values = new Series<>();
+        for (DataPoint dataPoint: rawData) {
+            values.getData().add(new XYChart.Data(dataPoint.getX().substring(0,3), dataPoint.getY()));
+        }
+        
+        data.add(values);
+        
+        DataPoint max;
+        int maxValue = 10; // Default for cases with no data
+        
+        if (rawData.size() != 0) {
+            max = Collections.max(rawData, Comparator.comparing(DataPoint::getY));
+            maxValue = (int) Math.ceil(max.getY()) + 2;
+        }
+
+        
+        
+        if ("left".equals(side)) {
+            view.getGraph().updateChart(Graph.Side.LEFT, chartType, 
+                variable.getName(), variable.getXType(), variable.getUnit(), 
+                0, maxValue, maxValue/10, data);
+        }
+        else {
+            view.getGraph().updateChart(Graph.Side.RIGHT, chartType, 
+                variable.getName(), variable.getXType(), variable.getUnit(), 
+                0, maxValue, maxValue/10, data);
+        }
+
+    }
+    
+    @Override
+    public void handleLeftChartApply() {
+        
+        UpdateChart("left");
+        /*
+        String coordinates = topMenu.getCoordinatesTextField().getText();
+        var startDate = topMenu.getStartDatePicker().getValue();
+        var endDate = topMenu.getEndDatePicker().getValue();
+        boolean average = topMenu.getAverageRadioButton().isSelected();
+        boolean minmax = topMenu.getMinMaxRadioButton().isSelected();
+        String value = bottomMenu.getLeftOptionComboBox().getValue().toString();
+        String chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
+
+        if(value.equals("Precipitation") || value.equals("Winter slipperiness") || value.equals("Overall condition")) {
+            ConditionController(chartType, value, coordinates, startDate, endDate);
+        }
+
+        if (value.equals("Maintenance tasks")) {
+            if(!average) {
+                TaskController(chartType, "Task types", coordinates, startDate, endDate);
+            }
+            else {
+                // todo Call task controller for averages here
+            }
+
+        }
+        */
         /*
         Update the chart and traffic messages according to the selections using 
         updateChart function in Graph class. -> view.getGraph().updateChart(...). 
@@ -306,6 +368,8 @@ public class Controller implements EventListener {
 
     @Override
     public void handleRightChartApply() {
+        UpdateChart("right");
+        /*
         var coordinates = topMenu.getCoordinatesTextField().getText();
         var startDate = topMenu.getStartDatePicker().getValue();
         var endDate = topMenu.getEndDatePicker().getValue();
@@ -313,7 +377,7 @@ public class Controller implements EventListener {
         var minmax = topMenu.getMinMaxRadioButton().isSelected();
         var value = bottomMenu.getLeftOptionComboBox().getValue();
         var chartType = bottomMenu.getLeftChartTypeComboBox().getValue();
-        
+        */
         /* 
         Update the chart and traffic messages according to the selections using 
         updateChart function in Graph class. -> view.getGraph().updateChart(...). 
