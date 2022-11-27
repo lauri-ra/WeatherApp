@@ -194,7 +194,32 @@ public class Controller implements EventListener {
         
         UpdateTrafficMessages();
         
+        if (topMenu.getForecastComboBox().getValue() != null) {
+            UpdateAvailableVariables(true);
+        }
+        else {
+            UpdateAvailableVariables(false);
+        }
         
+        
+    }
+    
+    private void UpdateAvailableVariables(boolean isForecast) {
+        ArrayList<String> options = new ArrayList<>();
+        for (String dataSourceName: model.GetDataSourceNames()) {
+            List<Variable> dataSourceVariables = model.GetVariables(dataSourceName);
+            
+            for (Variable variable : dataSourceVariables) {
+                if (variable.isForecast() == isForecast) {
+                    options.add(dataSourceName + ": " + variable.getName());
+                }
+            }
+        }
+        
+        view.getBottomMenu().populateComboBox(options, view.getBottomMenu()
+                .getLeftOptionComboBox());
+        view.getBottomMenu().populateComboBox(options, view.getBottomMenu()
+                .getRightOptionComboBox());
     }
 
     @Override
@@ -257,13 +282,19 @@ public class Controller implements EventListener {
         ObservableList<XYChart.Series<String, Double>> data = FXCollections.observableArrayList();
                 
         Series<String, Double> values = new Series<>();
-        for (DataPoint dataPoint: rawData) {
-            String x = dataPoint.getX();
-            double y = dataPoint.getY();
-            if (x.length() > 14) {
-                x = x.substring(0,13);
+        
+        if (rawData.size() == 0) {
+            values.getData().add(new XYChart.Data("no data available", 1));
+        }
+        else {
+            for (DataPoint dataPoint: rawData) {
+                String x = dataPoint.getX();
+                double y = dataPoint.getY();
+                if (x.length() > 14) {
+                    x = x.substring(0,13);
+                }
+                values.getData().add(new XYChart.Data(x, y));
             }
-            values.getData().add(new XYChart.Data(x, y));
         }
         
         data.add(values);
@@ -295,62 +326,6 @@ public class Controller implements EventListener {
     public void handleLeftChartApply() {
         
         UpdateChart("left");
-        /*
-        String coordinates = topMenu.getCoordinatesTextField().getText();
-        var startDate = topMenu.getStartDatePicker().getValue();
-        var endDate = topMenu.getEndDatePicker().getValue();
-        boolean average = topMenu.getAverageRadioButton().isSelected();
-        boolean minmax = topMenu.getMinMaxRadioButton().isSelected();
-        String value = bottomMenu.getLeftOptionComboBox().getValue().toString();
-        String chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
-
-        if(value.equals("Precipitation") || value.equals("Winter slipperiness") || value.equals("Overall condition")) {
-            ConditionController(chartType, value, coordinates, startDate, endDate);
-        }
-
-        if (value.equals("Maintenance tasks")) {
-            if(!average) {
-                TaskController(chartType, "Task types", coordinates, startDate, endDate);
-            }
-            else {
-                // todo Call task controller for averages here
-            }
-
-        }
-        */
-        /*
-        Update the chart and traffic messages according to the selections using 
-        updateChart function in Graph class. -> view.getGraph().updateChart(...). 
-        Data should be given to the function in the form of 
-        ObservableList<XYChart.Series<String, Double>>
-        
-        Such lists can be created with
-        
-        ObservableList<XYChart.Series<String, Double>> data = 
-        FXCollections.observableArrayList();
-        
-        And data can be added to it as shown below.
-        
-        Series<String, Double> values = new Series<>();
-        values.getData().add(new XYChart.Data("2022-10-25", 8));
-        values.getData().add(new XYChart.Data("2022-10-26", 4));
-        values.getData().add(new XYChart.Data("2022-10-27", 3));
-        values.getData().add(new XYChart.Data("2022-10-28", 0));
-        values.getData().add(new XYChart.Data("2022-10-29", -2));
-        
-        data.add(values);
-        
-        NOTE! Because both charts provide traffic messages to the same window,
-        and the charts might have different dates (due to the load
-        option), this function should check x values for both charts in
-        order to show all relevant traffic messages. The values can be checked,
-        for example, as shown below...
-
-        for (var data : values.getData()) {
-            var x = data.getXValue()...
-            }
-        }
-        */
         System.out.println("Left chart apply handled!");        
     }
 
@@ -374,48 +349,6 @@ public class Controller implements EventListener {
     @Override
     public void handleRightChartApply() {
         UpdateChart("right");
-        /*
-        var coordinates = topMenu.getCoordinatesTextField().getText();
-        var startDate = topMenu.getStartDatePicker().getValue();
-        var endDate = topMenu.getEndDatePicker().getValue();
-        var average = topMenu.getAverageRadioButton().isSelected();
-        var minmax = topMenu.getMinMaxRadioButton().isSelected();
-        var value = bottomMenu.getLeftOptionComboBox().getValue();
-        var chartType = bottomMenu.getLeftChartTypeComboBox().getValue();
-        */
-        /* 
-        Update the chart and traffic messages according to the selections using 
-        updateChart function in Graph class. -> view.getGraph().updateChart(...). 
-        Data should be given to the function in the form of 
-        ObservableList<XYChart.Series<String, Double>>
-        
-        Such lists can be created with
-        
-        ObservableList<XYChart.Series<String, Double>> data = 
-        FXCollections.observableArrayList();
-        
-        And data can be added to it as shown below.
-        
-        Series<String, Double> values = new Series<>();
-        values.getData().add(new XYChart.Data("2022-10-25", 8));
-        values.getData().add(new XYChart.Data("2022-10-26", 4));
-        values.getData().add(new XYChart.Data("2022-10-27", 3));
-        values.getData().add(new XYChart.Data("2022-10-28", 0));
-        values.getData().add(new XYChart.Data("2022-10-29", -2));
-        
-        data.add(values);
-        
-        NOTE! Because both charts provide traffic messages to the same window,
-        and the charts might have different dates (due to the load
-        option), this function should check x values for both charts in
-        order to show all relevant traffic messages. The values can be checked,
-        for example, as shown below...
-
-        for (var data : values.getData()) {
-            var x = data.getXValue()...
-            }
-        }
-        */
         System.out.println("Right chart apply handled!");
     }
 

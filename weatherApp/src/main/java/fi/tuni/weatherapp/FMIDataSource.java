@@ -44,15 +44,19 @@ public class FMIDataSource implements IDataSource {
     }
     
     private void PopulateVariables() {
-        variables.add(new Variable("Temperature", "TestUnit1", "Date"));
+        variables.add(new Variable("Temperature", "Celsius", "Date", false));
         variableCodes.put("Temperature","t2m");
+        
+        variables.add(new Variable("Temperature forecast", "Celsius", "TIme", true));
+        variableCodes.put("Temperature forecast", "temperature");
+        
         
         variableCodes.put("Wind speed","ws_10min");
         variableCodes.put("Cloud amount", "n_man");
         variableCodes.put("Cloud amount", "n_man");
         
         variableCodes.put("Wind speed forecast", "windspeedms");
-        variableCodes.put("Temperature forecast", "temperature");
+        
         
         //variables.add(new Variable("TestVariable2", "TestUnit2"));
         
@@ -61,11 +65,17 @@ public class FMIDataSource implements IDataSource {
         }
     }
     
-    private Document QueryData(String variableCode, String coordinates, 
+    private Document QueryData(String variableCode, boolean isForecast, String coordinates, 
             String startDate, String endDate) throws MalformedURLException, IOException, JDOMException {
         
         String baseUrl = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0";
-        String queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
+        String queryType;
+        if (isForecast) {
+            queryType = "&storedquery_id=" + "fmi::forecast::harmonie::surface::point::simple";
+        }
+        else {
+            queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
+        }
         String parameters = "&parameters=" + variableCode;
         String coordinatesStr = "&bbox=" + coordinates;
         String timestep = "&timestep=" + "60";
@@ -96,8 +106,8 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        xout.output(doc, System.out);
+        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        //xout.output(doc, System.out);
         
         //System.out.println("Stuff2");
         
@@ -189,7 +199,8 @@ public class FMIDataSource implements IDataSource {
             System.out.println(startDate); //2022-11-01
             System.out.println(endDate); //2022-11-06
             String variableCode = variableCodes.get(variable.getName());
-            Document doc = QueryData(variableCode, coordinates, 
+            Document doc = QueryData(variableCode, variable.isForecast(), 
+                    coordinates, 
                     startDate.toString(), endDate.plusDays(1).toString());
             ArrayList<DataPoint> data = ProcessXml(doc);
             Collections.sort(data, Comparator.comparing(DataPoint::getX));

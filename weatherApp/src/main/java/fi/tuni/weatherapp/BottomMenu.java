@@ -387,6 +387,7 @@ public final class BottomMenu extends Element {
      * @param comboBox 
      */
     public void populateComboBox(ArrayList<String> options, ComboBox comboBox) {
+        comboBox.getItems().clear();
         for (String option : options) {
             comboBox.getItems().add(option);
         }
