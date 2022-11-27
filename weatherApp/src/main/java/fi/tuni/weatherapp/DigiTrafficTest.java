@@ -31,6 +31,7 @@ public class DigiTrafficTest implements IDataSource {
         variables.add(new Variable("Task averages", "Unit", "Count", false));
         variables.add(new Variable("Precipitation", "Unit", "Count", true));
         variables.add(new Variable("Winter slipperiness", "Unit", "Count", true));
+        variables.add(new Variable("forecast", "Unit", "Count", true));
         
         for(Variable variable : variables) {
             variableMap.put(variable.getName(), variable);
@@ -164,8 +165,9 @@ public class DigiTrafficTest implements IDataSource {
         return data;
     }
 
-    private ArrayList<DataPoint> GetTimeCondition(String hour, String coordinates) {
-        // todo parse coordinates
+    private ArrayList<DataPoint> GetTimeCondition(String coordinates, LocalDateTime start, LocalDateTime end) {
+        String hour = String.valueOf(ChronoUnit.HOURS.between(start, end));
+
         JSONArray conditions = GetRoadCondition(coordinates);
 
         ArrayList<DataPoint> data = new ArrayList<>();
@@ -257,7 +259,7 @@ public class DigiTrafficTest implements IDataSource {
         }
 
         if(variable.getName() == "forecast") {
-            data = GetTimeCondition(variable.getUnit(), coordinates);
+            //data = GetTimeCondition(variable.getUnit(), coordinates);
         }
 
         return data;
@@ -302,7 +304,7 @@ public class DigiTrafficTest implements IDataSource {
         }
 
         if(variable.getName() == "forecast") {
-            data = GetTimeCondition(variable.getUnit(), coordinates);
+            data = GetTimeCondition(coordinates, startDateTime, endDateTime);
         }
 
         return data;
