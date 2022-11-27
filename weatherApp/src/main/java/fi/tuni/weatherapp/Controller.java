@@ -1,6 +1,7 @@
 package fi.tuni.weatherapp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,90 +35,9 @@ public class Controller implements EventListener {
         view.render();
     }
 
-    public void ForecastController(String forecast, String coordinates) {
-        /*
-        String hour = forecast.replace(" hours", "");
-        System.out.println("forecast for hour " + hour);
-
-        List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
-                new Variable("forecast", hour),
-                coordinates,
-                null, null);
-
-        for (DataPoint point : data) {
-            System.out.println(point.getX());
-            System.out.println(point.getY());
-        }
-        */
-    }
-
-    public void ConditionController(String chartType, String value, String coordinates, LocalDate startDate, LocalDate endDate) {
-        /*
-        List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
-                new Variable(value, "b"),
-                coordinates,
-                startDate, endDate);
-
-        ObservableList<XYChart.Series<String, Double>> stuff =
-                FXCollections.observableArrayList();
-
-        Series<String, Double> values = new Series<>();
-
-        for (DataPoint point : data) {
-            System.out.print(point.getX());
-            System.out.print(" = ");
-            System.out.print(point.getY());
-            System.out.println("");
-
-            values.getData().add(new XYChart.Data(point.getX(), point.getY()));
-        }
-
-        stuff.add(values);
-
-        view.getGraph().updateChart(Graph.Side.LEFT, chartType, "test", "Type", "Hours",
-                0, 14, 2, stuff);
-        */
-    }
-
     public void UpdateTrafficMessages() {
         ArrayList<String> data = this.model.GetMessages(messageSourceName);
         view.getBottomMenu().updateTrafficMsgs(data);
-    }
-
-    public void TaskController(String charType, String value, String coordinates, LocalDate startDate, LocalDate endDate) {
-        /*
-        List<DataPoint> data = model.GetVariableData("DigiTrafficTest",
-                new Variable(value, "b"),
-                coordinates,
-                startDate, endDate);
-
-        System.out.println("TASKS:");
-
-        ObservableList<XYChart.Series<String, Double>> stuff =
-                FXCollections.observableArrayList();
-
-        Series<String, Double> values = new Series<>();
-
-        double upper = 0;
-
-        for (DataPoint point : data) {
-            System.out.print(point.getX());
-            System.out.print(" = ");
-            System.out.print(point.getY());
-            System.out.println("");
-
-            if(point.getY() > upper) {
-                upper = point.getY();
-            }
-
-            values.getData().add(new XYChart.Data(point.getX(), point.getY()));
-        }
-
-        stuff.add(values);
-
-        view.getGraph().updateChart(Graph.Side.LEFT, charType, "Tasks", "Task type", "Amount",
-                0, upper + 200, 100, stuff);
-        */
     }
     
     @Override
@@ -166,16 +86,6 @@ public class Controller implements EventListener {
             topMenu.updateErrorMsg("Need to select endDate or forecast length.");
             return;
         }
-        /*
-        if(topMenu.getAverageRadioButton().isSelected()) {
-            TaskController(Graph.BAR, "Task averages", coordinates, startDate, endDate);
-        }
-        
-        if(endDate == null && !topMenu.getAverageRadioButton().isSelected()) {
-            var forecast = topMenu.getForecastComboBox().getValue().toString();
-            ForecastController(forecast, coordinates);
-        }
-        */
 
         /*
         If all the choices are valid, allow the user to use the
@@ -272,10 +182,22 @@ public class Controller implements EventListener {
         
         Variable variable = this.model.GetVariable(dataSourceName, variableName);
         
-        List<DataPoint> rawData = model.GetVariableData(dataSourceName,
+        List<DataPoint> rawData;
+        if (topMenu.getForecastComboBox().getValue() != null) {
+            int forecastLength = (int) topMenu.getForecastComboBox().getValue();
+            rawData = model.GetForecastData(dataSourceName,
+                variable,
+                coordinates,
+                LocalDateTime.now(), LocalDateTime.now().plusHours(forecastLength));
+        }
+            
+        }
+        else {
+            rawData = model.GetPastData(dataSourceName,
                 variable,
                 coordinates,
                 startDate, endDate);
+        }
         
         //System.out.println(data);
         
