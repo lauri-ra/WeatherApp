@@ -265,21 +265,34 @@ public class Controller implements EventListener {
         
         if (!rawData.isEmpty()) {
             max = Collections.max(rawData, Comparator.comparing(DataPoint::getY));
-            maxValue = (int) Math.ceil(max.getY()) + 2;
+            maxValue = (int) Math.ceil(max.getY());
             
             min = Collections.min(rawData, Comparator.comparing(DataPoint::getY));
-            minValue = (int) Math.floor(min.getY()) - 2;
+            minValue = (int) Math.floor(min.getY());
         }
+        
+        int stepSize;
+        if ((maxValue - minValue) < 10) {
+            stepSize = 1;
+        }
+        else {
+            stepSize = (maxValue-minValue)/10;
+        }
+        
+        int yMin = minValue - 2*stepSize;
+        int yMax = maxValue + 2*stepSize;
+        
+        
         
         if ("left".equals(side)) {
             graph.updateChart(Graph.Side.LEFT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                minValue, maxValue, (maxValue-minValue)/10, data);
+                yMin, yMax, stepSize, data);
         }
         else {
             graph.updateChart(Graph.Side.RIGHT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                minValue, maxValue, (maxValue-minValue)/10, data);
+                minValue, maxValue, stepSize, data);
         }
     }
     
