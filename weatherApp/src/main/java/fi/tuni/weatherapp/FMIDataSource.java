@@ -109,8 +109,8 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        xout.output(doc, System.out);
+        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        //xout.output(doc, System.out);
         
         //System.out.println("Stuff2");
         
@@ -199,8 +199,8 @@ public class FMIDataSource implements IDataSource {
     public List<DataPoint> GetData(Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
         try {
-            System.out.println(startDate); //2022-11-01
-            System.out.println(endDate); //2022-11-06
+            //System.out.println(startDate); //2022-11-01
+            //System.out.println(endDate); //2022-11-06
             String variableCode = variableCodes.get(variable.getName());
             Document doc = QueryData(variableCode, variable.isForecast(), 
                     coordinates, 
@@ -222,11 +222,11 @@ public class FMIDataSource implements IDataSource {
             String coordinates, LocalDateTime startDateTime, 
             LocalDateTime endDateTime) {
         try {
-            System.out.println(startDateTime); //2022-11-01
-            System.out.println(endDateTime); //2022-11-06
+            //System.out.println(startDateTime); //2022-11-01
+            //System.out.println(endDateTime); //2022-11-06
             String startTimeStr = startDateTime.toString().substring(0,19) + "Z";
             String endTimeStr = endDateTime.toString().substring(0,19) + "Z";
-            System.out.println(startTimeStr);
+            //System.out.println(startTimeStr);
             String variableCode = variableCodes.get(variable.getName());
             Document doc = QueryData(variableCode, variable.isForecast(), 
                     coordinates, 
