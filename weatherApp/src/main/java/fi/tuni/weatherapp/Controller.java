@@ -335,10 +335,15 @@ public class Controller implements EventListener {
         
         DataPoint max;
         int maxValue = 10; // Default for cases with no data
+        DataPoint min;
+        int minValue = 0;
         
         if (rawData.size() != 0) {
             max = Collections.max(rawData, Comparator.comparing(DataPoint::getY));
             maxValue = (int) Math.ceil(max.getY()) + 2;
+            
+            min = Collections.min(rawData, Comparator.comparing(DataPoint::getY));
+            minValue = (int) Math.floor(min.getY()) - 2;
         }
 
         
@@ -346,12 +351,12 @@ public class Controller implements EventListener {
         if ("left".equals(side)) {
             view.getGraph().updateChart(Graph.Side.LEFT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                0, maxValue, maxValue/10, data);
+                minValue, maxValue, (maxValue-minValue)/10, data);
         }
         else {
             view.getGraph().updateChart(Graph.Side.RIGHT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                0, maxValue, maxValue/10, data);
+                minValue, maxValue, (maxValue-minValue)/10, data);
         }
 
     }
