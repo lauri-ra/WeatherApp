@@ -74,7 +74,7 @@ public class FMIDataSource implements IDataSource {
         String coordinatesStr;
         if (isForecast) {
             queryType = "&storedquery_id=" + "fmi::forecast::harmonie::surface::point::simple";
-            coordinatesStr = "&latlon=61.49911,23.78712";
+            coordinatesStr = "&latlon=" +  coordinates;
         }
         else {
             queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
@@ -116,6 +116,7 @@ public class FMIDataSource implements IDataSource {
         
         return doc;
     }
+    
     
     private ArrayList ProcessXml(Document doc) throws IOException {
         ArrayList<DataPoint> data = new ArrayList<>();
@@ -164,15 +165,72 @@ public class FMIDataSource implements IDataSource {
             
             data.add(new DataPoint(timeString, avgValue));
         }
-        /*
+        
         for (DataPoint point : data) {
             System.out.println(point.getX());
             System.out.println(point.getY());
             System.out.println();
         }
-        */
+        
         
         return data;
+    }
+    
+    private ArrayList<DataPoint> GetCoordinatePointData(String variableCode, boolean isForecast, 
+            String coordinates, String startTimeStr, 
+            String endTimeStr) {
+        Document doc;
+        ArrayList<DataPoint> data = new ArrayList<>();
+        try { 
+            doc = QueryData(variableCode, isForecast, 
+                    coordinates,
+                    startTimeStr, endTimeStr);
+            
+            data = ProcessXml(doc);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JDOMException ex) {
+            ex.printStackTrace();
+        }
+        return data;
+    }
+    
+    
+    private ArrayList<DataPoint> CombineDataSets(
+            ArrayList<ArrayList<DataPoint>>  dataList) {
+        
+        ArrayList<DataPoint> combinedData = new ArrayList<>();
+        HashMap<String, ArrayList<Double>> baseDataMap = new HashMap<>();
+        
+        for (ArrayList<DataPoint> data : dataList) {
+            System.out.println("stuff");
+            for(DataPoint dataPoint: data) {
+                String x = dataPoint.getX();
+                double y = dataPoint.getY();
+                System.out.println(x + ", " + y);
+                
+                if (!baseDataMap.containsKey(x)) {
+                    baseDataMap.put(x, new ArrayList<>());
+                }
+                baseDataMap.get(x).add(y);
+            }
+        }
+        
+        for (Map.Entry<String, ArrayList<Double>> pair : baseDataMap.entrySet()) {
+            Double sum = 0.0;
+            for (Double value : pair.getValue()) {
+                sum += value;
+            }
+            Double avgValue = sum / pair.getValue().size();
+            
+            String timeString = pair.getKey().substring(0, pair.getKey().length() - 1);
+            
+            combinedData.add(new DataPoint(timeString, avgValue));
+        }
+        
+        
+        
+        return combinedData; 
     }
     
     @Override
@@ -221,25 +279,39 @@ public class FMIDataSource implements IDataSource {
     public List<DataPoint> GetForecastData(Variable variable, 
             String coordinates, LocalDateTime startDateTime, 
             LocalDateTime endDateTime) {
-        try {
-            //System.out.println(startDateTime); //2022-11-01
-            //System.out.println(endDateTime); //2022-11-06
-            String startTimeStr = startDateTime.toString().substring(0,19) + "Z";
-            String endTimeStr = endDateTime.toString().substring(0,19) + "Z";
-            //System.out.println(startTimeStr);
-            String variableCode = variableCodes.get(variable.getName());
-            Document doc = QueryData(variableCode, variable.isForecast(), 
-                    coordinates, 
-                    startTimeStr, endTimeStr);
-            ArrayList<DataPoint> data = ProcessXml(doc);
-            Collections.sort(data, Comparator.comparing(DataPoint::getX));
-            return data;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (JDOMException ex) {
-            ex.printStackTrace();
-        }
-        return new ArrayList<>();
+        //System.out.println(startDateTime); //2022-11-01
+        //System.out.println(endDateTime); //2022-11-06
+        String startTimeStr = startDateTime.toString().substring(0,19) + "Z";
+        String endTimeStr = endDateTime.toString().substring(0,19) + "Z";
+        //System.out.println(startTimeStr);
+        String variableCode = variableCodes.get(variable.getName());
+        String lat1 = coordinates.substring(3,5);
+        String lat2 = coordinates.substring(9,11);
+        String lon1 = coordinates.substring(0,2);
+        String lon2 = coordinates.substring(6,8);
+
+        String coordinates1 = lat1 + "," + lon1;
+        String coordinates2 = lat1 + "," + lon2;
+        String coordinates3 = lat2 + "," + lon1;
+        String coordinates4 = lat2 + "," + lon2;
+        
+        ArrayList<ArrayList<DataPoint>> dataList = new ArrayList<>();
+        dataList.add(GetCoordinatePointData(variableCode,
+                variable.isForecast(), coordinates1,
+                startTimeStr, endTimeStr));
+        dataList.add(GetCoordinatePointData(variableCode,
+                variable.isForecast(), coordinates1,
+                startTimeStr, endTimeStr));
+        dataList.add(GetCoordinatePointData(variableCode,
+                variable.isForecast(), coordinates1,
+                startTimeStr, endTimeStr));
+        dataList.add(GetCoordinatePointData(variableCode,
+                variable.isForecast(), coordinates1,
+                startTimeStr, endTimeStr));
+
+        ArrayList<DataPoint> data = CombineDataSets(dataList);
+        Collections.sort(data, Comparator.comparing(DataPoint::getX));
+        return data;
         
     }
     
