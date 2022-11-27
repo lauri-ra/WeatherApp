@@ -218,13 +218,6 @@ public class Controller implements EventListener {
             ForecastController(forecast, coordinates);
         }
         */
-        if (bottomMenu.getLeftOptionComboBox().getValue() != null) {
-            this.handleLeftChartApply();
-        }
-        
-        if (bottomMenu.getRightOptionComboBox().getValue() != null) {
-            this.handleRightChartApply();
-        }
         this.enableBottomMenu();
         UpdateTrafficMessages();
         
@@ -317,8 +310,8 @@ public class Controller implements EventListener {
                 
         Series<String, Double> values = new Series<>();
         
-        if (rawData.size() == 0) {
-            values.getData().add(new XYChart.Data("no data available", 1));
+        if (rawData.isEmpty()) {
+            values.getData().add(new XYChart.Data("No data available", 1));
         }
         else {
             for (DataPoint dataPoint: rawData) {
@@ -338,27 +331,24 @@ public class Controller implements EventListener {
         DataPoint min;
         int minValue = 0;
         
-        if (rawData.size() != 0) {
+        if (!rawData.isEmpty()) {
             max = Collections.max(rawData, Comparator.comparing(DataPoint::getY));
             maxValue = (int) Math.ceil(max.getY()) + 2;
             
             min = Collections.min(rawData, Comparator.comparing(DataPoint::getY));
             minValue = (int) Math.floor(min.getY()) - 2;
         }
-
-        
         
         if ("left".equals(side)) {
-            view.getGraph().updateChart(Graph.Side.LEFT, chartType, 
+            graph.updateChart(Graph.Side.LEFT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
                 minValue, maxValue, (maxValue-minValue)/10, data);
         }
         else {
-            view.getGraph().updateChart(Graph.Side.RIGHT, chartType, 
+            graph.updateChart(Graph.Side.RIGHT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
                 minValue, maxValue, (maxValue-minValue)/10, data);
         }
-
     }
     
     @Override
