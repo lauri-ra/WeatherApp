@@ -222,7 +222,7 @@ public class Controller implements EventListener {
         List<DataPoint> rawData;
         if (topMenu.getForecastComboBox().getValue() != null) {
             String forecastStr = topMenu.getForecastComboBox().getValue().toString();
-            int forecastLength = Integer.parseInt(forecastStr.substring(0,1));
+            int forecastLength = Integer.parseInt(forecastStr.split(" ")[0]);
             rawData = model.GetForecastData(dataSourceName,
                 variable,
                 coordinates,
