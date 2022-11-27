@@ -258,7 +258,12 @@ public class Controller implements EventListener {
                 
         Series<String, Double> values = new Series<>();
         for (DataPoint dataPoint: rawData) {
-            values.getData().add(new XYChart.Data(dataPoint.getX().substring(0,3), dataPoint.getY()));
+            String x = dataPoint.getX();
+            double y = dataPoint.getY();
+            if (x.length() > 14) {
+                x = x.substring(0,13);
+            }
+            values.getData().add(new XYChart.Data(x, y));
         }
         
         data.add(values);

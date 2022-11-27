@@ -44,8 +44,15 @@ public class FMIDataSource implements IDataSource {
     }
     
     private void PopulateVariables() {
-        variables.add(new Variable("t2m", "TestUnit1", "Date"));
-        variableCodes.put("t2m","t2m");
+        variables.add(new Variable("Temperature", "TestUnit1", "Date"));
+        variableCodes.put("Temperature","t2m");
+        
+        variableCodes.put("Wind speed","ws_10min");
+        variableCodes.put("Cloud amount", "n_man");
+        variableCodes.put("Cloud amount", "n_man");
+        
+        variableCodes.put("Wind speed forecast", "windspeedms");
+        variableCodes.put("Temperature forecast", "temperature");
         
         //variables.add(new Variable("TestVariable2", "TestUnit2"));
         
@@ -54,25 +61,24 @@ public class FMIDataSource implements IDataSource {
         }
     }
     
-    private Document QueryData(String variableCode) throws MalformedURLException, IOException, JDOMException {
-        //System.out.println("Stuff1");
+    private Document QueryData(String variableCode, String coordinates, 
+            String startDate, String endDate) throws MalformedURLException, IOException, JDOMException {
+        
         String baseUrl = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0";
         String queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
         String parameters = "&parameters=" + variableCode;
-        String coordinates = "&bbox=" + "23,61,24,62";
+        String coordinatesStr = "&bbox=" + coordinates;
         String timestep = "&timestep=" + "60";
         
-        String startTime = "&starttime=" + "2022-10-10T00:00:00Z";
-        String endTime = "&endtime=" + "2022-10-14T00:00:00Z";
+        String startTime = "&starttime=" + startDate + "T00:00:00Z";
+        String endTime = "&endtime=" + endDate + "T00:00:00Z";
         
         
-        String url =  baseUrl + queryType + parameters + coordinates + timestep + startTime + endTime;
+        String url =  baseUrl + queryType + parameters + coordinatesStr + timestep + startTime + endTime;
         
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        int responseCode = con.getResponseCode();
-        //System.out.println("Response Code : " + responseCode);
             
         StringBuilder response;
         try (BufferedReader in = new BufferedReader(
@@ -90,8 +96,8 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        //xout.output(doc, System.out);
+        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        xout.output(doc, System.out);
         
         //System.out.println("Stuff2");
         
@@ -180,8 +186,11 @@ public class FMIDataSource implements IDataSource {
     public List<DataPoint> GetData(Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
         try {
+            System.out.println(startDate); //2022-11-01
+            System.out.println(endDate); //2022-11-06
             String variableCode = variableCodes.get(variable.getName());
-            Document doc = QueryData(variableCode);
+            Document doc = QueryData(variableCode, coordinates, 
+                    startDate.toString(), endDate.plusDays(1).toString());
             ArrayList<DataPoint> data = ProcessXml(doc);
             Collections.sort(data, Comparator.comparing(DataPoint::getX));
             return data;
