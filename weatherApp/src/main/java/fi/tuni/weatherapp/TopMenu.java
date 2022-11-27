@@ -342,7 +342,7 @@ public final class TopMenu extends Element {
      * @param promptText
      * @return comboBox
      */
-    private ComboBox _buildComboBox(String promptText) {
+    private ComboBox _buildComboBox() {
         var comboBox = new ComboBox();
         
         comboBox.setStyle(
@@ -352,7 +352,6 @@ public final class TopMenu extends Element {
         );
         comboBox.setMinSize(130, 30);
         comboBox.setMaxSize(130, 30);
-        comboBox.setPromptText(promptText);
         
         return comboBox;
     }
@@ -406,7 +405,7 @@ public final class TopMenu extends Element {
         this.setEndDateContainer(this._buildDatePickerContainer());
         this.setEndDatePicker(this._buildDatePicker());
         this.getEndDateContainer().getChildren().add(this.getEndDatePicker());
-        this.setForecastComboBox(this._buildComboBox("Time"));
+        this.setForecastComboBox(this._buildComboBox());
         this.populateComboBox(options, this.getForecastComboBox());
         
         // Column | row | column span | row span
@@ -507,6 +506,76 @@ public final class TopMenu extends Element {
     }
     
     /**
+     * Sets coordinates click event.
+     */
+    private void _setCoordinatesClickEvent() {
+        this.getCoordinatesTextField().setOnMouseClicked(event -> {
+           this.getListener().handleEdited();
+        });
+    }
+    
+    /**
+     * Sets start date click event.
+     */
+    private void _setStartDateClickEvent() {
+        this.getStartDatePicker().setOnMouseClicked(event -> {
+            this.getListener().handleEdited();
+        }); 
+    }
+    
+    /**
+     * Sets end date click event.
+     */
+    private void _setEndDateClickEvent() {
+        this.getEndDatePicker().setOnMouseClicked(event -> {
+            this.getForecastComboBox().setDisable(true);
+            this.getListener().handleEdited();
+        });   
+        this.getEndDatePicker().getEditor().setOnMouseClicked(event -> {
+            this.getForecastComboBox().setDisable(true);
+            this.getListener().handleEdited();
+        });
+    } 
+    
+    /**
+     * Sets forecast click event.
+     */
+    private void _setForecastClickEvent() {
+        this.getForecastComboBox().setOnMouseClicked(event -> {
+            this.getStartDatePicker().setValue(LocalDate.now());
+            this.getStartDatePicker().setDisable(true);
+            this.getEndDatePicker().setDisable(true);
+            this.getAverageRadioButton().setDisable(true);
+            this.getMinMaxRadioButton().setDisable(true);
+            this.getListener().handleEdited();
+        });
+    }  
+    
+    /**
+     * Sets average radio button click event.
+     */
+    private void _setAverageRadioButtonClickEvent() {
+        this.getAverageRadioButton().setOnAction(event -> {
+            this.getForecastComboBox().setValue(null);
+            this.getForecastComboBox().setDisable(true);
+            this.getMinMaxRadioButton().setDisable(true);
+            this.getListener().handleEdited();
+        });
+    }
+
+    /**
+     * Sets min/max radio button click event.
+     */
+    private void _setMinMaxRadioButtonClickEvent() {
+        this.getMinMaxRadioButton().setOnAction(event -> {
+            this.getForecastComboBox().setValue(null);
+            this.getForecastComboBox().setDisable(true);
+            this.getAverageRadioButton().setDisable(true);
+            this.getListener().handleEdited();
+        });
+    }
+
+    /**
      * Sets apply button click event.
      */
     private void _setApplyButtonClickEvent() {
@@ -525,72 +594,19 @@ public final class TopMenu extends Element {
     }
     
     /**
-     * Sets forecast click event.
-     */
-    private void _setForecastClickEvent() {
-        this.getForecastComboBox().setOnMouseClicked(event -> {
-            this.getStartDatePicker().setValue(LocalDate.now());
-            this.getStartDatePicker().setDisable(true);
-            this.getEndDatePicker().setDisable(true);
-            this.getAverageRadioButton().setDisable(true);
-            this.getMinMaxRadioButton().setDisable(true);
-        });        
-    }
-    
-    /**
-     * Sets end date click event.
-     */
-    private void _setEndDateClickEvent() {
-        this.getEndDatePicker().setOnMouseClicked(event -> {
-            this.getForecastComboBox().setDisable(true);
-            //this.getAverageRadioButton().setDisable(true);
-            //this.getMinMaxRadioButton().setDisable(true);
-        });   
-        this.getEndDatePicker().getEditor().setOnMouseClicked(event -> {
-            this.getForecastComboBox().setDisable(true);
-            //this.getAverageRadioButton().setDisable(true);
-            //this.getMinMaxRadioButton().setDisable(true);
-        });
-    }   
-    
-    /**
-     * Sets average radio button click event.
-     */
-    private void _setAverageRadioButtonClickEvent() {
-        this.getAverageRadioButton().setOnAction(event -> {
-            this.getEndDatePicker().setValue(null);
-            //this.getEndDatePicker().setDisable(true);
-            this.getForecastComboBox().setValue(null);
-            this.getForecastComboBox().setDisable(true);
-            this.getMinMaxRadioButton().setDisable(true);
-        });
-    }
-
-    /**
-     * Sets min/max radio button click event.
-     */
-    private void _setMinMaxRadioButtonClickEvent() {
-        this.getMinMaxRadioButton().setOnAction(event -> {
-            this.getEndDatePicker().setValue(null);
-            this.getEndDatePicker().setDisable(true);
-            this.getForecastComboBox().setValue(null);
-            this.getForecastComboBox().setDisable(true);
-            this.getAverageRadioButton().setDisable(true);
-        });
-    }     
-    
-    /**
      * Sets all button events.
      */
     private void _setButtonEvents() {
         this._setButtonHoverEvent(this.getApplyButton());
         this._setButtonHoverEvent(this.getResetButton());
         
-        this._setApplyButtonClickEvent();
-        this._setResetButtonClickEvent();
-        this._setForecastClickEvent();
+        this._setCoordinatesClickEvent();
+        this._setStartDateClickEvent();
         this._setEndDateClickEvent();
+        this._setForecastClickEvent();
         this._setAverageRadioButtonClickEvent();
         this._setMinMaxRadioButtonClickEvent();
+        this._setApplyButtonClickEvent();
+        this._setResetButtonClickEvent();
     }
 }

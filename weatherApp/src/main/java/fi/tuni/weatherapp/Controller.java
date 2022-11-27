@@ -21,6 +21,7 @@ public class Controller implements EventListener {
     private BottomMenu bottomMenu;
     private ModelMain model;
     private String messageSourceName = "";
+    private boolean bottomMenuDisabled = false;
 
     public Controller(View view, ModelMain model, String messageSourceName) {
         this.view = view;
@@ -38,6 +39,47 @@ public class Controller implements EventListener {
     public void UpdateTrafficMessages() {
         ArrayList<String> data = this.model.GetMessages(messageSourceName);
         view.getBottomMenu().updateTrafficMsgs(data);
+    }
+    
+    /**
+     * Enables entire bottom menu.
+     */
+    public void enableBottomMenu() {
+        bottomMenu.getLeftOptionComboBox().setDisable(false);
+        bottomMenu.getLeftChartTypeComboBox().setDisable(false);
+        bottomMenu.getLeftChartApplyButton().setDisable(false);
+        bottomMenu.getLeftChartSaveButton().setDisable(false);
+        bottomMenu.getLeftChartLoadButton().setDisable(false);
+        bottomMenu.getRightOptionComboBox().setDisable(false);
+        bottomMenu.getRightChartTypeComboBox().setDisable(false);
+        bottomMenu.getRightChartApplyButton().setDisable(false);
+        bottomMenu.getRightChartSaveButton().setDisable(false);
+        bottomMenu.getRightChartLoadButton().setDisable(false);     
+        bottomMenu.getSaveSettingsButton().setDisable(false);
+        bottomMenu.getLoadSettingsButton().setDisable(false);
+        this.bottomMenuDisabled = false;
+    }
+    
+    /**
+     * Disables entire bottom menu upon user editing top menu fields.
+     */
+    @Override
+    public void handleEdited() {
+        if (!this.bottomMenuDisabled) {
+            bottomMenu.getLeftOptionComboBox().setDisable(true);
+            bottomMenu.getLeftChartTypeComboBox().setDisable(true);
+            bottomMenu.getLeftChartApplyButton().setDisable(true);
+            bottomMenu.getLeftChartSaveButton().setDisable(true);
+            bottomMenu.getLeftChartLoadButton().setDisable(true);
+            bottomMenu.getRightOptionComboBox().setDisable(true);
+            bottomMenu.getRightChartTypeComboBox().setDisable(true);
+            bottomMenu.getRightChartApplyButton().setDisable(true);
+            bottomMenu.getRightChartSaveButton().setDisable(true);
+            bottomMenu.getRightChartLoadButton().setDisable(true);
+            bottomMenu.getSaveSettingsButton().setDisable(true);
+            bottomMenu.getLoadSettingsButton().setDisable(true);  
+            this.bottomMenuDisabled = true;
+        }     
     }
     
     @Override
@@ -86,22 +128,17 @@ public class Controller implements EventListener {
             topMenu.updateErrorMsg("Need to select endDate or forecast length.");
             return;
         }
-
         /*
-        If all the choices are valid, allow the user to use the
-        combo boxes in the bottom menu.
-        */
-        bottomMenu.getLeftOptionComboBox().setDisable(false);
-        bottomMenu.getLeftChartTypeComboBox().setDisable(false);
-        bottomMenu.getLeftChartApplyButton().setDisable(false);
-        bottomMenu.getLeftChartSaveButton().setDisable(false);
-        bottomMenu.getLeftChartLoadButton().setDisable(false);
-        bottomMenu.getRightOptionComboBox().setDisable(false);
-        bottomMenu.getRightChartTypeComboBox().setDisable(false);
-        bottomMenu.getRightChartApplyButton().setDisable(false);
-        bottomMenu.getRightChartSaveButton().setDisable(false);
-        bottomMenu.getRightChartLoadButton().setDisable(false);
+        if(topMenu.getAverageRadioButton().isSelected()) {
+            TaskController(Graph.BAR, "Task averages", coordinates, startDate, endDate);
+        }
         
+        if(endDate == null && !topMenu.getAverageRadioButton().isSelected()) {
+            var forecast = topMenu.getForecastComboBox().getValue().toString();
+            ForecastController(forecast, coordinates);
+        }
+        */
+        this.enableBottomMenu();
         UpdateTrafficMessages();
         
         if (topMenu.getForecastComboBox().getValue() != null) {
@@ -205,8 +242,8 @@ public class Controller implements EventListener {
                 
         Series<String, Double> values = new Series<>();
         
-        if (rawData.size() == 0) {
-            values.getData().add(new XYChart.Data("no data available", 1));
+        if (rawData.isEmpty()) {
+            values.getData().add(new XYChart.Data("No data available", 1));
         }
         else {
             for (DataPoint dataPoint: rawData) {
@@ -223,25 +260,27 @@ public class Controller implements EventListener {
         
         DataPoint max;
         int maxValue = 10; // Default for cases with no data
+        DataPoint min;
+        int minValue = 0;
         
-        if (rawData.size() != 0) {
+        if (!rawData.isEmpty()) {
             max = Collections.max(rawData, Comparator.comparing(DataPoint::getY));
             maxValue = (int) Math.ceil(max.getY()) + 2;
+            
+            min = Collections.min(rawData, Comparator.comparing(DataPoint::getY));
+            minValue = (int) Math.floor(min.getY()) - 2;
         }
-
-        
         
         if ("left".equals(side)) {
-            view.getGraph().updateChart(Graph.Side.LEFT, chartType, 
+            graph.updateChart(Graph.Side.LEFT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                0, maxValue, maxValue/10, data);
+                minValue, maxValue, (maxValue-minValue)/10, data);
         }
         else {
-            view.getGraph().updateChart(Graph.Side.RIGHT, chartType, 
+            graph.updateChart(Graph.Side.RIGHT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                0, maxValue, maxValue/10, data);
+                minValue, maxValue, (maxValue-minValue)/10, data);
         }
-
     }
     
     @Override
