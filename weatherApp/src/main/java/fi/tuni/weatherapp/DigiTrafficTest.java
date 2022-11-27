@@ -18,14 +18,22 @@ public class DigiTrafficTest implements IDataSource {
 
     private String name = "DigiTrafficTest";
     private ArrayList<Variable> variables;
+    private HashMap<String, Variable> variableMap;
 
     private static final String baseURL = "https://tie.digitraffic.fi/api";
 
     public DigiTrafficTest() {
         variables = new ArrayList<>();
-        variables.add(new Variable("TrafficMessages", "int"));
-        variables.add(new Variable("Tasks", "Unit"));
-        variables.add(new Variable("RoadCondition", "Unit"));
+        variableMap = new HashMap<>(); 
+        variables.add(new Variable("Overall condition", "Unit", "Count"));
+        variables.add(new Variable("Task types", "Unit", "Count"));
+        variables.add(new Variable("Task averages", "Unit", "Count"));
+        variables.add(new Variable("Precipitation", "Unit", "Count"));
+        variables.add(new Variable("Winter slipperiness", "Unit", "Count"));
+        
+        for(Variable variable : variables) {
+            variableMap.put(variable.getName(), variable);
+        }
 
     }
 
@@ -90,7 +98,8 @@ public class DigiTrafficTest implements IDataSource {
         return data;
 
     }
-
+    
+    @Override
     public ArrayList<String> GetTrafficMessages() {
         ArrayList<String> data = new ArrayList<>();
 
@@ -146,6 +155,10 @@ public class DigiTrafficTest implements IDataSource {
                 data.add(new DataPoint(condition, Double.parseDouble(hour)));
             }
         }
+        for (DataPoint point : data) {
+            System.out.println(point.getX() + ": " + point.getY());
+        }
+        System.out.println(data.size());
 
         return data;
     }
@@ -247,5 +260,10 @@ public class DigiTrafficTest implements IDataSource {
         }
 
         return data;
+    }
+    
+    @Override
+    public Variable GetVariable(String variableName) {
+        return variableMap.get(variableName);
     }
 }

@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,38 +31,54 @@ import org.jdom2.output.XMLOutputter;
 public class FMIDataSource implements IDataSource {
     
     private String name = "FMI";
+    private HashMap<String, Variable> variableMap;
+    private HashMap<String,String> variableCodes;
     private ArrayList<Variable> variables;
 
     public FMIDataSource() {
         // Set up available variables
         variables = new ArrayList<>();
+        variableCodes = new HashMap<>();
+        variableMap = new HashMap<>();
         PopulateVariables();
     }
     
     private void PopulateVariables() {
-        variables.add(new Variable("TestVariable1", "TestUnit1"));
-        variables.add(new Variable("TestVariable2", "TestUnit2"));
+        variables.add(new Variable("Temperature", "TestUnit1", "Date"));
+        variableCodes.put("Temperature","t2m");
+        
+        variableCodes.put("Wind speed","ws_10min");
+        variableCodes.put("Cloud amount", "n_man");
+        variableCodes.put("Cloud amount", "n_man");
+        
+        variableCodes.put("Wind speed forecast", "windspeedms");
+        variableCodes.put("Temperature forecast", "temperature");
+        
+        //variables.add(new Variable("TestVariable2", "TestUnit2"));
+        
+        for (Variable variable : variables) {
+            variableMap.put(variable.getName(), variable);
+        }
     }
     
-    private Document QueryData() throws MalformedURLException, IOException, JDOMException {
-        System.out.println("Stuff1");
+    private Document QueryData(String variableCode, String coordinates, 
+            String startDate, String endDate) throws MalformedURLException, IOException, JDOMException {
+        
         String baseUrl = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0";
         String queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
-        String parameters = "&parameters=" + "t2m";
-        String coordinates = "&bbox=" + "23,61,24,62";
-        String timestep = "&timestep=" + "30";
+        String parameters = "&parameters=" + variableCode;
+        String coordinatesStr = "&bbox=" + coordinates;
+        String timestep = "&timestep=" + "60";
         
-        String startTime = "&starttime=" + "2022-10-19T09:00:00Z";
-        String endTime = "&endtime=" + "2022-10-19T12:00:00Z";
+        String startTime = "&starttime=" + startDate + "T00:00:00Z";
+        String endTime = "&endtime=" + endDate + "T00:00:00Z";
         
         
-        String url =  baseUrl + queryType + parameters + coordinates + timestep + startTime + endTime;
+        String url =  baseUrl + queryType + parameters + coordinatesStr + timestep + startTime + endTime;
         
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        int responseCode = con.getResponseCode();
-        System.out.println("Response Code : " + responseCode);
             
         StringBuilder response;
         try (BufferedReader in = new BufferedReader(
@@ -78,10 +96,10 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        //xout.output(doc, System.out);
+        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        xout.output(doc, System.out);
         
-        System.out.println("Stuff2");
+        //System.out.println("Stuff2");
         
         return doc;
     }
@@ -133,12 +151,13 @@ public class FMIDataSource implements IDataSource {
             
             data.add(new DataPoint(timeString, avgValue));
         }
-        
+        /*
         for (DataPoint point : data) {
             System.out.println(point.getX());
             System.out.println(point.getY());
             System.out.println();
         }
+        */
         
         return data;
     }
@@ -147,26 +166,40 @@ public class FMIDataSource implements IDataSource {
     public String GetName() {
         return name;
     }
+    
+    @Override
+    public ArrayList<String> GetTrafficMessages() {
+        return new ArrayList<>();
+    }
 
     @Override
     public List<Variable> GetVariables() {
         return variables;
+    }
+    
+    @Override 
+    public Variable GetVariable(String variableName) {
+        return variableMap.get(variableName);
     }
 
     @Override
     public List<DataPoint> GetData(Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
         try {
-            Document doc = QueryData();
-             ArrayList<DataPoint> data = ProcessXml(doc);
-             return data;
+            System.out.println(startDate); //2022-11-01
+            System.out.println(endDate); //2022-11-06
+            String variableCode = variableCodes.get(variable.getName());
+            Document doc = QueryData(variableCode, coordinates, 
+                    startDate.toString(), endDate.plusDays(1).toString());
+            ArrayList<DataPoint> data = ProcessXml(doc);
+            Collections.sort(data, Comparator.comparing(DataPoint::getX));
+            return data;
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (JDOMException ex) {
             ex.printStackTrace();
         }
         return new ArrayList<>();
-    }
-    
+    } 
     
 }

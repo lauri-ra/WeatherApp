@@ -13,6 +13,10 @@ public class ModelMain {
         dataSources.put(dataSource.GetName(), dataSource);
     }
     
+    public ArrayList<String> GetMessages(String dataSourceName) {
+        return dataSources.get(dataSourceName).GetTrafficMessages();
+    }
+    
     public List<String> GetDataSourceNames(){
         ArrayList<String> dataSourceNames = new ArrayList<>();
         
@@ -27,6 +31,10 @@ public class ModelMain {
         
         List<Variable> variables = dataSources.get(dataSourceName).GetVariables();
         return variables;
+    }
+    
+    public Variable GetVariable(String dataSourceName, String variableName) {
+        return dataSources.get(dataSourceName).GetVariable(variableName);
     }
     
     public List<DataPoint> GetVariableData(String dataSourceName, 
