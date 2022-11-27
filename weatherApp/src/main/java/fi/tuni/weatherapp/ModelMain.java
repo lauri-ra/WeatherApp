@@ -1,6 +1,7 @@
 package fi.tuni.weatherapp;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,10 +38,19 @@ public class ModelMain {
         return dataSources.get(dataSourceName).GetVariable(variableName);
     }
     
-    public List<DataPoint> GetVariableData(String dataSourceName, 
+    public List<DataPoint> GetPastData(String dataSourceName, 
             Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
         
         return dataSources.get(dataSourceName).GetData(variable, coordinates, startDate, endDate);
     }
+    
+    public List<DataPoint> GetForecastData(String dataSourceName, 
+            Variable variable, String coordinates, 
+            LocalDateTime startDate, LocalDateTime endDate) {
+        
+        return dataSources.get(dataSourceName).GetForecastData(variable, 
+                coordinates, startDate, endDate);
+    }
+    
 }
