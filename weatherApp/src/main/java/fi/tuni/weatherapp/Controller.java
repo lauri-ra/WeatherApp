@@ -20,6 +20,7 @@ public class Controller implements EventListener {
     private BottomMenu bottomMenu;
     private ModelMain model;
     private String messageSourceName = "";
+    private boolean bottomMenuDisabled = false;
 
     public Controller(View view, ModelMain model, String messageSourceName) {
         this.view = view;
@@ -120,6 +121,47 @@ public class Controller implements EventListener {
         */
     }
     
+    /**
+     * Enables entire bottom menu.
+     */
+    public void enableBottomMenu() {
+        bottomMenu.getLeftOptionComboBox().setDisable(false);
+        bottomMenu.getLeftChartTypeComboBox().setDisable(false);
+        bottomMenu.getLeftChartApplyButton().setDisable(false);
+        bottomMenu.getLeftChartSaveButton().setDisable(false);
+        bottomMenu.getLeftChartLoadButton().setDisable(false);
+        bottomMenu.getRightOptionComboBox().setDisable(false);
+        bottomMenu.getRightChartTypeComboBox().setDisable(false);
+        bottomMenu.getRightChartApplyButton().setDisable(false);
+        bottomMenu.getRightChartSaveButton().setDisable(false);
+        bottomMenu.getRightChartLoadButton().setDisable(false);     
+        bottomMenu.getSaveSettingsButton().setDisable(false);
+        bottomMenu.getLoadSettingsButton().setDisable(false);
+        this.bottomMenuDisabled = false;
+    }
+    
+    /**
+     * Disables entire bottom menu upon user editing top menu fields.
+     */
+    @Override
+    public void handleEdited() {
+        if (!this.bottomMenuDisabled) {
+            bottomMenu.getLeftOptionComboBox().setDisable(true);
+            bottomMenu.getLeftChartTypeComboBox().setDisable(true);
+            bottomMenu.getLeftChartApplyButton().setDisable(true);
+            bottomMenu.getLeftChartSaveButton().setDisable(true);
+            bottomMenu.getLeftChartLoadButton().setDisable(true);
+            bottomMenu.getRightOptionComboBox().setDisable(true);
+            bottomMenu.getRightChartTypeComboBox().setDisable(true);
+            bottomMenu.getRightChartApplyButton().setDisable(true);
+            bottomMenu.getRightChartSaveButton().setDisable(true);
+            bottomMenu.getRightChartLoadButton().setDisable(true);
+            bottomMenu.getSaveSettingsButton().setDisable(true);
+            bottomMenu.getLoadSettingsButton().setDisable(true);  
+            this.bottomMenuDisabled = true;
+        }     
+    }
+    
     @Override
     public void handleTopApply() {
 
@@ -176,22 +218,14 @@ public class Controller implements EventListener {
             ForecastController(forecast, coordinates);
         }
         */
-
-        /*
-        If all the choices are valid, allow the user to use the
-        combo boxes in the bottom menu.
-        */
-        bottomMenu.getLeftOptionComboBox().setDisable(false);
-        bottomMenu.getLeftChartTypeComboBox().setDisable(false);
-        bottomMenu.getLeftChartApplyButton().setDisable(false);
-        bottomMenu.getLeftChartSaveButton().setDisable(false);
-        bottomMenu.getLeftChartLoadButton().setDisable(false);
-        bottomMenu.getRightOptionComboBox().setDisable(false);
-        bottomMenu.getRightChartTypeComboBox().setDisable(false);
-        bottomMenu.getRightChartApplyButton().setDisable(false);
-        bottomMenu.getRightChartSaveButton().setDisable(false);
-        bottomMenu.getRightChartLoadButton().setDisable(false);
+        if (bottomMenu.getLeftOptionComboBox().getValue() != null) {
+            this.handleLeftChartApply();
+        }
         
+        if (bottomMenu.getRightOptionComboBox().getValue() != null) {
+            this.handleRightChartApply();
+        }
+        this.enableBottomMenu();
         UpdateTrafficMessages();
         
         if (topMenu.getForecastComboBox().getValue() != null) {

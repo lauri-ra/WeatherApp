@@ -1,6 +1,7 @@
 package fi.tuni.weatherapp;
 
 public interface EventListener {
+    void handleEdited();
     void handleTopApply();
     void handleReset();
     void handleLeftChartApply();
