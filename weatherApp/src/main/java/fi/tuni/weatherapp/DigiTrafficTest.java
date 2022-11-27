@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.net.URI;
 import java.net.http.*;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import org.json.JSONArray;
@@ -265,5 +266,46 @@ public class DigiTrafficTest implements IDataSource {
     @Override
     public Variable GetVariable(String variableName) {
         return variableMap.get(variableName);
+    }
+
+    @Override
+    public List<DataPoint> GetForecastData(Variable variable, 
+            String coordinates, LocalDateTime startDateTime, 
+            LocalDateTime endDateTime) {
+        
+        LocalDate startDate = startDateTime.toLocalDate();
+        LocalDate endDate = endDateTime.toLocalDate();
+        ArrayList<DataPoint> data = new ArrayList<>();
+
+        if(variable.getName() == "Traffic messages") {
+            //data = GetTrafficMessages();
+        }
+
+        if (variable.getName() == "Task types") {
+            data = GetTasks(false, coordinates, startDate, endDate);
+        }
+
+        if( variable.getName() == "Task averages") {
+            data = GetTasks(true, coordinates, startDate, endDate);
+        }
+
+        if(variable.getName() == "Precipitation") {
+            data = GetTypeCondition("precipitationCondition", coordinates);
+        }
+
+        if(variable.getName() == "Overall condition") {
+            data = GetTypeCondition("roadCondition", coordinates);
+        }
+
+        if(variable.getName() == "Winter slipperiness") {
+            data = GetTypeCondition("winterSlipperiness", coordinates);
+        }
+
+        if(variable.getName() == "forecast") {
+            data = GetTimeCondition(variable.getUnit(), coordinates);
+        }
+
+        return data;
+        
     }
 }

@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -70,18 +71,20 @@ public class FMIDataSource implements IDataSource {
         
         String baseUrl = "https://opendata.fmi.fi/wfs?request=getFeature&version=2.0.0";
         String queryType;
+        String coordinatesStr;
         if (isForecast) {
             queryType = "&storedquery_id=" + "fmi::forecast::harmonie::surface::point::simple";
+            coordinatesStr = "&latlon=61.49911,23.78712";
         }
         else {
             queryType = "&storedquery_id=" + "fmi::observations::weather::simple";
+            coordinatesStr = "&bbox=" + coordinates;
         }
         String parameters = "&parameters=" + variableCode;
-        String coordinatesStr = "&bbox=" + coordinates;
         String timestep = "&timestep=" + "60";
         
-        String startTime = "&starttime=" + startDate + "T00:00:00Z";
-        String endTime = "&endtime=" + endDate + "T00:00:00Z";
+        String startTime = "&starttime=" + startDate;
+        String endTime = "&endtime=" + endDate;
         
         
         String url =  baseUrl + queryType + parameters + coordinatesStr + timestep + startTime + endTime;
@@ -106,8 +109,8 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        //xout.output(doc, System.out);
+        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        xout.output(doc, System.out);
         
         //System.out.println("Stuff2");
         
@@ -201,7 +204,8 @@ public class FMIDataSource implements IDataSource {
             String variableCode = variableCodes.get(variable.getName());
             Document doc = QueryData(variableCode, variable.isForecast(), 
                     coordinates, 
-                    startDate.toString(), endDate.plusDays(1).toString());
+                    startDate.toString()+"T00:00:00Z", 
+                    endDate.plusDays(1).toString()+"T00:00:00Z");
             ArrayList<DataPoint> data = ProcessXml(doc);
             Collections.sort(data, Comparator.comparing(DataPoint::getX));
             return data;
@@ -212,5 +216,32 @@ public class FMIDataSource implements IDataSource {
         }
         return new ArrayList<>();
     } 
+
+    @Override
+    public List<DataPoint> GetForecastData(Variable variable, 
+            String coordinates, LocalDateTime startDateTime, 
+            LocalDateTime endDateTime) {
+        try {
+            System.out.println(startDateTime); //2022-11-01
+            System.out.println(endDateTime); //2022-11-06
+            String startTimeStr = startDateTime.toString().substring(0,19) + "Z";
+            String endTimeStr = endDateTime.toString().substring(0,19) + "Z";
+            System.out.println(startTimeStr);
+            String variableCode = variableCodes.get(variable.getName());
+            Document doc = QueryData(variableCode, variable.isForecast(), 
+                    coordinates, 
+                    startTimeStr, endTimeStr);
+            ArrayList<DataPoint> data = ProcessXml(doc);
+            Collections.sort(data, Comparator.comparing(DataPoint::getX));
+            return data;
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (JDOMException ex) {
+            ex.printStackTrace();
+        }
+        return new ArrayList<>();
+        
+    }
+    
     
 }

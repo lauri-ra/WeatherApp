@@ -19,5 +19,5 @@ public interface IDataSource {
             LocalDate startDate, LocalDate endDate);
     
     public List<DataPoint> GetForecastData(Variable variable, String coordinates, 
-            LocalDateTime startDate, LocalDateTime endDate);
+            LocalDateTime startDateTime, LocalDateTime endDateTime);
 }

@@ -184,14 +184,14 @@ public class Controller implements EventListener {
         
         List<DataPoint> rawData;
         if (topMenu.getForecastComboBox().getValue() != null) {
-            int forecastLength = (int) topMenu.getForecastComboBox().getValue();
+            String forecastStr = topMenu.getForecastComboBox().getValue().toString();
+            int forecastLength = Integer.parseInt(forecastStr.substring(0,1));
             rawData = model.GetForecastData(dataSourceName,
                 variable,
                 coordinates,
                 LocalDateTime.now(), LocalDateTime.now().plusHours(forecastLength));
         }
-            
-        }
+
         else {
             rawData = model.GetPastData(dataSourceName,
                 variable,
