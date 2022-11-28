@@ -280,7 +280,12 @@ public class Controller implements EventListener {
         }
         
         int yMin = minValue - 2*stepSize;
+        if (minValue > 0 && yMin < 0) {
+            yMin = 0;
+        } 
         int yMax = maxValue + 2*stepSize;
+        
+    
         
         
         
