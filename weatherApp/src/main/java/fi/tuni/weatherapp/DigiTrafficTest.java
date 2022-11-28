@@ -142,7 +142,6 @@ public class DigiTrafficTest implements IDataSource {
     }
 
     private ArrayList<DataPoint> GetTypeCondition(String type, String coordinates) {
-        // todo parse coordinates
         JSONArray conditions = GetRoadCondition(coordinates);
 
         ArrayList<DataPoint> data = new ArrayList<>();
@@ -152,15 +151,15 @@ public class DigiTrafficTest implements IDataSource {
             JSONObject forecastCondition = forecast.getJSONObject("forecastConditionReason");
             String hour = forecast.getString("forecastName").replace("h", "");
 
-            if(forecastCondition.has(type)) {
+            if(forecast.has(type)) {
+                String condition = forecast.getString(type);
+                data.add(new DataPoint(condition, Double.parseDouble(hour)));
+            }
+            else if(forecastCondition.has(type)) {
                 String condition = forecastCondition.getString(type);
                 data.add(new DataPoint(condition, Double.parseDouble(hour)));
             }
         }
-        for (DataPoint point : data) {
-            System.out.println(point.getX() + ": " + point.getY());
-        }
-        System.out.println(data.size());
 
         return data;
     }
@@ -177,19 +176,18 @@ public class DigiTrafficTest implements IDataSource {
             String forecastTime = forecast.getString("forecastName").replace("h", "");
 
             if(forecastTime.equals(hour)) {
+                // Get overall road condition
+                if(forecast.has("overallRoadCondition")) {
+                    String condition = forecast.getString("overallRoadCondition");
+                    data.add(new DataPoint(condition, Double.parseDouble(hour)));
+                }
+
                 JSONObject forecastCondition = forecast.getJSONObject("forecastConditionReason");
                 // Check and add precipitation
                 if(forecastCondition.has("precipitationCondition")) {
                     String condition = forecastCondition.getString("precipitationCondition");
                     data.add(new DataPoint(condition, Double.parseDouble(hour)));
                 }
-
-                // Check and add overall road condition
-                if(forecastCondition.has("roadCondition")) {
-                    String condition = forecastCondition.getString("roadCondition");
-                    data.add(new DataPoint(condition, Double.parseDouble(hour)));
-                }
-
                 // Check and add road slipperiness
                 if(forecastCondition.has("winterSlipperiness")) {
                     String condition = forecastCondition.getString("winterSlipperiness");
@@ -234,32 +232,12 @@ public class DigiTrafficTest implements IDataSource {
     public List<DataPoint> GetData(Variable variable, String coordinates, LocalDate startDate, LocalDate endDate) {
         ArrayList<DataPoint> data = new ArrayList<>();
 
-        if(variable.getName() == "Traffic messages") {
-            //data = GetTrafficMessages();
-        }
-
         if (variable.getName() == "Task types") {
             data = GetTasks(false, coordinates, startDate, endDate);
         }
 
         if( variable.getName() == "Task averages") {
             data = GetTasks(true, coordinates, startDate, endDate);
-        }
-
-        if(variable.getName() == "Precipitation") {
-            data = GetTypeCondition("precipitationCondition", coordinates);
-        }
-
-        if(variable.getName() == "Overall condition") {
-            data = GetTypeCondition("roadCondition", coordinates);
-        }
-
-        if(variable.getName() == "Winter slipperiness") {
-            data = GetTypeCondition("winterSlipperiness", coordinates);
-        }
-
-        if(variable.getName() == "forecast") {
-            //data = GetTimeCondition(variable.getUnit(), coordinates);
         }
 
         return data;
@@ -274,29 +252,15 @@ public class DigiTrafficTest implements IDataSource {
     public List<DataPoint> GetForecastData(Variable variable, 
             String coordinates, LocalDateTime startDateTime, 
             LocalDateTime endDateTime) {
-        
-        LocalDate startDate = startDateTime.toLocalDate();
-        LocalDate endDate = endDateTime.toLocalDate();
+
         ArrayList<DataPoint> data = new ArrayList<>();
-
-        if(variable.getName() == "Traffic messages") {
-            //data = GetTrafficMessages();
-        }
-
-        if (variable.getName() == "Task types") {
-            data = GetTasks(false, coordinates, startDate, endDate);
-        }
-
-        if( variable.getName() == "Task averages") {
-            data = GetTasks(true, coordinates, startDate, endDate);
-        }
 
         if(variable.getName() == "Precipitation") {
             data = GetTypeCondition("precipitationCondition", coordinates);
         }
 
         if(variable.getName() == "Overall condition") {
-            data = GetTypeCondition("roadCondition", coordinates);
+            data = GetTypeCondition("overallRoadCondition", coordinates);
         }
 
         if(variable.getName() == "Winter slipperiness") {
@@ -308,6 +272,5 @@ public class DigiTrafficTest implements IDataSource {
         }
 
         return data;
-        
     }
 }
