@@ -32,6 +32,7 @@ public final class BottomMenu extends Element {
     private Button _rightChartApply;
     private Button _rightChartSave;
     private Button _rightChartLoad;
+    private Label _trafficMsgsLabel;
     private Label _trafficMsgCount;
     private Text _trafficMsgs;
     private Button _saveSettings;
@@ -399,13 +400,15 @@ public final class BottomMenu extends Element {
      */
     public void updateTrafficMsgs(ArrayList<String> messages) {
         var text = "";
-        var count = 0;
+        var count = messages.size();
+        
         
         for (var message : messages) {
             text += (message + System.lineSeparator());
-            count += 1;
         }
+        System.out.println("Count:" + count);
         this.getTrafficMsgCount().setText(Integer.toString(count));
+        _trafficMsgsLabel.setText("TRAFFIC MESSAGES " + "(" + count  + ")");
         this.getTrafficMsgs().setText(text);
     }
     
@@ -480,9 +483,9 @@ public final class BottomMenu extends Element {
         this.setTrafficMsgs(new Text(""));
         this.getTrafficMsgs().setWrappingWidth(650);
         
-        var trafficMsgsLabel = new Label("TRAFFIC MESSAGES " + "(" 
+        _trafficMsgsLabel = new Label("TRAFFIC MESSAGES " + "(" 
                 + this.getTrafficMsgCount().getText() + ")");
-        trafficMsgsLabel.setFont(this.getFont());
+        _trafficMsgsLabel.setFont(this.getFont());
         
         // Code below is for demonstration purpose only.
         var trafficMsgs = new ArrayList<String>();
@@ -504,7 +507,7 @@ public final class BottomMenu extends Element {
         this.setLoadSettingsButton(this._buildButton("LOAD"));
         
         // Column | row | column span | row span
-        container.add(trafficMsgsLabel,                 0, 0, 2, 1);
+        container.add(_trafficMsgsLabel,                 0, 0, 2, 1);
         container.add(this.getTrafficMsgsContainer(),   0, 1, 2, 1);
         container.add(settingsLabel,                    1, 0, 2, 1);
         container.add(getSaveSettingsButton(),          1, 1, 1, 1);
