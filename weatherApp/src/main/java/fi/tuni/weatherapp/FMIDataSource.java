@@ -48,18 +48,17 @@ public class FMIDataSource implements IDataSource {
         variables.add(new Variable("Temperature", "Celsius", "Date", false));
         variableCodes.put("Temperature","t2m");
         
-        variables.add(new Variable("Temperature forecast", "Celsius", "TIme", true));
+        variables.add(new Variable("Temperature forecast", "Celsius", "Time", true));
         variableCodes.put("Temperature forecast", "temperature");
         
-        
+        variables.add(new Variable("Wind speed", "m/s", "Date", false));
         variableCodes.put("Wind speed","ws_10min");
-        variableCodes.put("Cloud amount", "n_man");
+        
+        variables.add(new Variable("Cloud amount", "stuff", "Date", false));
         variableCodes.put("Cloud amount", "n_man");
         
+        variables.add(new Variable("Wind speed forecast","m/s","Time",true));
         variableCodes.put("Wind speed forecast", "windspeedms");
-        
-        
-        //variables.add(new Variable("TestVariable2", "TestUnit2"));
         
         for (Variable variable : variables) {
             variableMap.put(variable.getName(), variable);
@@ -132,6 +131,7 @@ public class FMIDataSource implements IDataSource {
             //xout.output(record, System.out);
             String time = "";
             Double value = 0.0;
+            String valueStr = "";
             for (Element child : record.getChildren()) {
                 //System.out.println(child.getName());
                 if ("Time".equals(child.getName())) {
@@ -139,19 +139,20 @@ public class FMIDataSource implements IDataSource {
                     time = child.getValue();
                 } else if ("ParameterValue".equals(child.getName())) {
                     //System.out.println(child.getValue());
-                    value = Double.valueOf(child.getValue());
+                    valueStr = child.getValue();
+                    //value = Double.valueOf(child.getValue());
                 }
                 
             }
-            if (!queriedData.containsKey(time)) {
-                queriedData.put(time, new ArrayList<>());
-                
+            if (!valueStr.equals("NaN")) {
+                if (!queriedData.containsKey(time)) {
+                    queriedData.put(time, new ArrayList<>());
+
+                }
+                value = Double.valueOf(valueStr);
+                queriedData.get(time).add(value);
             }
-            queriedData.get(time).add(value);
-            
-            //System.out.println();
-            //System.out.println("Number of children: " +record.getChildren().size());
-            //System.out.println();
+
         }
         
         for (Map.Entry<String, ArrayList<Double>> pair : queriedData.entrySet()) {
