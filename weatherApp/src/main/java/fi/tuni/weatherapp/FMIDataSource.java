@@ -54,7 +54,7 @@ public class FMIDataSource implements IDataSource {
         variables.add(new Variable("Wind speed", "m/s", "Date", false));
         variableCodes.put("Wind speed","ws_10min");
         
-        variables.add(new Variable("Cloud amount", "stuff", "Date", false));
+        variables.add(new Variable("Cloud amount", "1/8", "Date", false));
         variableCodes.put("Cloud amount", "n_man");
         
         variables.add(new Variable("Wind speed forecast","m/s","Time",true));
@@ -108,8 +108,8 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        //xout.output(doc, System.out);
+        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
+        xout.output(doc, System.out);
         
         //System.out.println("Stuff2");
         
@@ -166,12 +166,13 @@ public class FMIDataSource implements IDataSource {
             
             data.add(new DataPoint(timeString, avgValue));
         }
-        
+        /*
         for (DataPoint point : data) {
             System.out.println(point.getX());
             System.out.println(point.getY());
             System.out.println();
         }
+        */
         
         
         return data;
