@@ -26,12 +26,12 @@ public class DigiTrafficTest implements IDataSource {
     public DigiTrafficTest() {
         variables = new ArrayList<>();
         variableMap = new HashMap<>(); 
-        variables.add(new Variable("Overall condition", "Unit", "Count", true));
-        variables.add(new Variable("Task types", "Unit", "Count", false));
-        variables.add(new Variable("Task averages", "Unit", "Count", false));
-        variables.add(new Variable("Precipitation", "Unit", "Count", true));
-        variables.add(new Variable("Winter slipperiness", "Unit", "Count", true));
-        variables.add(new Variable("forecast", "Unit", "Count", true));
+        variables.add(new Variable("Overall condition", "Hour", "Condition", true));
+        variables.add(new Variable("Task types", "Amount", "Task", false));
+        variables.add(new Variable("Task averages", "Amount", "Task", false));
+        variables.add(new Variable("Precipitation", "Hour", "Condition", true));
+        variables.add(new Variable("Winter slipperiness", "Hour", "Condition", true));
+        variables.add(new Variable("Forecast", "Hour", "Condition", true));
         
         for(Variable variable : variables) {
             variableMap.put(variable.getName(), variable);
@@ -303,7 +303,7 @@ public class DigiTrafficTest implements IDataSource {
             data = GetTypeCondition("winterSlipperiness", coordinates);
         }
 
-        if(variable.getName() == "forecast") {
+        if(variable.getName() == "Forecast") {
             data = GetTimeCondition(coordinates, startDateTime, endDateTime);
         }
 
