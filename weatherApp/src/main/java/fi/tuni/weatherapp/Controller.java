@@ -297,7 +297,7 @@ public class Controller implements EventListener {
         else {
             graph.updateChart(Graph.Side.RIGHT, chartType, 
                 variable.getName(), variable.getXType(), variable.getUnit(), 
-                minValue, maxValue, stepSize, data);
+                yMin, yMax, stepSize, data);
         }
     }
     
