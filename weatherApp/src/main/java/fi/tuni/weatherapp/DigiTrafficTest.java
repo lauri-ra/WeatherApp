@@ -1,6 +1,7 @@
 package fi.tuni.weatherapp;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -102,10 +103,18 @@ public class DigiTrafficTest implements IDataSource {
     }
     
     @Override
-    public ArrayList<String> GetTrafficMessages() {
+    public ArrayList<String> GetTrafficMessages(LocalDate startDate, LocalDate endDate) {
         ArrayList<String> data = new ArrayList<>();
 
-        String url = baseURL + "/traffic-message/v1/messages?inactiveHours=0&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT";
+        if(endDate == null) {
+            endDate = startDate;
+        }
+
+        long hours = ChronoUnit.DAYS.between(startDate, endDate) * 24;
+        String time = String.valueOf(hours);
+
+        String url = baseURL + "/traffic-message/v1/messages?inactiveHours=" + time + "&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT";
+        //System.out.println(url);
         HttpResponse<String> response = GetRequest(url);
 
         JSONObject obj = new JSONObject(response.body());

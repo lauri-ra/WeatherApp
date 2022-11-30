@@ -14,8 +14,8 @@ public class ModelMain {
         dataSources.put(dataSource.GetName(), dataSource);
     }
     
-    public ArrayList<String> GetMessages(String dataSourceName) {
-        return dataSources.get(dataSourceName).GetTrafficMessages();
+    public ArrayList<String> GetMessages(String dataSourceName, LocalDate startDate, LocalDate endDate) {
+        return dataSources.get(dataSourceName).GetTrafficMessages(startDate, endDate);
     }
     
     public List<String> GetDataSourceNames(){

@@ -36,8 +36,8 @@ public class Controller implements EventListener {
         view.render();
     }
 
-    public void UpdateTrafficMessages() {
-        ArrayList<String> data = this.model.GetMessages(messageSourceName);
+    public void UpdateTrafficMessages(LocalDate startDate, LocalDate endDate) {
+        ArrayList<String> data = this.model.GetMessages(messageSourceName, startDate, endDate);
         view.getBottomMenu().updateTrafficMsgs(data);
     }
     
@@ -139,7 +139,7 @@ public class Controller implements EventListener {
         }
         */
         this.enableBottomMenu();
-        UpdateTrafficMessages();
+        UpdateTrafficMessages(startDate, endDate);
         
         if (topMenu.getForecastComboBox().getValue() != null) {
             UpdateAvailableVariables(true);

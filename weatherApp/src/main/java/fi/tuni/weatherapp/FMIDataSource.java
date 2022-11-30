@@ -241,7 +241,7 @@ public class FMIDataSource implements IDataSource {
     }
     
     @Override
-    public ArrayList<String> GetTrafficMessages() {
+    public ArrayList<String> GetTrafficMessages(LocalDate startDate, LocalDate endDate) {
         return new ArrayList<>();
     }
 

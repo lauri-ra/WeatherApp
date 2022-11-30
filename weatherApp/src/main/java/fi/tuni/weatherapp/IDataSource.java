@@ -9,7 +9,7 @@ public interface IDataSource {
         
     public String GetName();
     
-    public ArrayList<String> GetTrafficMessages();
+    public ArrayList<String> GetTrafficMessages(LocalDate startDate, LocalDate endDate);
     
     public List<Variable> GetVariables();
     
