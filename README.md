@@ -22,7 +22,7 @@ try the methods below.
 
 **I do not want to use the remote environment**
 
-If you know what you're doing, you can try running the program with the command lines below:
+If you know what you're doing, you can clone the repository to your computer and try running the program with the command lines below:
 ```
 javac --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml App.java
 java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml App
