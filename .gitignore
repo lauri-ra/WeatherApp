@@ -1,3 +1,4 @@
 /weatherApp/target/
 /weatherApp/weatherApp.iml
 /.idea/
+*.json
