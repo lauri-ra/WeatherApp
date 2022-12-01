@@ -1,5 +1,15 @@
 package fi.tuni.weatherapp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -12,6 +22,9 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Series;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Controller implements EventListener {
     
@@ -22,6 +35,13 @@ public class Controller implements EventListener {
     private ModelMain model;
     private String messageSourceName = "";
     private boolean bottomMenuDisabled = false;
+    private String rightChartType;
+    private String leftChartType;
+    private Variable leftVariable;
+    private Variable rightVariable;
+    private List<DataPoint> leftData;
+    private List<DataPoint> rightData;
+
 
     public Controller(View view, ModelMain model, String messageSourceName) {
         this.view = view;
@@ -193,46 +213,8 @@ public class Controller implements EventListener {
         bottomMenu.getRightChartLoadButton().setDisable(true);
     }    
     
-    private void UpdateChart(String side) {
-        String coordinates = topMenu.getCoordinatesTextField().getText();
-        var startDate = topMenu.getStartDatePicker().getValue();
-        var endDate = topMenu.getEndDatePicker().getValue();
-        boolean average = topMenu.getAverageRadioButton().isSelected();
-        boolean minmax = topMenu.getMinMaxRadioButton().isSelected();
-        String value;
-        String chartType;
-        if ("left".equals(side)) {
-            value = bottomMenu.getLeftOptionComboBox().getValue().toString();
-            chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
-        }
-        else {
-            value = bottomMenu.getRightOptionComboBox().getValue().toString();
-            chartType = bottomMenu.getRightChartTypeComboBox().getValue().toString();
-        }
-        String[] parts = value.split(":");
-        String dataSourceName = parts[0];
-        String variableName = parts[1].substring(1);
-        
-        Variable variable = this.model.GetVariable(dataSourceName, variableName);
-        
-        List<DataPoint> rawData;
-        if (topMenu.getForecastComboBox().getValue() != null) {
-            String forecastStr = topMenu.getForecastComboBox().getValue().toString();
-            int forecastLength = Integer.parseInt(forecastStr.split(" ")[0]);
-            rawData = model.GetForecastData(dataSourceName,
-                variable,
-                coordinates,
-                LocalDateTime.now(), LocalDateTime.now().plusHours(forecastLength));
-        }
-
-        else {
-            rawData = model.GetPastData(dataSourceName,
-                variable,
-                coordinates,
-                startDate, endDate);
-        }
-        
-        //System.out.println(data);
+    private void UpdateChart(String side, String variableName, String xType, String unit,
+            String chartType, List<DataPoint> rawData) {
         
         ObservableList<XYChart.Series<String, Double>> data = FXCollections.observableArrayList();
                 
@@ -281,26 +263,168 @@ public class Controller implements EventListener {
         } 
         int yMax = maxValue + 2*stepSize;
         
-    
-        
-        
-        
         if ("left".equals(side)) {
             graph.updateChart(Graph.Side.LEFT, chartType, 
-                variable.getName(), variable.getXType(), variable.getUnit(), 
+                variableName, xType, unit, 
                 yMin, yMax, stepSize, data);
         }
         else {
             graph.updateChart(Graph.Side.RIGHT, chartType, 
-                variable.getName(), variable.getXType(), variable.getUnit(), 
+                variableName, xType, unit, 
                 yMin, yMax, stepSize, data);
         }
+    }
+    
+    private void ApplyChart(String side) {
+        String coordinates = topMenu.getCoordinatesTextField().getText();
+        var startDate = topMenu.getStartDatePicker().getValue();
+        var endDate = topMenu.getEndDatePicker().getValue();
+        boolean average = topMenu.getAverageRadioButton().isSelected();
+        boolean minmax = topMenu.getMinMaxRadioButton().isSelected();
+        String value;
+        String chartType;
+        if ("left".equals(side)) {
+            value = bottomMenu.getLeftOptionComboBox().getValue().toString();
+            chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
+        }
+        else {
+            value = bottomMenu.getRightOptionComboBox().getValue().toString();
+            chartType = bottomMenu.getRightChartTypeComboBox().getValue().toString();
+        }
+        String[] parts = value.split(":");
+        String dataSourceName = parts[0];
+        String variableName = parts[1].substring(1);
+        
+        Variable variable = this.model.GetVariable(dataSourceName, variableName);
+        
+        List<DataPoint> rawData;
+        if (topMenu.getForecastComboBox().getValue() != null) {
+            String forecastStr = topMenu.getForecastComboBox().getValue().toString();
+            int forecastLength = Integer.parseInt(forecastStr.split(" ")[0]);
+            rawData = model.GetForecastData(dataSourceName,
+                variable,
+                coordinates,
+                LocalDateTime.now(), LocalDateTime.now().plusHours(forecastLength));
+        }
+
+        else {
+            rawData = model.GetPastData(dataSourceName,
+                variable,
+                coordinates,
+                startDate, endDate);
+        }
+        
+        
+        if ("left".equals(side)) {
+            leftChartType = chartType;
+            leftVariable = variable;
+            leftData = rawData;
+        }
+        else {
+            rightChartType = chartType;
+            rightVariable = variable;
+            rightData = rawData;
+        }
+        
+        UpdateChart(side, variable.getName(), variable.getXType(),variable.getUnit(),
+            chartType, rawData);
+        
+    }
+    
+    private void saveChartData(String side) {
+        String fileName;
+        String chartType;
+        Variable variable;
+        List<DataPoint> data;
+        if (side.equals("left")) {
+            fileName = "leftChartData.json";
+            chartType = leftChartType;
+            variable = leftVariable;
+            data = leftData;
+            
+        } else {
+            fileName = "rightChartData.json";
+            chartType = rightChartType;
+            variable = rightVariable;
+            data = rightData;
+        }
+        System.out.println("Stuff: Save");
+        
+        
+        JSONObject mainJson = new JSONObject();
+        JSONObject dataJson = new JSONObject();
+        try {
+            if (data != null) {
+                for (DataPoint dataPoint: data) {
+                    dataJson.put(dataPoint.getX(), dataPoint.getY());
+                }
+            }
+
+            mainJson.put("variableName", variable.getName());
+            mainJson.put("xType", variable.getXType());
+            mainJson.put("yType", variable.getUnit());
+            mainJson.put("dataPoints", dataJson);
+            mainJson.put("chartType", chartType);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        
+        try (PrintWriter out = new PrintWriter(new FileWriter(fileName))) {
+            out.write(mainJson.toString());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    private void LoadChartData(String side){
+        String fileName;
+        if (side.equals("left")) {
+            fileName = "leftChartData.json";
+        } else {
+            fileName = "rightChartData.json";
+        }
+        System.out.println("Stuff: Load");
+        
+        try {
+            String text = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
+            JSONObject jsonObj = new JSONObject(text);
+
+            //System.out.println("variableName: " + jsonObj.getString("variableName"));
+            String variableName = jsonObj.getString("variableName");
+            
+            //System.out.println("ChartType: " + jsonObj.getString("chartType"));
+            String chartType = jsonObj.getString("chartType");
+            
+            //System.out.println("xType: " + jsonObj.getString("xType"));
+            String xType = jsonObj.getString("xType");
+            
+            //System.out.println("yType: " + jsonObj.getString("yType"));
+            String yType = jsonObj.getString("yType");
+            
+            JSONObject dataJson = jsonObj.getJSONObject("dataPoints");
+            ArrayList<DataPoint> data = new ArrayList<>();
+            
+            for (var tmpTest : dataJson.names()) {
+                String xValue = (String) tmpTest;
+                double yValue = dataJson.getBigDecimal(xValue).doubleValue();
+
+                data.add(new DataPoint(xValue, yValue));
+            }
+            
+            Collections.sort(data, Comparator.comparing(DataPoint::getX));
+            
+            UpdateChart(side, variableName, xType, yType, 
+                    chartType, data);
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
     }
     
     @Override
     public void handleLeftChartApply() {
         
-        UpdateChart("left");
+        ApplyChart("left");
         System.out.println("Left chart apply handled!");        
     }
 
@@ -309,6 +433,7 @@ public class Controller implements EventListener {
         /*
         Save the data in the left chart.
         */
+        saveChartData("left");
         System.out.println("Left chart save handled!");        
     }
 
@@ -318,12 +443,13 @@ public class Controller implements EventListener {
         Load previously saved left chart and update the graph
         and traffic messages accordingly.
         */
+        LoadChartData("left");
         System.out.println("Left chart load handled!");
     }
 
     @Override
     public void handleRightChartApply() {
-        UpdateChart("right");
+        ApplyChart("right");
         System.out.println("Right chart apply handled!");
     }
 
@@ -332,6 +458,7 @@ public class Controller implements EventListener {
         /*
         Save the data in the right chart.
         */
+        saveChartData("right");
         System.out.println("Right chart save handled!");
     }
 
@@ -341,6 +468,7 @@ public class Controller implements EventListener {
         Load previously saved right chart and update the graph
         and traffic messages accordingly.
         */
+        LoadChartData("right");
         System.out.println("Right chart load handled!");
     }
     
