@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Stage;
 
+import javafx.scene.control.ScrollPane;
+
 public final class View {
     private Stage _stage;
     private FlowPane _container;
@@ -166,7 +168,14 @@ public final class View {
      * Renders the final view.
      */
     public void render() {
-        Scene scene = new Scene(this.getContainer(), 1050, 950);
+        //Scene scene = new Scene(this.getContainer(), 1050, 950);
+
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setContent(this.getContainer());
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+
+        Scene scene = new Scene(scrollPane, 1050, 950);
         
         this.getStage().setScene(scene);
         this.getStage().setMinWidth(1050);
