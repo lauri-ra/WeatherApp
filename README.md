@@ -24,7 +24,7 @@ try the methods below.
 
 If you know what you're doing, you can try running the program with the command lines below:
 ```
-javac --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile.java
-java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile
+javac --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml App.java
+java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml App
 ```
-If nothing else works, the final option is to install Apache NetBeans IDE on your computer with these instructions: https://plus.tuni.fi/comp.cs.140/spring-2022/modules_01/01_ohjelmointiymparisto/
+If nothing else works, the final option is to install Apache NetBeans IDE on your computer with these instructions: https://plus.tuni.fi/comp.cs.140/spring-2022/modules_01/01_ohjelmointiymparisto/ (2.3 Java: ohjelmointiympäristö and 2.3.2 Java IDE ja ensimmäinen ohjelma)
