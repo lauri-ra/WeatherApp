@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import static java.time.temporal.ChronoUnit.DAYS;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -108,10 +109,7 @@ public class FMIDataSource implements IDataSource {
             
             
         Document doc = builder.build(stream);
-        XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
-        xout.output(doc, System.out);
         
-        //System.out.println("Stuff2");
         
         return doc;
     }
@@ -125,22 +123,16 @@ public class FMIDataSource implements IDataSource {
         Element rootNode = doc.getRootElement();
         List<Element> records = rootNode.getChildren();
         
-        //XMLOutputter xout = new XMLOutputter(Format.getPrettyFormat());
         for (Element record : records) {
             record = record.getChildren().get(0);
-            //xout.output(record, System.out);
             String time = "";
             Double value = 0.0;
             String valueStr = "";
             for (Element child : record.getChildren()) {
-                //System.out.println(child.getName());
                 if ("Time".equals(child.getName())) {
-                    //System.out.println(child.getValue());
                     time = child.getValue();
                 } else if ("ParameterValue".equals(child.getName())) {
-                    //System.out.println(child.getValue());
                     valueStr = child.getValue();
-                    //value = Double.valueOf(child.getValue());
                 }
                 
             }
@@ -166,14 +158,6 @@ public class FMIDataSource implements IDataSource {
             
             data.add(new DataPoint(timeString, avgValue));
         }
-        /*
-        for (DataPoint point : data) {
-            System.out.println(point.getX());
-            System.out.println(point.getY());
-            System.out.println();
-        }
-        */
-        
         
         return data;
     }
@@ -205,11 +189,9 @@ public class FMIDataSource implements IDataSource {
         HashMap<String, ArrayList<Double>> baseDataMap = new HashMap<>();
         
         for (ArrayList<DataPoint> data : dataList) {
-            System.out.println("stuff");
             for(DataPoint dataPoint: data) {
                 String x = dataPoint.getX();
                 double y = dataPoint.getY();
-                System.out.println(x + ", " + y);
                 
                 if (!baseDataMap.containsKey(x)) {
                     baseDataMap.put(x, new ArrayList<>());
@@ -259,14 +241,46 @@ public class FMIDataSource implements IDataSource {
     public List<DataPoint> GetData(Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
         try {
-            //System.out.println(startDate); //2022-11-01
-            //System.out.println(endDate); //2022-11-06
             String variableCode = variableCodes.get(variable.getName());
-            Document doc = QueryData(variableCode, variable.isForecast(), 
+            
+            int days = (int) DAYS.between(startDate,endDate);
+            
+            ArrayList<DataPoint> data;
+            
+            if(days > 6) {
+                ArrayList<ArrayList<DataPoint>> dataList = new ArrayList<>();
+                
+                LocalDate tmpStart = startDate;
+                LocalDate tmpEnd = startDate.plusDays(6);
+                
+                while (tmpStart.isBefore(endDate)) {
+                    Document doc = QueryData(variableCode, variable.isForecast(), 
+                    coordinates, 
+                    tmpStart.toString()+"T00:00:00Z", 
+                    tmpEnd.plusDays(1).toString()+"T00:00:00Z");
+
+                    dataList.add(ProcessXml(doc));
+                    
+                    tmpStart = tmpEnd;
+                    if(tmpStart.plusDays(6).isAfter(endDate)) {
+                        tmpEnd = endDate;
+                    }
+                    else {
+                        tmpEnd = tmpStart.plusDays(6);
+                    }
+                }
+
+                data = CombineDataSets(dataList);
+                
+            }
+            else {
+               Document doc = QueryData(variableCode, variable.isForecast(), 
                     coordinates, 
                     startDate.toString()+"T00:00:00Z", 
                     endDate.plusDays(1).toString()+"T00:00:00Z");
-            ArrayList<DataPoint> data = ProcessXml(doc);
+                data = ProcessXml(doc); 
+            }
+            
             Collections.sort(data, Comparator.comparing(DataPoint::getX));
             return data;
         } catch (IOException ex) {
@@ -281,11 +295,8 @@ public class FMIDataSource implements IDataSource {
     public List<DataPoint> GetForecastData(Variable variable, 
             String coordinates, LocalDateTime startDateTime, 
             LocalDateTime endDateTime) {
-        //System.out.println(startDateTime); //2022-11-01
-        //System.out.println(endDateTime); //2022-11-06
         String startTimeStr = startDateTime.toString().substring(0,19) + "Z";
         String endTimeStr = endDateTime.toString().substring(0,19) + "Z";
-        //System.out.println(startTimeStr);
         String variableCode = variableCodes.get(variable.getName());
         String lat1 = coordinates.substring(3,5);
         String lat2 = coordinates.substring(9,11);
