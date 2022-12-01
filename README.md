@@ -16,11 +16,11 @@ The first time running he IDE builds the project, so this can take a while. If t
 arrow again.
 6. Voilá, the program should be running now!
 
-# I do not want to use the remote environment
+** I do not want to use the remote environment **
 
 If you know what you're doing, you can try running the program with the command lines below:
-
-`javac --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile.java`
-`java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile`
-
-Or just install Apache NetBeans IDE on your computer ;)
+```
+javac --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile.java
+  java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile`
+```
+If nothing else suits you, you can just install Apache NetBeans IDE on your computer with these instructions: https://plus.tuni.fi/comp.cs.140/spring-2022/modules_01/01_ohjelmointiymparisto/
