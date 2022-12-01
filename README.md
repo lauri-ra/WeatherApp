@@ -1,6 +1,6 @@
 # Instructions for running the program
 
-Because not everyone has Apache Netbeans IDE installed, and the instructions for running a Java program vary depending on the operating system and 
+Because not everyone has Apache Netbeans IDE installed on their computer, and the instructions for running a Java program vary depending on the operating system and 
 installation folders, the easiest way to run this program is by using the TUNI remote environment through an application or the browser:
 https://www.tuni.fi/fi/it-palvelut/kasikirja/ohjelmistot/ohjelmiston-etakaytto-0/tuni-virtual-desktop-azure-virtual-desktop
 
@@ -16,11 +16,15 @@ The first time running he IDE builds the project, so this can take a while. If t
 arrow again.
 6. Voilá, the program should be running now!
 
-** I do not want to use the remote environment **
+**NOTE!** I had problems with the resolution of the remote environment, causing the top and the bottom our program window to go outside of the shown desktop window. 
+Because of this the program window could not be moved around, and some of the features (e.g. settings) were not clearly visible. If this happens to you as well,
+try the methods below.
+
+**I do not want to use the remote environment**
 
 If you know what you're doing, you can try running the program with the command lines below:
 ```
 javac --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile.java
-  java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile`
+java --module-path "Path to your javafx lib folder" --add-modules javafx.controls,javafx.fxml YourFile
 ```
-If nothing else suits you, you can just install Apache NetBeans IDE on your computer with these instructions: https://plus.tuni.fi/comp.cs.140/spring-2022/modules_01/01_ohjelmointiymparisto/
+If nothing else works, the final option is to install Apache NetBeans IDE on your computer with these instructions: https://plus.tuni.fi/comp.cs.140/spring-2022/modules_01/01_ohjelmointiymparisto/
