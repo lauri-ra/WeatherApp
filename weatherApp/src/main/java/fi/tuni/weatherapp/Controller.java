@@ -55,8 +55,6 @@ public class Controller implements EventListener {
         bottomMenu.getRightChartApplyButton().setDisable(false);
         bottomMenu.getRightChartSaveButton().setDisable(false);
         bottomMenu.getRightChartLoadButton().setDisable(false);     
-        bottomMenu.getSaveSettingsButton().setDisable(false);
-        bottomMenu.getLoadSettingsButton().setDisable(false);
         this.bottomMenuDisabled = false;
     }
     
@@ -76,8 +74,6 @@ public class Controller implements EventListener {
             bottomMenu.getRightChartApplyButton().setDisable(true);
             bottomMenu.getRightChartSaveButton().setDisable(true);
             bottomMenu.getRightChartLoadButton().setDisable(true);
-            bottomMenu.getSaveSettingsButton().setDisable(true);
-            bottomMenu.getLoadSettingsButton().setDisable(true);  
             this.bottomMenuDisabled = true;
         }     
     }

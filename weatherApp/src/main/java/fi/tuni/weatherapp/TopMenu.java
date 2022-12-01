@@ -448,7 +448,7 @@ public final class TopMenu extends Element {
         startDateLabel.setFont(this.getFont());
         
         this.setCoordinatesTextField(this._buildTextField());
-        this._coordinates.setText("23,61,24,62");
+        this.getCoordinatesTextField().setText("23,61,24,62");
         
         this.setStartDateContainer(this._buildDatePickerContainer());
         this.setStartDatePicker(this._buildDatePicker());
