@@ -12,9 +12,9 @@ Once you have logged into the environment...
 4. Within the IDE, navigate "File" > "Open Project" > Choose the "java-group" folder and within the "weatherApp" project, and click "Open Project".
 If the IDE asks about plugin installation, install the plugins.
 5. Once the IDE has done loading the project folder, hit the green arrow at the top or navigate "Run" > "Run Project". 
-The first time running he IDE builds the project, so this can take a while. If the program does not start after the build is complete, hit the green
+The first time running the IDE builds the project, so this can take a while. If the program does not start after the build is complete, hit the green
 arrow again.
-6. Voilá, the program should be running now!
+6. Voilà, the program should be running now!
 
 **NOTE!** I had problems with the resolution of the remote environment, causing the top and the bottom our program window to go outside of the shown desktop window. 
 Because of this the program window could not be moved around, and some of the features (e.g. settings) were not clearly visible. If this happens to you as well,
