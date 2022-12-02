@@ -168,8 +168,6 @@ public final class View {
      * Renders the final view.
      */
     public void render() {
-        //Scene scene = new Scene(this.getContainer(), 1050, 950);
-
         ScrollPane scrollPane = new ScrollPane();
         scrollPane.setContent(this.getContainer());
         scrollPane.setFitToHeight(true);

@@ -16,10 +16,6 @@ The first time running the IDE builds the project, so this can take a while. If 
 arrow again.
 6. Voilà, the program should be running now!
 
-**NOTE!** I had problems with the resolution of the remote environment, causing the top and the bottom our program window to go outside of the shown desktop window. 
-Because of this the program window could not be moved around, and some of the features (e.g. settings) were not clearly visible. If this happens to you as well,
-try the methods below.
-
 **I do not want to use the remote environment**
 
 If you know what you're doing, you can clone the repository to your computer and try running the program with the command lines below:

@@ -487,19 +487,6 @@ public final class BottomMenu extends Element {
                 + this.getTrafficMsgCount().getText() + ")");
         _trafficMsgsLabel.setFont(this.getFont());
         
-        // Code below is for demonstration purpose only.
-        var trafficMsgs = new ArrayList<String>();
-        trafficMsgs.add("Traffic message 1: Random text here and there...");
-        trafficMsgs.add("Traffic message 2: Pew pew!");
-        trafficMsgs.add("Traffic message 3: Testing out traffic messages.");
-        trafficMsgs.add("Traffic message 4: Pow-wow!");
-        trafficMsgs.add("Traffic message 5: Testing testing...");
-        trafficMsgs.add("Traffic message 6: Dum da dum dum dum.");
-        this.updateTrafficMsgs(trafficMsgs);
-        // Code above is for demonstration purpose only.
-        
-        this.getTrafficMsgsContainer().setContent(this.getTrafficMsgs());
-        
         var settingsLabel = new Label("SETTINGS");
         settingsLabel.setFont(this.getFont());
         
