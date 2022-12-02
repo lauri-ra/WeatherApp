@@ -169,11 +169,18 @@ public class Controller implements EventListener {
     
     private void UpdateAvailableVariables(boolean isForecast) {
         ArrayList<String> options = new ArrayList<>();
+        boolean isAvg = topMenu.getAverageRadioButton().isSelected();
+
+        boolean isMinMax = topMenu.getMinMaxRadioButton().isSelected();
         for (String dataSourceName: model.GetDataSourceNames()) {
             List<Variable> dataSourceVariables = model.GetVariables(dataSourceName);
             
             for (Variable variable : dataSourceVariables) {
-                if (variable.isForecast() == isForecast) {
+                
+                if (variable.isForecast() == isForecast && 
+                        variable.isAvg() == isAvg && 
+                        variable.isMinMax() == isMinMax) {
+                    
                     options.add(dataSourceName + ": " + variable.getName());
                 }
             }

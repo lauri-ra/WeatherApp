@@ -27,12 +27,12 @@ public class DigiTrafficTest implements IDataSource {
     public DigiTrafficTest() {
         variables = new ArrayList<>();
         variableMap = new HashMap<>(); 
-        variables.add(new Variable("Overall condition", "Hour", "Condition", true));
-        variables.add(new Variable("Task types", "Amount", "Task", false));
-        variables.add(new Variable("Task averages", "Amount", "Task", false));
-        variables.add(new Variable("Precipitation", "Hour", "Condition", true));
-        variables.add(new Variable("Winter slipperiness", "Hour", "Condition", true));
-        variables.add(new Variable("Forecast", "Hour", "Condition", true));
+        variables.add(new Variable("Overall condition", "Hour", "Condition", true, "none"));
+        variables.add(new Variable("Task types", "Amount", "Task", false, "none"));
+        variables.add(new Variable("Task averages", "Amount", "Task", false, "avg"));
+        variables.add(new Variable("Precipitation", "Hour", "Condition", true, "none"));
+        variables.add(new Variable("Winter slipperiness", "Hour", "Condition", true, "none"));
+        variables.add(new Variable("Forecast", "Hour", "Condition", true, "none"));
         
         for(Variable variable : variables) {
             variableMap.put(variable.getName(), variable);

@@ -17,13 +17,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.jdom2.output.Format;
-import org.jdom2.output.XMLOutputter;
 
 
 /**
@@ -46,19 +43,47 @@ public class FMIDataSource implements IDataSource {
     }
     
     private void PopulateVariables() {
-        variables.add(new Variable("Temperature", "Celsius", "Date", false));
+        variables.add(new Variable("Temperature", "Celsius", "Date", false, "none"));
         variableCodes.put("Temperature","t2m");
         
-        variables.add(new Variable("Temperature forecast", "Celsius", "Time", true));
-        variableCodes.put("Temperature forecast", "temperature");
+        variables.add(new Variable("Temperature daily average", "Celsius", "Date", false, "avg"));
+        variableCodes.put("Temperature daily average","t2m");
         
-        variables.add(new Variable("Wind speed", "m/s", "Date", false));
+        variables.add(new Variable("Temperature daily min", "Celsius", "Date", false, "min"));
+        variableCodes.put("Temperature daily min","t2m");
+        
+        variables.add(new Variable("Temperature daily max", "Celsius", "Date", false, "max"));
+        variableCodes.put("Temperature daily max","t2m");
+        
+        variables.add(new Variable("Wind speed", "m/s", "Date", false, "none"));
         variableCodes.put("Wind speed","ws_10min");
         
-        variables.add(new Variable("Cloud amount", "1/8", "Date", false));
+        variables.add(new Variable("Wind speed daily avg", "m/s", "Date", false, "avg"));
+        variableCodes.put("Wind speed daily avg","ws_10min");
+        
+        variables.add(new Variable("Wind speed daily min", "m/s", "Date", false, "min"));
+        variableCodes.put("Wind speed daily min","ws_10min");
+                
+        variables.add(new Variable("Wind speed daily max", "m/s", "Date", false, "max"));
+        variableCodes.put("Wind speed daily max","ws_10min");
+        
+        variables.add(new Variable("Cloud amount", "1/8", "Date", false,"none"));
         variableCodes.put("Cloud amount", "n_man");
         
-        variables.add(new Variable("Wind speed forecast","m/s","Time",true));
+        variables.add(new Variable("Cloud amount daily avg", "1/8", "Date", false,"avg"));
+        variableCodes.put("Cloud amount daily avg", "n_man");
+        
+        variables.add(new Variable("Cloud amount daily min", "1/8", "Date", false,"min"));
+        variableCodes.put("Cloud amount daily min", "n_man");
+        
+        variables.add(new Variable("Cloud amount daily max", "1/8", "Date", false,"max"));
+        variableCodes.put("Cloud amount daily max", "n_man");
+        
+                
+        variables.add(new Variable("Temperature forecast", "Celsius", "Time", true, "none"));
+        variableCodes.put("Temperature forecast", "temperature");
+        
+        variables.add(new Variable("Wind speed forecast","m/s","Time",true,"none"));
         variableCodes.put("Wind speed forecast", "windspeedms");
         
         for (Variable variable : variables) {
@@ -161,6 +186,64 @@ public class FMIDataSource implements IDataSource {
         
         return data;
     }
+    
+    private ArrayList ReduceData(ArrayList<DataPoint> rawData, String type) {
+        ArrayList<DataPoint> data = new ArrayList<>();
+        HashMap<String, ArrayList<Double>> groupedData = new HashMap<>();
+        
+        
+        for(DataPoint dataPoint: rawData) {
+            String x = dataPoint.getX();
+            x = x.substring(0,10);
+            double y = dataPoint.getY();
+                
+            if (!groupedData.containsKey(x)) {
+                groupedData.put(x, new ArrayList<>());
+            }
+            groupedData.get(x).add(y);
+        }
+        
+        if (type.equals("avg")) {
+            for (Map.Entry<String, ArrayList<Double>> pair : groupedData.entrySet()) {
+                Double sum = 0.0;
+                for (Double value : pair.getValue()) {
+                    sum += value;
+                }
+                Double avgValue = sum / pair.getValue().size();
+
+                data.add(new DataPoint(pair.getKey(), avgValue));
+            }
+        }
+        else if (type.equals("min")) {
+            for (Map.Entry<String, ArrayList<Double>> pair : groupedData.entrySet()) {
+                Double min = pair.getValue().get(0);
+                for (Double value : pair.getValue()) {
+                    if (value < min) {
+                        min = value;
+                    }
+                }
+
+                data.add(new DataPoint(pair.getKey(), min));
+            }
+        }
+        
+        else if (type.equals("max")) {
+            for (Map.Entry<String, ArrayList<Double>> pair : groupedData.entrySet()) {
+                Double max = pair.getValue().get(0);
+                for (Double value : pair.getValue()) {
+                    if (value > max) {
+                        max = value;
+                    }
+                }
+
+                data.add(new DataPoint(pair.getKey(), max));
+            }
+        }
+        
+        return data;
+        
+    }
+    
     
     private ArrayList<DataPoint> GetCoordinatePointData(String variableCode, boolean isForecast, 
             String coordinates, String startTimeStr, 
@@ -281,6 +364,15 @@ public class FMIDataSource implements IDataSource {
                 data = ProcessXml(doc); 
             }
             
+            if (variable.isAvg()) {
+                data = ReduceData(data, "avg");
+            }
+            else if (variable.isMin()) {
+                data = ReduceData(data, "min");
+            }
+            else if (variable.isMax()) {
+                data = ReduceData(data, "max");
+            }
             Collections.sort(data, Comparator.comparing(DataPoint::getX));
             return data;
         } catch (IOException ex) {
