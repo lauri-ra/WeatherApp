@@ -1,7 +1,5 @@
 package fi.tuni.weatherapp;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -20,9 +18,9 @@ public class App extends Application {
         model = new ModelMain();
         
         model.AddDataSource(new FMIDataSource());
-        model.AddDataSource(new DigiTrafficTest());
+        model.AddDataSource(new DigiTrafficSource());
         
-        controller = new Controller(view, model, "DigiTrafficTest");
+        controller = new Controller(view, model, "DigiTrafficSource");
     }
     
     @Override

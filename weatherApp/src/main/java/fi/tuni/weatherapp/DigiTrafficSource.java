@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class DigiTrafficTest implements IDataSource {
+public class DigiTrafficSource implements IDataSource {
 
-    private String name = "DigiTrafficTest";
+    private String name = "DigiTrafficSource";
     private ArrayList<Variable> variables;
     private HashMap<String, Variable> variableMap;
 
     private static final String baseURL = "https://tie.digitraffic.fi/api";
 
-    public DigiTrafficTest() {
+    public DigiTrafficSource() {
         variables = new ArrayList<>();
         variableMap = new HashMap<>(); 
         variables.add(new Variable("Overall condition", "Hour", "Condition", true, "none"));
