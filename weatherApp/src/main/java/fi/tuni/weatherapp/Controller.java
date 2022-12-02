@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,8 +36,6 @@ public class Controller implements EventListener {
     private ModelMain model;
     private String messageSourceName = "";
     private boolean bottomMenuDisabled = false;
-    private String rightChartType;
-    private String leftChartType;
     private Variable leftVariable;
     private Variable rightVariable;
     private List<DataPoint> leftData;
@@ -144,16 +143,7 @@ public class Controller implements EventListener {
             topMenu.updateErrorMsg("Need to select endDate or forecast length.");
             return;
         }
-        /*
-        if(topMenu.getAverageRadioButton().isSelected()) {
-            TaskController(Graph.BAR, "Task averages", coordinates, startDate, endDate);
-        }
-        
-        if(endDate == null && !topMenu.getAverageRadioButton().isSelected()) {
-            var forecast = topMenu.getForecastComboBox().getValue().toString();
-            ForecastController(forecast, coordinates);
-        }
-        */
+
         this.enableBottomMenu();
         UpdateTrafficMessages(startDate, endDate);
         
@@ -323,12 +313,10 @@ public class Controller implements EventListener {
         
         
         if ("left".equals(side)) {
-            leftChartType = chartType;
             leftVariable = variable;
             leftData = rawData;
         }
         else {
-            rightChartType = chartType;
             rightVariable = variable;
             rightData = rawData;
         }
@@ -345,18 +333,16 @@ public class Controller implements EventListener {
         List<DataPoint> data;
         if (side.equals("left")) {
             fileName = "leftChartData.json";
-            chartType = leftChartType;
+            chartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
             variable = leftVariable;
             data = leftData;
             
         } else {
             fileName = "rightChartData.json";
-            chartType = rightChartType;
+            chartType = bottomMenu.getRightChartTypeComboBox().getValue().toString();
             variable = rightVariable;
             data = rightData;
-        }
-        System.out.println("Stuff: Save");
-        
+        }        
         
         JSONObject mainJson = new JSONObject();
         JSONObject dataJson = new JSONObject();
@@ -382,29 +368,28 @@ public class Controller implements EventListener {
             ex.printStackTrace();
         }
     }
+    
+    
     private void LoadChartData(String side){
         String fileName;
         if (side.equals("left")) {
             fileName = "leftChartData.json";
+            bottomMenu.getLeftOptionComboBox().getSelectionModel().select("");
         } else {
             fileName = "rightChartData.json";
+            bottomMenu.getRightOptionComboBox().getSelectionModel().select("");
         }
-        System.out.println("Stuff: Load");
         
         try {
             String text = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
             JSONObject jsonObj = new JSONObject(text);
 
-            //System.out.println("variableName: " + jsonObj.getString("variableName"));
             String variableName = jsonObj.getString("variableName");
             
-            //System.out.println("ChartType: " + jsonObj.getString("chartType"));
             String chartType = jsonObj.getString("chartType");
             
-            //System.out.println("xType: " + jsonObj.getString("xType"));
             String xType = jsonObj.getString("xType");
             
-            //System.out.println("yType: " + jsonObj.getString("yType"));
             String yType = jsonObj.getString("yType");
             
             JSONObject dataJson = jsonObj.getJSONObject("dataPoints");
@@ -481,18 +466,55 @@ public class Controller implements EventListener {
     
     @Override
     public void handleSaveSettings() {
-        var coordinates = topMenu.getCoordinatesTextField().getText();
-        var startDate = topMenu.getStartDatePicker().getValue();
-        var endDate = topMenu.getEndDatePicker().getValue();
-        var forecast = topMenu.getForecastComboBox().getValue();
-        var leftOption = bottomMenu.getLeftOptionComboBox().getValue();
-        var leftChartType = bottomMenu.getLeftChartTypeComboBox().getValue();
-        var rightOption = bottomMenu.getRightOptionComboBox().getValue();
-        var rightChartType = bottomMenu.getRightChartTypeComboBox().getValue();
+        String coordinates = topMenu.getCoordinatesTextField().getText();
+        
+        boolean isAvg = topMenu.getAverageRadioButton().isSelected();
+        boolean isMinMax = topMenu.getMinMaxRadioButton().isSelected();
+        
+        String startDate = topMenu.getStartDatePicker().getValue().toString();
+        String endDate;
+        if (topMenu.getEndDatePicker().getValue() != null) {
+            endDate = topMenu.getEndDatePicker().getValue().toString();
+        }
+        else {
+            endDate = "";
+        }
+        String forecast;
+        if (topMenu.getForecastComboBox().getValue() != null) {
+            forecast = topMenu.getForecastComboBox().getValue().toString();
+        }
+        else {
+            forecast = "";
+        }
+        String leftChartType = bottomMenu.getLeftChartTypeComboBox().getValue().toString();
+        String rightChartType = bottomMenu.getRightChartTypeComboBox().getValue().toString();
         
         /*
         Save the information in the model.
         */
+        String fileName = "savedSettings.json";
+
+        
+        JSONObject mainJson = new JSONObject();
+        try {
+
+            mainJson.put("coordinates", coordinates);
+            mainJson.put("isAvg", isAvg);
+            mainJson.put("isMinMax",isMinMax);
+            mainJson.put("startDate", startDate);
+            mainJson.put("endDate", endDate);
+            mainJson.put("forecast", forecast);
+            mainJson.put("leftChartType", leftChartType);
+            mainJson.put("rightChartType", rightChartType);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        
+        try (PrintWriter out = new PrintWriter(new FileWriter(fileName))) {
+            out.write(mainJson.toString());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         
         System.out.println("Save settings handled!");
     }
@@ -503,6 +525,77 @@ public class Controller implements EventListener {
         Load previously saved settings and update both graphs
         and traffic messages accordingly.
         */
+        String fileName = "savedSettings.json";
+        
+        try {
+            String text = new String(Files.readAllBytes(Paths.get(fileName)), StandardCharsets.UTF_8);
+            JSONObject jsonObj = new JSONObject(text);
+
+            String coordinates = jsonObj.getString("coordinates");
+            topMenu.getCoordinatesTextField().setText(coordinates);
+            
+            boolean isAvg = jsonObj.getBoolean("isAvg");
+            topMenu.getAverageRadioButton().setSelected(isAvg);
+            topMenu.getMinMaxRadioButton().setDisable(isAvg);
+
+            boolean isMinMax = jsonObj.getBoolean("isMinMax");
+            topMenu.getMinMaxRadioButton().setSelected(isMinMax);
+            topMenu.getAverageRadioButton().setDisable(isMinMax);
+            
+            String startDateStr = jsonObj.getString("startDate");
+            LocalDate startDate = LocalDate.parse(startDateStr);
+            topMenu.getStartDatePicker().setValue(startDate);
+            
+            String endDateStr = jsonObj.getString("endDate");
+            LocalDate endDate;
+            if (!"".equals(endDateStr)) {
+                endDate = LocalDate.parse(endDateStr);
+            }
+            else {
+                endDate = null;
+            }
+            topMenu.getEndDatePicker().setValue(endDate);
+            
+            String forecast = jsonObj.getString("forecast");
+            if (!"".equals(forecast)) {
+                topMenu.getForecastComboBox().getSelectionModel().select(forecast);
+            }
+            else {
+                topMenu.getForecastComboBox().getSelectionModel().select(null);
+            }
+            
+            String leftChartType = jsonObj.getString("leftChartType");
+            bottomMenu.getLeftChartTypeComboBox().getSelectionModel().
+                    select(leftChartType);
+            
+            String rightChartType = jsonObj.getString("rightChartType");
+            bottomMenu.getLeftChartTypeComboBox().getSelectionModel().
+                    select(rightChartType);
+            
+            topMenu.updateErrorMsg("");
+
+            if (!"".equals(forecast)) {
+                topMenu.getForecastComboBox().getSelectionModel().select(forecast);
+            }
+            else {
+                topMenu.getForecastComboBox().getSelectionModel().select(null);
+            }
+
+
+            this.enableBottomMenu();
+            UpdateTrafficMessages(startDate, endDate);
+
+            if (topMenu.getForecastComboBox().getValue() != null) {
+                UpdateAvailableVariables(true);
+            }
+            else {
+                UpdateAvailableVariables(false);
+            }
+
+            
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         System.out.println("Load settings handled!");
     }
 }
