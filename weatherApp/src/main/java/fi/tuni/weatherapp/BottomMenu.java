@@ -483,9 +483,14 @@ public final class BottomMenu extends Element {
         this.setTrafficMsgs(new Text(""));
         this.getTrafficMsgs().setWrappingWidth(650);
         
-        _trafficMsgsLabel = new Label("TRAFFIC MESSAGES " + "(" 
+        this._trafficMsgsLabel = new Label("TRAFFIC MESSAGES " + "(" 
                 + this.getTrafficMsgCount().getText() + ")");
-        _trafficMsgsLabel.setFont(this.getFont());
+        this._trafficMsgsLabel.setFont(this.getFont());
+        
+        var trafficMsgs = new ArrayList<String>();
+        
+        this.updateTrafficMsgs(trafficMsgs);
+        this.getTrafficMsgsContainer().setContent(this.getTrafficMsgs());
         
         var settingsLabel = new Label("SETTINGS");
         settingsLabel.setFont(this.getFont());
@@ -534,7 +539,6 @@ public final class BottomMenu extends Element {
         
         var chart2TypeLabel = new Label("CHART 2 TYPE");
         chart2TypeLabel.setFont(this.getFont());
-        
         
         ArrayList<String> charts = new ArrayList();
         charts.add("Line chart");
