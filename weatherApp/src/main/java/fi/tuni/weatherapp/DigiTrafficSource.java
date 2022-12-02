@@ -37,7 +37,14 @@ public class DigiTrafficSource implements IDataSource {
 
     }
 
-    // This function gets road maintenance tasks
+    /**
+     * Function gets road maintenance tasks
+     * @param average Defines if returned data is the average of the given timeline
+     * @param coordinates coordinates defining the area
+     * @param startDate start date for query
+     * @param endDate end date for query
+     * @return List of datapoints
+     */
     private ArrayList<DataPoint> GetTasks(boolean average, String coordinates, LocalDate startDate, LocalDate endDate) {
         HashMap<String, Double> tasks = new HashMap<>();
 
@@ -104,7 +111,12 @@ public class DigiTrafficSource implements IDataSource {
 
     }
 
-    // Function gets all traffic messages for the given timeline.
+    /**
+     * Function gets all traffic messages for the given timeline.
+     * @param startDate start date for query
+     * @param endDate end date for query
+     * @return List of strings (traffic messages)
+     */
     @Override
     public ArrayList<String> GetTrafficMessages(LocalDate startDate, LocalDate endDate) {
         ArrayList<String> data = new ArrayList<>();
@@ -136,7 +148,12 @@ public class DigiTrafficSource implements IDataSource {
         return data;
     }
 
-    // Helper function to get the road conditions for given coordinates. Only returns the response data.
+
+    /**
+     * Helper function to get the road conditions for given coordinates. Only returns the response data.
+     * @param coordinates coordinates defining the area
+     * @return JSONArray containing the response data
+     */
     private JSONArray GetRoadCondition(String coordinates) {
         coordinates = coordinates.replaceAll("[^0-9]", "");
         String place = coordinates.substring(0, 2) + "/"
@@ -155,7 +172,12 @@ public class DigiTrafficSource implements IDataSource {
         return latestData.getJSONArray("roadConditions");
     }
 
-    // Function that gets specific type of road condition data
+    /**
+     * Function that gets specific type of road condition data
+     * @param type road condition type
+     * @param coordinates coordinates defining the area
+     * @return List of datapoints
+     */
     private ArrayList<DataPoint> GetTypeCondition(String type, String coordinates) {
         JSONArray conditions = GetRoadCondition(coordinates);
 
@@ -179,7 +201,13 @@ public class DigiTrafficSource implements IDataSource {
         return data;
     }
 
-    // Function gets road condtion data for the given timeline
+    /**
+     * Function gets road condtion data for the given timeline
+     * @param coordinates coordinates defining the area
+     * @param start start time for query
+     * @param end end time for query
+     * @return List of datapoints
+     */
     private ArrayList<DataPoint> GetTimeCondition(String coordinates, LocalDateTime start, LocalDateTime end) {
         String hour = String.valueOf(ChronoUnit.HOURS.between(start, end));
 
@@ -214,7 +242,11 @@ public class DigiTrafficSource implements IDataSource {
         return data;
     }
 
-    // Function for handling GET requests
+    /**
+     * Function for handling GET requests
+     * @param URL address where the request is made
+     * @return Request response
+     */
     private HttpResponse<String> GetRequest(String URL) {
         URI url = URI.create(URL);
         HttpClient client = HttpClient.newHttpClient();
