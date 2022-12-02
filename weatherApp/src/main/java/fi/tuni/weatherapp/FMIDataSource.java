@@ -34,6 +34,9 @@ public class FMIDataSource implements IDataSource {
     private HashMap<String,String> variableCodes;
     private ArrayList<Variable> variables;
 
+    /**
+     * Constructor initializes dataSources containers.
+     */
     public FMIDataSource() {
         // Set up available variables
         variables = new ArrayList<>();
@@ -42,6 +45,9 @@ public class FMIDataSource implements IDataSource {
         PopulateVariables();
     }
     
+    /**
+     * Adds all the predetermined variables to this dataSource.
+     */
     private void PopulateVariables() {
         variables.add(new Variable("Temperature", "Celsius", "Date", false, "none"));
         variableCodes.put("Temperature","t2m");
@@ -91,6 +97,19 @@ public class FMIDataSource implements IDataSource {
         }
     }
     
+    
+    /**
+     * Queries data from FMI based on the parameters.
+     * @param variableCode string representing the variable on the FMI query
+     * @param isForecast is the variable forecast or not
+     * @param coordinates coordinates over which to query, as four edge values
+     * @param startDate start date for the query as a string
+     * @param endDate end date for the query as a string
+     * @return The queried data as an xml document
+     * @throws MalformedURLException
+     * @throws IOException
+     * @throws JDOMException 
+     */
     private Document QueryData(String variableCode, boolean isForecast, String coordinates, 
             String startDate, String endDate) throws MalformedURLException, IOException, JDOMException {
         
@@ -140,6 +159,12 @@ public class FMIDataSource implements IDataSource {
     }
     
     
+    /**
+     * Parses the data from an xml document
+     * @param doc xml document to be parsed
+     * @return LIst of parsed dataPOints
+     * @throws IOException 
+     */
     private ArrayList ProcessXml(Document doc) throws IOException {
         ArrayList<DataPoint> data = new ArrayList<>();
         
@@ -187,6 +212,12 @@ public class FMIDataSource implements IDataSource {
         return data;
     }
     
+    /**
+     * Combines hourly data to wanted type of daily data
+     * @param rawData base data to be reduced
+     * @param type which type of reduction to do (avg/min/max)
+     * @return List of the reduced data
+     */
     private ArrayList ReduceData(ArrayList<DataPoint> rawData, String type) {
         ArrayList<DataPoint> data = new ArrayList<>();
         HashMap<String, ArrayList<Double>> groupedData = new HashMap<>();
@@ -244,7 +275,15 @@ public class FMIDataSource implements IDataSource {
         
     }
     
-    
+    /**
+     * Gets available data for a given coordinate and parameters
+     * @param variableCode string representing the variable on the FMI query
+     * @param isForecast is the variable forecast or not
+     * @param coordinates coordinates of a point
+     * @param startTimeStr start date for the query as a string
+     * @param endTimeStr end date for the query as a string
+     * @return List of data at the queried point
+     */
     private ArrayList<DataPoint> GetCoordinatePointData(String variableCode, boolean isForecast, 
             String coordinates, String startTimeStr, 
             String endTimeStr) {
@@ -264,7 +303,11 @@ public class FMIDataSource implements IDataSource {
         return data;
     }
     
-    
+    /**
+     * Combines multiple data sets into single data set
+     * @param dataList List dataLists to be combined
+     * @return List of combined data
+     */
     private ArrayList<DataPoint> CombineDataSets(
             ArrayList<ArrayList<DataPoint>>  dataList) {
         
@@ -300,26 +343,53 @@ public class FMIDataSource implements IDataSource {
         return combinedData; 
     }
     
+    /**
+     * Gets name of the dataSource.
+     * @return The name of the dataSource
+     */
     @Override
     public String GetName() {
         return name;
     }
     
+    /**
+     * not implemented for this dataSource.
+     * @param startDate start date for the query
+     * @param endDate end date for the query
+     * @return Nothing
+     */
     @Override
     public ArrayList<String> GetTrafficMessages(LocalDate startDate, LocalDate endDate) {
         return new ArrayList<>();
     }
 
+    /**
+     * Get variables this dataSource has.
+     * @return List of variables
+     */
     @Override
     public List<Variable> GetVariables() {
         return variables;
     }
     
+    /**
+     * Get a single variable based on name.
+     * @param variableName The name of the wanted variable
+     * @return variable with the given name
+     */
     @Override 
     public Variable GetVariable(String variableName) {
         return variableMap.get(variableName);
     }
 
+    /**
+     * Get measured data of a variable between two dates in given area.
+     * @param variable The variable to be queried
+     * @param coordinates coordinates of the area to be queried
+     * @param startDate start date for the query
+     * @param endDate end date for the query
+     * @return List of dataPoints representing the queried data
+     */
     @Override
     public List<DataPoint> GetData(Variable variable, String coordinates, 
             LocalDate startDate, LocalDate endDate) {
@@ -383,6 +453,14 @@ public class FMIDataSource implements IDataSource {
         return new ArrayList<>();
     } 
 
+    /**
+     * Get forecast data of a variable between two dates in given area.
+     * @param variable The variable to be queried
+     * @param coordinates coordinates of the area to be queried
+     * @param startDateTime start dateTime for the query
+     * @param endDateTime end dateTime for the query
+     * @return List of dataPoints representing the queried data
+     */
     @Override
     public List<DataPoint> GetForecastData(Variable variable, 
             String coordinates, LocalDateTime startDateTime, 

@@ -12,7 +12,7 @@ public class ModelMain {
     
     
     /**
-     * Adds new dataSource to the model
+     * Adds new dataSource to the model.
      * @param dataSource The IDataSource to be added
      */
     public void AddDataSource(IDataSource dataSource) {
@@ -20,7 +20,7 @@ public class ModelMain {
     }
     
     /**
-     * Function for getting messages between two dates form a given dataSource 
+     * Function for getting messages between two dates form a given dataSource.
      * @param dataSourceName Name of the dataSource to be used
      * @param startDate start date for query
      * @param endDate end date for query
@@ -31,7 +31,7 @@ public class ModelMain {
     }
     
     /**
-     * Get the names of al dataSources in the model
+     * Get the names of al dataSources in the model.
      * @return List of the names of dataSources as Strings
      */
     public List<String> GetDataSourceNames(){
@@ -45,7 +45,7 @@ public class ModelMain {
     }
     
     /**
-     * Get list of variables available from a given dataSource
+     * Get list of variables available from a given dataSource.
      * @param dataSourceName The Name of the dataSource to be queried
      * @return List of variables
      */
@@ -56,7 +56,7 @@ public class ModelMain {
     }
     
     /**
-     * Gets a particular variable from a particular dataSource
+     * Gets a particular variable from a particular dataSource.
      * @param dataSourceName name of the relevant dataSOurce
      * @param variableName name of the wanted variable
      * @return variable with the wanted name
@@ -66,7 +66,7 @@ public class ModelMain {
     }
     
     /**
-     * Returns measured data of a variable between two dates in given area
+     * Returns measured data of a variable between two dates in given area.
      * @param dataSourceName Name of the dataSource to be queried
      * @param variable The variable of which data is queried
      * @param coordinates the coordinates over to be covered by the data
@@ -82,7 +82,7 @@ public class ModelMain {
     }
     
     /**
-     * Returns forecast data of variable between two dates in given area
+     * Returns forecast data of variable between two dates in given area.
      * @param dataSourceName Name of the dataSource to be queried
      * @param variable The variable of which data is queried
      * @param coordinates the coordinates over to be covered by the data
