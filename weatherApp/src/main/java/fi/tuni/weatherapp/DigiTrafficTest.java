@@ -1,7 +1,6 @@
 package fi.tuni.weatherapp;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -10,10 +9,8 @@ import java.util.List;
 import java.net.URI;
 import java.net.http.*;
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DigiTrafficTest implements IDataSource {
@@ -40,9 +37,11 @@ public class DigiTrafficTest implements IDataSource {
 
     }
 
+    // This function gets road maintenance tasks
     private ArrayList<DataPoint> GetTasks(boolean average, String coordinates, LocalDate startDate, LocalDate endDate) {
         HashMap<String, Double> tasks = new HashMap<>();
 
+        // Parse given coordinates for the url
         coordinates = coordinates.replaceAll("[^0-9]", "");
         String xMin = "&xMin=" + coordinates.substring(0, 2);
         String yMin = "&yMin=" + coordinates.substring(2, 4);
@@ -50,6 +49,7 @@ public class DigiTrafficTest implements IDataSource {
         String yMax = "&yMax=" + coordinates.substring(6, 8);
         String place = xMin + yMin + xMax + yMax;
 
+        // If there is no end date, timeline will be only the start date
         if(endDate == null) {
             endDate = startDate;
         }
@@ -58,17 +58,18 @@ public class DigiTrafficTest implements IDataSource {
         long days = startDate.until(endDate, ChronoUnit.DAYS) + 1;
 
         for(int x = 0; x < days; x++) {
+            // Parse the url together and fetch data for the 24 hour period
             String start = "endFrom=" + startDate.toString() +"T00%3A00%3A00Z";
             String end = "&endBefore=" + startDate.toString() + "T24%3A00%3A00Z";
             String time = start + end;
 
             String url = baseURL + "/maintenance/v1/tracking/routes?" + time + place + "&taskId=&domain=state-roads";
-            System.out.println(url);
 
             HttpResponse<String> response = GetRequest(url);
             JSONObject obj = new JSONObject(response.body());
             JSONArray features = obj.getJSONArray("features");
 
+            // Loop through the json and save/update each individual task
             for(int i = 0; i < features.length(); i++) {
                 JSONObject feature = features.getJSONObject(i);
                 JSONObject properties = feature.getJSONObject("properties");
@@ -85,6 +86,7 @@ public class DigiTrafficTest implements IDataSource {
             startDate = startDate.plusDays(1);
         }
 
+        // Save data to an array as DataPoint types.
         ArrayList<DataPoint> data = new ArrayList<>();
 
         if(!average) {
@@ -101,7 +103,8 @@ public class DigiTrafficTest implements IDataSource {
         return data;
 
     }
-    
+
+    // Function gets all traffic messages for the given timeline.
     @Override
     public ArrayList<String> GetTrafficMessages(LocalDate startDate, LocalDate endDate) {
         ArrayList<String> data = new ArrayList<>();
@@ -110,16 +113,17 @@ public class DigiTrafficTest implements IDataSource {
             endDate = startDate;
         }
 
+        // Parse the url with the given time period & fetch data.
         long hours = ChronoUnit.DAYS.between(startDate, endDate) * 24;
         String time = String.valueOf(hours);
 
         String url = baseURL + "/traffic-message/v1/messages?inactiveHours=" + time + "&includeAreaGeometry=false&situationType=TRAFFIC_ANNOUNCEMENT";
-        //System.out.println(url);
         HttpResponse<String> response = GetRequest(url);
 
         JSONObject obj = new JSONObject(response.body());
         JSONArray features = obj.getJSONArray("features");
 
+        // Loop through the json response and save fetched messages
         for(int i = 0; i < features.length(); i++) {
             JSONObject feature = features.getJSONObject(i).getJSONObject("properties");
             JSONArray announcements = feature.getJSONArray("announcements");
@@ -132,6 +136,7 @@ public class DigiTrafficTest implements IDataSource {
         return data;
     }
 
+    // Helper function to get the road conditions for given coordinates. Only returns the response data.
     private JSONArray GetRoadCondition(String coordinates) {
         coordinates = coordinates.replaceAll("[^0-9]", "");
         String place = coordinates.substring(0, 2) + "/"
@@ -150,6 +155,7 @@ public class DigiTrafficTest implements IDataSource {
         return latestData.getJSONArray("roadConditions");
     }
 
+    // Function that gets specific type of road condition data
     private ArrayList<DataPoint> GetTypeCondition(String type, String coordinates) {
         JSONArray conditions = GetRoadCondition(coordinates);
 
@@ -173,6 +179,7 @@ public class DigiTrafficTest implements IDataSource {
         return data;
     }
 
+    // Function gets road condtion data for the given timeline
     private ArrayList<DataPoint> GetTimeCondition(String coordinates, LocalDateTime start, LocalDateTime end) {
         String hour = String.valueOf(ChronoUnit.HOURS.between(start, end));
 
@@ -207,6 +214,7 @@ public class DigiTrafficTest implements IDataSource {
         return data;
     }
 
+    // Function for handling GET requests
     private HttpResponse<String> GetRequest(String URL) {
         URI url = URI.create(URL);
         HttpClient client = HttpClient.newHttpClient();
